@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    tools:context="com.example.lika85456.blokusdeskgame.Activity.MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp"
+        android:layout_weight="4"
+        android:gravity="center_horizontal"
+        android:keepScreenOn="false"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/coiny"
+            android:text="Blokus"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/textOnDark"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:layout_weight="3"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/singlePlayerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0"
+            android:width="250dp"
+            android:background="@drawable/menu_button"
+            android:fontFamily="@font/coiny"
+            android:text="Singleplayer"
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/multiPlayerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0"
+            android:width="250dp"
+            android:background="@drawable/menu_button"
+            android:fontFamily="@font/coiny"
+            android:text="Multiplayer"
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0"
+            android:width="250dp"
+            android:background="@drawable/menu_button"
+            android:fontFamily="@font/coiny"
+            android:text="Rate me pls"
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+</LinearLayout>
