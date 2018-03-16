@@ -1,47 +1,35 @@
 package com.example.lika85456.blokusdeskgame.Activity;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
-import com.example.lika85456.blokusdeskgame.ColorSliderFragment;
 import com.example.lika85456.blokusdeskgame.R;
 
-public class SinglePlayerChooserActivity extends AppCompatActivity {
+public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
-    private static final int NUM_PAGES = 4;
+    private static String DEBUG_TAG = "GestureDetector";
+    private GestureDetectorCompat gDetector;
 
-    /**
-     * The pager widget, which handles animation and allows swiping horizontally to access previous
-     * and next wizard steps.
-     */
-    private ViewPager mPager;
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private PagerAdapter mPagerAdapter;
-
+    private byte color = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Utility.hideTopBar(this);
         setContentView(R.layout.activity_single_player_chooser);
-        // Instantiate a ViewPager and a PagerAdapter.
-        mPager = findViewById(R.id.colorPager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+
         Button continueButton = findViewById(R.id.singleplayer_chooser_continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,30 +37,114 @@ public class SinglePlayerChooserActivity extends AppCompatActivity {
                 onContinue();
             }
         });
+
+        RelativeLayout circle = findViewById(R.id.colored_circle);
+        circle.getBackground().setColorFilter(0xFFFF0000, PorterDuff.Mode.MULTIPLY);
+        gDetector = new GestureDetectorCompat(this, this);
     }
 
     private void onContinue() {
         Intent intent = new Intent(this, SingleplayerActivity.class);
-        intent.putExtra("playerColor", mPager.getCurrentItem());
+        intent.putExtra("playerColor", color);
+
+        intent.putExtra("difficulty1", ((SeekBar) findViewById(R.id.seekBar_bot1)).getProgress());
+        intent.putExtra("difficulty2", ((SeekBar) findViewById(R.id.seekBar_bot2)).getProgress());
+        intent.putExtra("difficulty3", ((SeekBar) findViewById(R.id.seekBar_bot3)).getProgress());
         startActivity(intent);
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
+    public int getColorFromInt(int color) {
+        switch (color) {
+            case 1:
+                return 0xFFFF0000;
+            case 2:
+                return 0xFF00FF00;
+            case 3:
+                return 0xFF0000FF;
+            case 4:
+                return 0xFFFFFF00;
+            default:
+                return 0xFFFF0000;
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            ColorSliderFragment toRet = new ColorSliderFragment();
-            toRet.position(position);
-            return toRet;
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
     }
+
+    private void changeColor(boolean side) {
+        //false = left
+        //true = right
+        if (side)
+            color++;
+        else
+            color--;
+        final int iColor = getColorFromInt(color);
+        if (color < 0)
+            color = 4;
+        if (color > 4) {
+            color = 0;
+        }
+        final RelativeLayout circle = findViewById(R.id.colored_circle);
+        final int newColor = getColorFromInt(color);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+
+        valueAnimator.setDuration(250);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float progress = (float) animation.getAnimatedValue();
+                int c = (int) (iColor + (newColor - iColor) * progress);
+                circle.getBackground().setColorFilter(c, PorterDuff.Mode.MULTIPLY);
+
+            }
+        });
+
+        valueAnimator.start();
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (this.gDetector.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent event) {
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2,
+                           float velocityX, float velocityY) {
+        Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
+        if (event1.getRawX() - event2.getRawX() > 100 || event1.getRawX() - event2.getRawX() < -100)
+            changeColor(event1.getRawX() > event2.getRawX());
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        return;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX,
+                            float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent event) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        return false;
+    }
+
+
 
 }

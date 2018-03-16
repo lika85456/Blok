@@ -27,6 +27,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="2"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -43,13 +45,20 @@
             android:textColor="@color/smallerTextOnDark"
             android:textSize="18sp" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/colorPager"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginBottom="10dp">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        </android.support.v4.view.ViewPager>
+            <RelativeLayout
+                android:id="@+id/colored_circle"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/circle">
+
+            </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
