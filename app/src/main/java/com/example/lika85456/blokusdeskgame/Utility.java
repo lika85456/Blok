@@ -1,21 +1,32 @@
 package com.example.lika85456.blokusdeskgame;
 
-import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
-import android.view.WindowManager;
+import android.content.Context;
+import android.util.TypedValue;
 
 /**
  * Created by lika85456 on 08.03.2018.
  */
 
 public class Utility {
-    public static void hideTopBar(AppCompatActivity activity) {
-        //Remove title bar
-        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    public static int getColorFromInt(int color) {
+        switch (color) {
+            case 0:
+                return 0xFFFF0000;
+            case 1:
+                return 0xFF00FF00;
+            case 2:
+                return 0xFF0000FF;
+            case 3:
+                return 0xFFFFFF00;
+            default:
+                return 0xFFFF0000;
+        }
 
-//Remove notification bar
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 
+    public static int convertDpToPixels(float dp, Context context) {
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        return px;
     }
 
 

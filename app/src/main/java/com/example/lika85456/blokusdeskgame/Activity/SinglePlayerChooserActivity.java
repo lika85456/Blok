@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Utility;
 
 public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
@@ -53,37 +54,26 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
         startActivity(intent);
     }
 
-    public int getColorFromInt(int color) {
-        switch (color) {
-            case 1:
-                return 0xFFFF0000;
-            case 2:
-                return 0xFF00FF00;
-            case 3:
-                return 0xFF0000FF;
-            case 4:
-                return 0xFFFFFF00;
-            default:
-                return 0xFFFF0000;
-        }
 
-    }
 
     private void changeColor(boolean side) {
         //false = left
         //true = right
+
+        final int iColor = Utility.getColorFromInt(color);
+        if (color < 0)
+            color = 3;
+        if (color > 3) {
+            color = 0;
+        }
+
         if (side)
             color++;
         else
             color--;
-        final int iColor = getColorFromInt(color);
-        if (color < 0)
-            color = 4;
-        if (color > 4) {
-            color = 0;
-        }
+
         final RelativeLayout circle = findViewById(R.id.colored_circle);
-        final int newColor = getColorFromInt(color);
+        final int newColor = Utility.getColorFromInt(color);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
         valueAnimator.setInterpolator(new LinearInterpolator());
 
