@@ -8,6 +8,7 @@
 
 
     <com.example.lika85456.blokusdeskgame.GridView
+        android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.8"
