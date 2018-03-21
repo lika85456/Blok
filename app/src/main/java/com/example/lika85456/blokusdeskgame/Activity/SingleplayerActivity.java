@@ -2,39 +2,46 @@ package com.example.lika85456.blokusdeskgame.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
 
-import com.example.lika85456.blokusdeskgame.GridView;
-import com.example.lika85456.blokusdeskgame.OnPinchListener;
 import com.example.lika85456.blokusdeskgame.R;
-import com.example.lika85456.blokusdeskgame.SquareView;
+import com.example.lika85456.blokusdeskgame.Views.GridView;
+import com.example.lika85456.blokusdeskgame.Views.SquareView;
+import com.example.lika85456.blokusdeskgame.Views.ZoomView;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
-    private ScaleGestureDetector scaleGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Utility.hideTopBar(this);
         setContentView(R.layout.activity_singleplayer);
-        GridView grid = findViewById(R.id.grid);
+        final GridView grid = findViewById(R.id.grid);
+        grid.setMaxZoom(6.f);
+        ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
+            @Override
+            public void onZoomStarted(float zoom, float zoomx, float zoomy) {
 
-        scaleGestureDetector = new ScaleGestureDetector(this, new OnPinchListener(grid));
-
-        grid.setOnTouchListener(new View.OnTouchListener() {
+            }
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                scaleGestureDetector.onTouchEvent(event);
-                return true;
+            public void onZooming(float zoom, float zoomx, float zoomy) {
+                //grid.zoomTo(zoom,zoomx,zoomy);
             }
-        });
 
+            @Override
+            public void onZoomEnded(float zoom, float zoomx, float zoomy) {
 
-        grid.add(new SquareView(this, 1, 5, 19));
+            }
+        };
+
+        grid.setListner(zoomViewListener);
+
+        for (int x = 0; x < 20; x++)
+            for (int y = 0; y < 20; y++) {
+                grid.add(new SquareView(this, (x + y) % 4, x, y));
+
+            }
     }
 
     protected void onResume() {

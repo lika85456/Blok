@@ -7,14 +7,19 @@
     tools:context="com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
 
 
-    <com.example.lika85456.blokusdeskgame.GridView
+    <com.example.lika85456.blokusdeskgame.Views.GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_weight="0.8"
         android:orientation="horizontal">
 
-    </com.example.lika85456.blokusdeskgame.GridView>
+        <RelativeLayout
+            android:id="@+id/insider_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.example.lika85456.blokusdeskgame.Views.GridView>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.lika85456.blokusdeskgame;
+package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
 import android.view.ViewGroup;
