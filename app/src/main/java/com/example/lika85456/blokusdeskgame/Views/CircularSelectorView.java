@@ -17,6 +17,7 @@ import com.example.lika85456.blokusdeskgame.R;
 public class CircularSelectorView extends View {
 
     public int width, height;
+    private float rotate;
 
     public CircularSelectorView(Context context) {
         super(context);
@@ -31,14 +32,16 @@ public class CircularSelectorView extends View {
     }
 
     @Override
-    public void dispatchTouchEvent(MotionEvent event) {
-
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        rotate += event.getOrientation();
+        return true;
     }
 
     @Override
     public void dispatchDraw(Canvas canvas) {
         //TODO CLEANUP
         super.dispatchDraw(canvas);
+
         Paint paint = new Paint();
         paint.setColor(0xCCC);
         canvas.drawArc(new RectF(0, 0, width, height), -30, 60, true, paint);
