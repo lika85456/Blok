@@ -15,7 +15,7 @@
         android:layout_weight="0.8"
         android:orientation="horizontal">
 
-        <RelativeLayout
+        <com.example.lika85456.blokusdeskgame.Views.DrawingGridView
             android:id="@+id/insider_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -25,8 +25,29 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="5px"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent">
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/consoleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/coiny"
+            android:gravity="center_vertical"
+            android:text="Your turn"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <ScrollView

@@ -46,26 +46,20 @@ public class GridView extends ZoomView {
         if (b) {
             int pointSize = (int) ((float) Math.min(width, height) / 20.f);
             if (pointSize == 0) pointSize = 36;
-            int leftMargin = 0;
-            int topMargin = 0;
-            if (Math.min(width, height) == width)
-                topMargin = (int) ((float) (height - width) / 2.f);
-            else
-                leftMargin = (int) ((float) (width - height) / 2.f);
 
 
             for (int x = 0; x < grid.size(); x++) {
-
-                int left = (pointSize * grid.get(x).x) + leftMargin;
-                int top = (pointSize * grid.get(x).y) + topMargin;
+                int left = (pointSize * grid.get(x).x);
+                int top = (pointSize * grid.get(x).y);
                 grid.get(x).layout(left, top, left + pointSize, top + pointSize);
             }
         }
     }
 
     public void add(SquareView toAdd) {
-        if (gridView == null)
+        if (gridView == null) {
             gridView = findViewById(R.id.insider_grid);
+        }
         gridView.addView(toAdd);
         grid.add(toAdd);
     }

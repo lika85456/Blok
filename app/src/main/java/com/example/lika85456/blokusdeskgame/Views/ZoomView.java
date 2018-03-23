@@ -22,10 +22,12 @@ public class ZoomView extends LinearLayout {
     // zooming
     float zoom = 1.0f;
     float maxZoom = 2.0f;
-    float minZoom = 0.75f;
+    float minZoom = 1.0f;
     float smoothZoom = 1.0f;
     float zoomX, zoomY;
     float smoothZoomX, smoothZoomY;
+    boolean lastMin = true;
+    boolean init = false;
     // listener
     ZoomViewListener listener;
     private boolean scrolling; // NOPMD by karooolek on 29.06.11 11:45
@@ -238,7 +240,7 @@ public class ZoomView extends LinearLayout {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (scrolling || (smoothZoom > 1.0f && l > 30.0f)) {
+                if (scrolling || (/*smoothZoom > 1.0f && */l > 20.0f)) {
                     if (!scrolling) {
                         scrolling = true;
                         ev.setAction(MotionEvent.ACTION_CANCEL);
@@ -257,12 +259,30 @@ public class ZoomView extends LinearLayout {
                 if (l < 30.0f) {
                     // check double tap
                     if (System.currentTimeMillis() - lastTapTime < 500) {
-                        if (smoothZoom == 1.0f) {
-                            smoothZoomTo(maxZoom, x, y);
-                        } else {
-                            smoothZoomTo(1.0f, getWidth() / 2.0f,
+                        if ((smoothZoom == minZoom || smoothZoom == maxZoom) && lastMin == false) {
+                            float minS = Math.abs(getWidth() - getHeight());
+
+                            smoothZoomX = getWidth() / 2;
+                            smoothZoomY = getHeight() / 2;
+
+                            if (getWidth() > getHeight())
+                                smoothZoomX -= minS / 2;
+                            else
+                                smoothZoomY -= minS / 2;
+
+                            if (minZoom == 1.f) lastMin = true;
+                            smoothZoomTo(1f, smoothZoomX, smoothZoomY);
+
+
+                        } else if (smoothZoom == 1 && lastMin == false && minZoom != 1.f) {
+                            smoothZoomTo(minZoom, getWidth() / 2.0f,
                                     getHeight() / 2.0f);
-                        }
+                            lastMin = true;
+                        } else if ((smoothZoom == 1 && lastMin == true) || minZoom == 1.f) {
+                            smoothZoomTo(maxZoom, x, y);
+                            lastMin = false;
+                        } else
+                            smoothZoomTo(maxZoom, x, y);
                         lastTapTime = 0;
                         ev.setAction(MotionEvent.ACTION_CANCEL);
                         super.dispatchTouchEvent(ev);
@@ -320,8 +340,11 @@ public class ZoomView extends LinearLayout {
                     pinching = true;
                     final float dxk = 0.5f * (dx1 + dx2);
                     final float dyk = 0.5f * (dy1 + dy2);
-                    smoothZoomTo(Math.max(1.0f, zoom * d / (d - dd)), zoomX - dxk
+                    //smoothZoomTo(Math.max(1.0f, zoom * d / (d - dd)), zoomX - dxk
+                    //        / zoom, zoomY - dyk / zoom);
+                    smoothZoomTo(clamp(minZoom, zoom * d / (d - dd), maxZoom), zoomX - dxk
                             / zoom, zoomY - dyk / zoom);
+
                 }
 
                 break;
@@ -352,11 +375,23 @@ public class ZoomView extends LinearLayout {
     protected void dispatchDraw(final Canvas canvas) {
 
         // do zoom
+        if (init == false) {
+            init = true;
+            float minS = Math.abs(getWidth() - getHeight());
+
+            smoothZoomX = getWidth() / 2;
+            smoothZoomY = getHeight() / 2;
+
+            if (getWidth() > getHeight())
+                smoothZoomX -= minS / 2;
+            else
+                smoothZoomY -= minS / 2;
+        }
+        //int maxS = Math.max(getWidth(),getHeight());
+        //float multiplier = 1.f-((maxS-(maxS/20*4))/maxS);
         zoom = lerp(bias(zoom, smoothZoom, 0.05f), smoothZoom, 0.2f);
-        smoothZoomX = clamp(0.5f * getWidth() / smoothZoom, smoothZoomX,
-                getWidth() - 0.5f * getWidth() / smoothZoom);
-        smoothZoomY = clamp(0.5f * getHeight() / smoothZoom, smoothZoomY,
-                getHeight() - 0.5f * getHeight() / smoothZoom);
+        smoothZoomX = clamp(0, smoothZoomX, Math.min(getWidth(), getHeight()));
+        smoothZoomY = clamp(0, smoothZoomY, Math.min(getWidth(), getHeight()));
 
         zoomX = lerp(bias(zoomX, smoothZoomX, 0.1f), smoothZoomX, 0.35f);
         zoomY = lerp(bias(zoomY, smoothZoomY, 0.1f), smoothZoomY, 0.35f);
@@ -376,12 +411,13 @@ public class ZoomView extends LinearLayout {
         // prepare matrix
         m.setTranslate(0.5f * getWidth(), 0.5f * getHeight());
         m.preScale(zoom, zoom);
-        m.preTranslate(
+        /*m.preTranslate(
                 -clamp(0.5f * getWidth() / zoom, zoomX, getWidth() - 0.5f
                         * getWidth() / zoom),
                 -clamp(0.5f * getHeight() / zoom, zoomY, getHeight() - 0.5f
                         * getHeight() / zoom));
-
+        */
+        m.preTranslate(-zoomX, -zoomY);
         // get view
         final View v = getChildAt(0);
         m.preTranslate(v.getLeft(), v.getTop());
