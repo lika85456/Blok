@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.TextView;
 
-import com.example.lika85456.blokusdeskgame.Model.Piece;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
@@ -48,7 +47,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             {
                 int x = 0;
                 int y = 0;
-                int n = 20;
+                int n = 15;
                 for (int i = -3*n/2; i <= n; i++) {
                     for (int j = -3*n/2; j <= 3*n/2; j++) {
 
@@ -56,7 +55,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                         if ((Math.abs(i) + Math.abs(j) < n)
                                 || ((-n/2-i) * (-n/2-i) + ( n/2-j) * ( n/2-j) <= n*n/2)
                                 || ((-n/2-i) * (-n/2-i) + (-n/2-j) * (-n/2-j) <= n*n/2)) {
-                            grid.setColor((int)(((float)x/3111)*20),(int)(((float)y/51)*20),(byte)1);
+                            grid.setColor((int) (((float) x / 45.f) * 20.f), (int) (((float) y / 38.f) * 20.f), (byte) 0);
                                     x++;
                         }
                         else {
@@ -64,8 +63,8 @@ public class SingleplayerActivity extends AppCompatActivity {
                         }
                     }
                     y++;
+                    x = 0;
                 }
-                n=0;
             }
         });
 

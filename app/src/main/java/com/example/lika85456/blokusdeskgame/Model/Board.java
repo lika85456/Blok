@@ -2,7 +2,10 @@ package com.example.lika85456.blokusdeskgame.Model;
 
 import android.graphics.Point;
 
+import java.security.InvalidParameterException;
+
 /**
+ * Logic board containing all pieces + some matrix logic etc.
  * Created by lika85456 on 24.03.2018.
  */
 
@@ -50,7 +53,32 @@ public class Board {
         return false;
     }
 
+    /***
+     *
+     * @param piece with valid color
+     * @return
+     */
+    public boolean isOnCorner(Piece piece, int x, int y) {
+        if (piece.color == -1) throw new InvalidParameterException();
+        for (int i = 0; i < piece.list.size(); i++) {
+            Point temp = piece.list.get(i);
 
+            if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
+            if (getColor(temp.x + x, temp.y - 1 + y) == piece.color) return false;
+            if (getColor(temp.x + x, temp.y + 1 + y) == piece.color) return false;
+            if (getColor(temp.x + 1 + x, temp.y + y) == piece.color) return false;
+        }
+        return true;
+    }
 
+    /***
+     * returns color in byte
+     * @param x
+     * @param y
+     * @return
+     */
+    private byte getColor(int x, int y) {
+        return board[x][y];
+    }
 
 }
