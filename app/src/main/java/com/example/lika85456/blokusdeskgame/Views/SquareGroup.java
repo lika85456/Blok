@@ -64,6 +64,19 @@ public class SquareGroup extends ViewGroup {
         }
     }
 
+    /***
+     *
+     * @param list list of existing SquareViews
+     * @param color SquareColor
+     */
+    public static void setSquareColor(ArrayList<SquareView> list,byte color)
+    {
+        for(int i = 0; i < list.size();i++)
+        {
+            list.get(i).setColor(color);
+        }
+    }
+
     public void add(SquareView squareView) {
         list.add(squareView);
         this.addView(squareView);

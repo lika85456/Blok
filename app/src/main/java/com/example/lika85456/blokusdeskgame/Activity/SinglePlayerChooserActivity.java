@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
+import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
-import com.example.lika85456.blokusdeskgame.Utility;
 
 public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
@@ -60,7 +60,7 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
         //false = left
         //true = right
 
-        final int iColor = Utility.getColorFromInt(color);
+        final int iColor = SquareColor.getColorFromCode(color);
         if (color < 0)
             color = 3;
         if (color > 3) {
@@ -73,7 +73,7 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
             color--;
 
         final RelativeLayout circle = findViewById(R.id.colored_circle);
-        final int newColor = Utility.getColorFromInt(color);
+        final int newColor = SquareColor.getColorFromCode(color);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
         valueAnimator.setInterpolator(new LinearInterpolator());
 
@@ -82,7 +82,7 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float progress = (float) animation.getAnimatedValue();
-                int c = (int) (iColor + (newColor - iColor) * progress);
+                int c = (int) (iColor + ((newColor - iColor) * progress));
                 circle.getBackground().setColorFilter(c, PorterDuff.Mode.MULTIPLY);
 
             }

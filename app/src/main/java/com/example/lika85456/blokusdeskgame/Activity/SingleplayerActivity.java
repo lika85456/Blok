@@ -5,22 +5,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.TextView;
 
+import com.example.lika85456.blokusdeskgame.Model.Piece;
 import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
-import com.example.lika85456.blokusdeskgame.Views.SquareView;
 import com.example.lika85456.blokusdeskgame.Views.ZoomView;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
     private TextView consoleView;
+    private GridView grid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Utility.hideTopBar(this);
         setContentView(R.layout.activity_singleplayer);
-        final GridView grid = findViewById(R.id.grid);
+        grid = findViewById(R.id.grid);
         grid.setMaxZoom(6.f);
+        //grid.setMinZoom(0.7f);
         ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
             @Override
             public void onZoomStarted(float zoom, float zoomx, float zoomy) {
@@ -40,11 +43,31 @@ public class SingleplayerActivity extends AppCompatActivity {
 
         grid.setListner(zoomViewListener);
 
-        for (int x = 0; x < 20; x++)
-            for (int y = 0; y < 20; y++) {
-                grid.add(new SquareView(this, (x / 3 + y * 2) % 4, x, y));
+        grid.setOnInitializedListener(new OnOnInitializedListener(){
+            public void onInit()
+            {
+                int x = 0;
+                int y = 0;
+                int n = 20;
+                for (int i = -3*n/2; i <= n; i++) {
+                    for (int j = -3*n/2; j <= 3*n/2; j++) {
 
+                        // inside either diamond or two circles
+                        if ((Math.abs(i) + Math.abs(j) < n)
+                                || ((-n/2-i) * (-n/2-i) + ( n/2-j) * ( n/2-j) <= n*n/2)
+                                || ((-n/2-i) * (-n/2-i) + (-n/2-j) * (-n/2-j) <= n*n/2)) {
+                            grid.setColor((int)(((float)x/3111)*20),(int)(((float)y/51)*20),(byte)1);
+                                    x++;
+                        }
+                        else {
+                            x++;
+                        }
+                    }
+                    y++;
+                }
+                n=0;
             }
+        });
 
         consoleView = findViewById(R.id.consoleView);
 

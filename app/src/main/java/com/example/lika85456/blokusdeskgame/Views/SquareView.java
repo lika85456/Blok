@@ -1,13 +1,14 @@
 package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
-import com.example.lika85456.blokusdeskgame.Utility;
 
 /**
  * Created by lika85456 on 16.03.2018.
@@ -16,7 +17,7 @@ import com.example.lika85456.blokusdeskgame.Utility;
 public class SquareView extends View {
 
     public int x = 0, y = 0;
-    public int color;
+    public byte color;
     private Context ctx;
 
     /***
@@ -24,14 +25,21 @@ public class SquareView extends View {
      * @param ctx
      * @param color from 0 to 3
      */
-    public SquareView(Context ctx, int color, int x, int y) {
+    public SquareView(Context ctx, byte color, int x, int y) {
         super(ctx);
         this.ctx = ctx;
         this.color = color;
         this.setBackgroundResource(R.drawable.block);
-        this.getBackground().setColorFilter(Utility.getColorFromInt(color), PorterDuff.Mode.MULTIPLY);
+        this.getBackground().setColorFilter(SquareColor.getColorFromCode(color), PorterDuff.Mode.MULTIPLY);
         this.getBackground().mutate();
         setPos(x, y);
+    }
+
+    public void setColor(byte color)
+    {
+        this.setBackgroundResource(R.drawable.block);
+        this.getBackground().setColorFilter(SquareColor.getColorFromCode(color), PorterDuff.Mode.MULTIPLY);
+        this.getBackground().mutate();
     }
 
     @Override
@@ -39,8 +47,13 @@ public class SquareView extends View {
         super.onLayout(changed, l, t, r, b);
         if (changed) {
             setMargins(this, l, t, r, b);
-            Log.d("POSITION", "X:" + l + " Y:" + r + " WIDTH:" + (r - l) + " HEIGHT:" + (b - t));
         }
+    }
+
+
+    public void setPos(Point point)
+    {
+        setPos(point.x,point.y);
     }
 
     public void setPos(int x, int y) {

@@ -136,9 +136,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
-                    android:max="3"
-                    android:min="1"
-                    android:progress="2"
+                    android:max="2"
+                    android:min="0"
+                    android:progress="1"
                     android:progressBackgroundTint="@color/smallerTextOnDark"
                     android:progressBackgroundTintMode="@color/smallerTextOnDark" />
             </LinearLayout>
@@ -165,9 +165,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
-                    android:max="3"
-                    android:min="1"
-                    android:progress="2"
+                    android:max="2"
+                    android:min="0"
+                    android:progress="1"
                     android:progressBackgroundTint="@color/smallerTextOnDark"
                     android:progressBackgroundTintMode="@color/smallerTextOnDark" />
             </LinearLayout>
@@ -194,9 +194,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
-                    android:max="3"
-                    android:min="1"
-                    android:progress="2"
+                    android:max="2"
+                    android:min="0"
+                    android:progress="1"
                     android:progressBackgroundTint="@color/smallerTextOnDark"
                     android:progressBackgroundTintMode="@color/smallerTextOnDark" />
             </LinearLayout>
