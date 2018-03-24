@@ -122,7 +122,7 @@ public class GridView extends ZoomView {
 
     public SquareView get(int x,int y)
     {
-        return grid.get(y*20+x);
+        return grid.get(x*20+y);
     }
 
     private void add(SquareView toAdd) {

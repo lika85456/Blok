@@ -3,8 +3,10 @@ package com.example.lika85456.blokusdeskgame.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.lika85456.blokusdeskgame.Model.Piece;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
@@ -26,17 +28,14 @@ public class SingleplayerActivity extends AppCompatActivity {
         ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
             @Override
             public void onZoomStarted(float zoom, float zoomx, float zoomy) {
-
             }
 
             @Override
             public void onZooming(float zoom, float zoomx, float zoomy) {
-                //grid.zoomTo(zoom,zoomx,zoomy);
             }
 
             @Override
             public void onZoomEnded(float zoom, float zoomx, float zoomy) {
-
             }
         };
 
@@ -45,31 +44,17 @@ public class SingleplayerActivity extends AppCompatActivity {
         grid.setOnInitializedListener(new OnOnInitializedListener(){
             public void onInit()
             {
-                int x = 0;
-                int y = 0;
-                int n = 15;
-                for (int i = -3*n/2; i <= n; i++) {
-                    for (int j = -3*n/2; j <= 3*n/2; j++) {
-
-                        // inside either diamond or two circles
-                        if ((Math.abs(i) + Math.abs(j) < n)
-                                || ((-n/2-i) * (-n/2-i) + ( n/2-j) * ( n/2-j) <= n*n/2)
-                                || ((-n/2-i) * (-n/2-i) + (-n/2-j) * (-n/2-j) <= n*n/2)) {
-                            grid.setColor((int) (((float) x / 45.f) * 20.f), (int) (((float) y / 38.f) * 20.f), (byte) 0);
-                                    x++;
-                        }
-                        else {
-                            x++;
-                        }
-                    }
-                    y++;
-                    x = 0;
-                }
+                //ON GRID INIT
             }
         });
 
         consoleView = findViewById(R.id.consoleView);
 
+        ScrollView scrollView = (ScrollView)findViewById(R.id.scrollView);
+        for(int i = 0;i< Piece.groups.size();i++)
+        {
+
+        }
     }
 
     /**

@@ -24,6 +24,11 @@ public class Board {
         }
     }
 
+    public boolean isValid(Piece piece,int x, int y)
+    {
+        return !collides(piece,x,y) && isOnCorner(piece,x,y);
+    }
+
     /***
      * Adds piece to array board !!!WITHOUT CONTROL!!!
      * @param piece
@@ -42,12 +47,12 @@ public class Board {
      * @param piece
      * @return if piece collides with another piece on the board
      */
-    public boolean collides(Piece piece)
+    public boolean collides(Piece piece,int x, int y)
     {
         for(int i = 0;i<piece.list.size();i++)
         {
             Point tPoint = piece.list.get(i);
-            if(board[tPoint.x][tPoint.y]!=-1)
+            if(board[tPoint.x+x][tPoint.y+y]!=-1)
                 return true;
         }
         return false;

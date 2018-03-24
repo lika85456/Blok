@@ -1,6 +1,7 @@
 package com.example.lika85456.blokusdeskgame.Model;
 
 import android.graphics.Point;
+import android.graphics.PointF;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,44 @@ public class Piece {
         {
             this.list.add(params[i]);
         }
+    }
+
+    /***
+     * calculates the middle point of mass
+     * @return the middle point of mass
+     */
+    public PointF mass()
+    {
+        float x=0;
+        float y=0;
+        for(int i = 0;i<list.size();i++)
+        {
+            Point temp = list.get(i);
+            x += temp.x;
+            y += temp.y;
+        }
+        x/=list.size();
+        y/=list.size();
+        return new PointF(x,y);
+    }
+
+    /***
+     * returns true if it can be placed on clear board (false if its not all in the board)
+     * @param x
+     * @param y
+     * @return validity of position
+     */
+    public boolean validPositionOnTheBoard(int x,int y)
+    {
+        for(int i = 0;i<list.size();i++)
+        {
+            Point temp = list.get(i);
+            int tX = temp.x;
+            int tY = temp.y;
+            if(tX+x>19 || tX+x<0) return false;
+            if(tY+y>19 || tY+y<0) return false;
+        }
+        return true;
     }
 
     /***

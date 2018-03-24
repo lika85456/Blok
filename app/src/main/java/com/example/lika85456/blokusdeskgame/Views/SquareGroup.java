@@ -3,6 +3,8 @@ package com.example.lika85456.blokusdeskgame.Views;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import com.example.lika85456.blokusdeskgame.Model.Piece;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +23,19 @@ public class SquareGroup extends ViewGroup {
         super(ctx);
         this.ctx = ctx;
         list = new ArrayList<>();
+        this.width = width;
+        this.height = height;
+    }
+
+    public SquareGroup(Context ctx,int width,int height,Piece piece)
+    {
+        super(ctx);
+        this.ctx = ctx;
+        list = new ArrayList<>();
+        for(int i = 0;i<piece.list.size();i++)
+        {
+            this.list.add(new SquareView(ctx,piece.color,piece.list.get(i).x,piece.list.get(i).y));
+        }
         this.width = width;
         this.height = height;
     }
