@@ -14,30 +14,45 @@ import java.util.ArrayList;
 public class SquareGroup extends ViewGroup {
 
     public ArrayList<SquareView> list;
+    public Piece piece;
     private int width;
     private int height;
-    private Context ctx;
     private int squareSize;
-
     public SquareGroup(Context ctx, int width, int height) {
         super(ctx);
-        this.ctx = ctx;
         list = new ArrayList<>();
         this.width = width;
         this.height = height;
     }
 
-    public SquareGroup(Context ctx,int width,int height,Piece piece)
-    {
+    public SquareGroup(SquareGroup squareGroup) {
+        super(squareGroup.getContext());
+        list = (ArrayList<SquareView>) squareGroup.list.clone();
+        this.width = squareGroup.width;
+        this.height = squareGroup.height;
+        this.piece = new Piece(squareGroup.piece);
+    }
+
+    public SquareGroup(Context ctx,int width,int height,Piece piece) {
         super(ctx);
-        this.ctx = ctx;
         list = new ArrayList<>();
-        for(int i = 0;i<piece.list.size();i++)
-        {
+        for(int i = 0; i<piece.list.size(); i++) {
             this.list.add(new SquareView(ctx,piece.color,piece.list.get(i).x,piece.list.get(i).y));
         }
         this.width = width;
         this.height = height;
+        this.piece = piece;
+    }
+
+    /***
+     *
+     * @param list list of existing SquareViews
+     * @param color SquareColor
+     */
+    public static void setSquareColor(ArrayList<SquareView> list, byte color) {
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setColor(color);
+        }
     }
 
     private int getTotalX() {
@@ -76,19 +91,6 @@ public class SquareGroup extends ViewGroup {
         for (int i = 0; i < list.size(); i++) {
             SquareView squareView = list.get(i);
             squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
-        }
-    }
-
-    /***
-     *
-     * @param list list of existing SquareViews
-     * @param color SquareColor
-     */
-    public static void setSquareColor(ArrayList<SquareView> list,byte color)
-    {
-        for(int i = 0; i < list.size();i++)
-        {
-            list.get(i).setColor(color);
         }
     }
 

@@ -12,6 +12,32 @@ import java.util.ArrayList;
 public class Piece {
     public static ArrayList<Piece> groups;
 
+    static {
+        groups = new ArrayList<>(21);
+        groups.add(new Piece(new Point(2, 2)));
+        groups.add(new Piece(new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(1, 2), new Point(2, 2), new Point(2, 3)));
+        groups.add(new Piece(new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(3, 3)));
+        groups.add(new Piece(new Point(2, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(1, 1), new Point(2, 1), new Point(1, 2), new Point(2, 2)));
+        groups.add(new Piece(new Point(1, 1), new Point(1, 2), new Point(2, 2), new Point(2, 3)));
+        groups.add(new Piece(new Point(1, 1), new Point(1, 2), new Point(2, 2), new Point(2, 3), new Point(2, 4)));
+        groups.add(new Piece(new Point(2, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(3, 3)));
+        groups.add(new Piece(new Point(2, 1), new Point(2, 2), new Point(1, 3), new Point(2, 3), new Point(3, 3)));
+        groups.add(new Piece(new Point(2, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(2, 3)));
+        groups.add(new Piece(new Point(3, 1), new Point(3, 2), new Point(3, 3), new Point(2, 3), new Point(1, 3)));
+        groups.add(new Piece(new Point(3, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(4, 2)));
+        groups.add(new Piece(new Point(1, 1), new Point(1, 2), new Point(2, 2), new Point(2, 3), new Point(3, 3)));
+        groups.add(new Piece(new Point(1, 1), new Point(2, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(3, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(1, 3)));
+        groups.add(new Piece(new Point(1, 1), new Point(3, 1), new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(3, 1), new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2)));
+        groups.add(new Piece(new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2), new Point(4, 2)));
+
+    }
+
     public ArrayList<Point> list;
     public byte color;
 
@@ -22,6 +48,12 @@ public class Piece {
         {
             this.list.add(params[i]);
         }
+    }
+
+    public Piece(Piece piece) {
+        this.list = (ArrayList<Point>) piece.list.clone();
+        this.color = piece.color;
+
     }
 
     /***
@@ -106,33 +138,6 @@ public class Piece {
             for(int y = 0;y<5;y++)
                 if(newArray[x][y]==1)
                     list.add(new Point(x,y));
-    }
-
-
-    static{
-        groups = new ArrayList<>(21);
-        groups.add(new Piece(new Point(2,2)));
-        groups.add(new Piece(new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(1,2),new Point(2,2),new Point(2,3)));
-        groups.add(new Piece(new Point(0,2),new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(1,2),new Point(2,2),new Point(3,2),new Point(3,3)));
-        groups.add(new Piece(new Point(2,1),new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(1,1),new Point(2,1),new Point(1,2),new Point(2,2)));
-        groups.add(new Piece(new Point(1,1),new Point(1,2),new Point(2,2),new Point(2,3)));
-        groups.add(new Piece(new Point(1,1),new Point(1,2),new Point(2,2),new Point(2,3),new Point(2,4)));
-        groups.add(new Piece(new Point(2,1),new Point(1,2),new Point(2,2),new Point(3,2),new Point(3,3)));
-        groups.add(new Piece(new Point(2,1),new Point(2,2),new Point(1,3),new Point(2,3),new Point(3,3)));
-        groups.add(new Piece(new Point(2,1),new Point(1,2),new Point(2,2),new Point(3,2),new Point(2,3)));
-        groups.add(new Piece(new Point(3,1),new Point(3,2),new Point(3,3),new Point(2,3),new Point(1,3)));
-        groups.add(new Piece(new Point(3,1),new Point(1,2),new Point(2,2),new Point(3,2),new Point(4,2)));
-        groups.add(new Piece(new Point(1,1),new Point(1,2),new Point(2,2),new Point(2,3),new Point(3,3)));
-        groups.add(new Piece(new Point(1,1),new Point(2,1),new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(3,1),new Point(1,2),new Point(2,2),new Point(3,2),new Point(1,3)));
-        groups.add(new Piece(new Point(1,1),new Point(3,1),new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(3,1),new Point(0,2),new Point(1,2),new Point(2,2),new Point(3,2)));
-        groups.add(new Piece(new Point(0,2),new Point(1,2),new Point(2,2),new Point(3,2),new Point(4,2)));
-
     }
 
 

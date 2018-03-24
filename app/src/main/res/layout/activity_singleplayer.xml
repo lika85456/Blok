@@ -50,12 +50,12 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <ScrollView
+    <om.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/scrollView">
+        android:layout_weight="1">
 
-    </ScrollView>
+    </om.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView>
 
 </LinearLayout>

@@ -2,8 +2,10 @@ package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ScrollView;
 
+import com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity;
 import com.example.lika85456.blokusdeskgame.Model.Piece;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 public class SquareGroupScrollView extends ScrollView {
 
     private ArrayList<Piece> list;
+    private SingleplayerActivity activity;
     public SquareGroupScrollView(Context context) {
         super(context);
     }
@@ -35,7 +38,14 @@ public class SquareGroupScrollView extends ScrollView {
 
         for(int i = 0;i<list.size();i++)
         {
-            addView(new SquareGroup(this.getContext(),w/3-50,h/3-50,list.get(i)));
+            SquareGroup temp = new SquareGroup(this.getContext(), w / 3 - 50, h / 3 - 50, list.get(i));
+            temp.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    activity.onSquareGroupTouch((SquareGroup) view);
+                }
+            });
+            addView(temp);
         }
 
     }
@@ -44,10 +54,9 @@ public class SquareGroupScrollView extends ScrollView {
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
         if(b)
         for (int i = 0; i < this.getChildCount(); i++) {
-            int width = i2-i0;
-            int height = width;
-            int margin = width*(i%3)
-            this.getChildAt(i).layout();
+            int width = (i2 - i0) / 3 - 50;
+            int margin = (width + 50) * (i % 3);
+            this.getChildAt(i).layout(margin, (i / 3) * width, margin + width, (i / 3) * width + width);
         }
     }
 
