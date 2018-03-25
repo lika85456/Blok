@@ -10,7 +10,7 @@ import java.security.InvalidParameterException;
  */
 
 public class Board {
-    byte[][] board = new byte [20][20];
+    public byte[][] board = new byte[20][20];
 
     public Board()
     {
@@ -26,7 +26,7 @@ public class Board {
 
     public boolean isValid(Piece piece,int x, int y)
     {
-        return !collides(piece,x,y) && isOnCorner(piece,x,y);
+        return isInside(piece, x, y) && !collides(piece, x, y) && isOnCorner(piece, x, y);
     }
 
     /***
@@ -42,6 +42,40 @@ public class Board {
         }
     }
 
+    public Point getPositionInside(Piece piece, int x, int y) {
+        while (isInside(piece, x, y) == false)
+            for (int i = 0; i < piece.list.size(); i++) {
+                Point tPoint = piece.list.get(i);
+                if (tPoint.x + x > 19) {
+                    x--;
+                    break;
+                }
+
+                if (x + tPoint.x < 0) {
+                    x++;
+                    break;
+                }
+                if (tPoint.y + y > 19) {
+                    y--;
+                    break;
+                }
+                if (y + tPoint.y < 0) {
+                    y++;
+                    break;
+                }
+            }
+        return new Point(x, y);
+    }
+
+    public boolean isInside(Piece piece, int x, int y) {
+        for (int i = 0; i < piece.list.size(); i++) {
+            Point tPoint = piece.list.get(i);
+            if (tPoint.x + x > 19 || x + tPoint.x < 0 || tPoint.y + y > 19 || y + tPoint.y < 0)
+                return false;
+        }
+        return true;
+    }
+
     /***
      *
      * @param piece
@@ -54,6 +88,7 @@ public class Board {
             Point tPoint = piece.list.get(i);
             if(board[tPoint.x+x][tPoint.y+y]!=-1)
                 return true;
+
         }
         return false;
     }
@@ -67,11 +102,28 @@ public class Board {
         if (piece.color == -1) throw new InvalidParameterException();
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);
-
+            try {
             if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
-            if (getColor(temp.x + x, temp.y - 1 + y) == piece.color) return false;
-            if (getColor(temp.x + x, temp.y + 1 + y) == piece.color) return false;
-            if (getColor(temp.x + 1 + x, temp.y + y) == piece.color) return false;
+            } catch (Exception e) {
+            }
+            try {
+                if (getColor(temp.x + x, temp.y - 1 + y) == piece.color) return false;
+            } catch (Exception e) {
+            }
+            try {
+                if (getColor(temp.x + x, temp.y + 1 + y) == piece.color) return false;
+            } catch (Exception e) {
+            }
+            try {
+                if (getColor(temp.x + 1 + x, temp.y + y) == piece.color) return false;
+            } catch (Exception e) {
+            }
+
+
+
+
+
+
         }
         return true;
     }

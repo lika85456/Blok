@@ -2,10 +2,8 @@ package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity;
 import com.example.lika85456.blokusdeskgame.Model.Piece;
 
 import java.util.ArrayList;
@@ -16,8 +14,9 @@ import java.util.ArrayList;
 
 public class SquareGroupScrollView extends RelativeLayout {
 
-    public SingleplayerActivity activity;
+    public OnClickListener onClickListener;
     private ArrayList<Piece> list;
+
     public SquareGroupScrollView(Context context) {
         super(context);
     }
@@ -34,30 +33,33 @@ public class SquareGroupScrollView extends RelativeLayout {
     {
         int width = MeasureSpec.getSize(w);
         int height = MeasureSpec.getSize(h);
-        this.setMeasuredDimension(width,height);
-
-        for(int i = 0;i<list.size();i++)
-        {
-            SquareGroup temp = new SquareGroup(this.getContext(), width / 3 - 50, height / 3 - 50, list.get(i));
-            temp.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    activity.onSquareGroupTouch((SquareGroup) view);
-                }
-            });
-            addView(temp);
-        }
-
+        this.setMeasuredDimension(width, (int) (((float) width / 3.f - 15.f) * 7.f));
     }
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
-        if(b)
-        for (int i = 0; i < this.getChildCount(); i++) {
-            int width = (i2 - i0) / 3 - 50;
-            int margin = (width + 50) * (i % 3);
-            this.getChildAt(i).layout(margin, (i / 3) * width, margin + width, (i / 3) * width + width);
+        if (b) {
+            this.setMeasuredDimension(getWidth(), (int) (((float) getWidth() / 3.f - 15.f) * list.size() / 3));
+            for (int i = 0; i < this.list.size(); i++) {
+                int width = (i2 - i0) / 3 - 15;
+                int margin = (width + 15) * (i % 3) + 7;
+                Piece piece = this.list.get(i);
+                SquareGroup temp = new SquareGroup(this.getContext(), this.getWidth() / 3 - 15, this.getWidth() / 3 - 15, piece);
+                temp.setOnClickListener(onClickListener);
+                this.addView(temp);
+                temp.layout(margin, i / 3 * width, margin + width, i / 3 * width + width);
+
+                //this.getChildAt(i).layout(margin, ((int)(i / 3)) * width, margin + width, ((int)(i / 3)) * width + width);
+            }
+            this.invalidate();
         }
+
+    }
+
+    public void remove(SquareGroup squareGroup) {
+        int index = list.indexOf(squareGroup.piece);
+        list.remove(index);
+        removeViewAt(index);
     }
 
     public void add(Piece piece)
@@ -65,5 +67,6 @@ public class SquareGroupScrollView extends RelativeLayout {
         if (list == null)
             list = new ArrayList<>();
         list.add(piece);
+
     }
 }

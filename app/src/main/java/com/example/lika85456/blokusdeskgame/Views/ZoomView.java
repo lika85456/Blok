@@ -359,7 +359,7 @@ public class ZoomView extends LinearLayout {
         super.dispatchTouchEvent(ev);
     }
 
-    private float clamp(final float min, final float value, final float max) {
+    protected float clamp(final float min, final float value, final float max) {
         return Math.max(min, Math.min(value, max));
     }
 
@@ -395,6 +395,7 @@ public class ZoomView extends LinearLayout {
 
         zoomX = lerp(bias(zoomX, smoothZoomX, 0.1f), smoothZoomX, 0.35f);
         zoomY = lerp(bias(zoomY, smoothZoomY, 0.1f), smoothZoomY, 0.35f);
+        this.positionOn(zoomX, zoomY);
         if (zoom != smoothZoom && listener != null) {
             listener.onZooming(zoom, zoomX, zoomY);
         }
@@ -476,6 +477,10 @@ public class ZoomView extends LinearLayout {
         getRootView().invalidate();
         invalidate();
         // }
+    }
+
+    public void positionOn(float x, float y) {
+
     }
 
     /**

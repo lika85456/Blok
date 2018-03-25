@@ -1,7 +1,7 @@
 package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
-import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.example.lika85456.blokusdeskgame.Model.Piece;
 
@@ -11,13 +11,13 @@ import java.util.ArrayList;
  * Created by lika85456 on 18.03.2018.
  */
 
-public class SquareGroup extends ViewGroup {
+public class SquareGroup extends RelativeLayout {
 
     public ArrayList<SquareView> list;
     public Piece piece;
-    private int width;
-    private int height;
-    private int squareSize;
+    public int width;
+    public int height;
+    public int squareSize;
     public SquareGroup(Context ctx, int width, int height) {
         super(ctx);
         list = new ArrayList<>();
@@ -30,15 +30,19 @@ public class SquareGroup extends ViewGroup {
         list = (ArrayList<SquareView>) squareGroup.list.clone();
         this.width = squareGroup.width;
         this.height = squareGroup.height;
+        this.squareSize = squareGroup.squareSize;
         this.piece = new Piece(squareGroup.piece);
     }
 
     public SquareGroup(Context ctx,int width,int height,Piece piece) {
         super(ctx);
         list = new ArrayList<>();
+
         for(int i = 0; i<piece.list.size(); i++) {
             this.list.add(new SquareView(ctx,piece.color,piece.list.get(i).x,piece.list.get(i).y));
+            this.addView(this.list.get(this.list.size() - 1));
         }
+
         this.width = width;
         this.height = height;
         this.piece = piece;
@@ -88,11 +92,14 @@ public class SquareGroup extends ViewGroup {
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
-        this.squareSize = Math.min(width, height) / 5;
-        for (int i = 0; i < list.size(); i++) {
-            SquareView squareView = list.get(i);
-            squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
+        if (b) {
+            this.squareSize = Math.min(width, height) / 5;
+            for (int i = 0; i < list.size(); i++) {
+                SquareView squareView = list.get(i);
+                squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
+            }
         }
+
     }
 
     public void add(SquareView squareView) {

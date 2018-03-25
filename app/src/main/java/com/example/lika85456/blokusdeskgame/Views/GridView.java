@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import com.example.lika85456.blokusdeskgame.Model.Board;
 import com.example.lika85456.blokusdeskgame.Model.Piece;
 import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
@@ -21,9 +22,13 @@ public class GridView extends ZoomView {
     private Context ctx;
     private ArrayList<SquareView> grid;
     private boolean initialized = false;
-
+    private SquareGroup selected;
+    private int pointSize;
+    private Board board;
     private OnOnInitializedListener onInitializedListener = new OnOnInitializedListener();
 
+    private int selectedX = 0;
+    private int selectedY = 0;
     private RelativeLayout gridView;
 
     public GridView(Context ctx) {
@@ -38,6 +43,38 @@ public class GridView extends ZoomView {
         grid = new ArrayList<>();
     }
 
+    public void positionOn(float x, float y) {
+        if (this.selected != null) {
+            fromBoard(this.board);
+            int tX = (int) (x / pointSize - selected.piece.mass().x);
+            int tY = (int) (y / pointSize - selected.piece.mass().y);
+
+            if (!board.isValid(selected.piece, tX, tY)) {
+                Point positionInside = board.getPositionInside(selected.piece, tX, tY);
+                tX = positionInside.x;
+                tY = positionInside.y;
+                if (!board.isValid(selected.piece, tX, tY))
+                    addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
+                else
+                    addPiece(selected.piece, tX, tY);
+            } else
+                addPiece(selected.piece, tX, tY);
+            selectedX = tX;
+            selectedY = tY;
+        }
+    }
+
+    private void addPieceWithColor(Piece piece, int x, int y, int color) {
+        for (int i = 0; i < piece.list.size(); i++) {
+            Point temp = piece.list.get(i);
+            get(temp.x + x, temp.y + y).setColorCode(color);
+        }
+    }
+
+    public void selected(SquareGroup selected) {
+        this.selected = new SquareGroup(selected);
+    }
+
     private void fill(){
         for (int x = 0; x < 20; x++)
             for (int y = 0; y < 20; y++) {
@@ -49,7 +86,7 @@ public class GridView extends ZoomView {
     protected void onMeasure(int w, int h) {
         this.width = MeasureSpec.getSize(w);
         this.height = MeasureSpec.getSize(h);
-        int pointSize = (int) ((float) Math.min(width, height) / 20.f);
+        this.pointSize = (int) ((float) Math.min(width, height) / 20.f);
         for (int i = 0; i < grid.size(); i++) {
             grid.get(i).measure(pointSize, pointSize);
         }
@@ -65,7 +102,7 @@ public class GridView extends ZoomView {
 
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
         if (b) {
-            int pointSize = (int) ((float) Math.min(width, height) / 20.f);
+            //int pointSize = (int) ((float) Math.min(width, height) / 20.f);
             if (pointSize == 0) pointSize = 36;
 
 
@@ -88,14 +125,16 @@ public class GridView extends ZoomView {
 
     /***
      * Sets the grid from board array
-     * @param array
+     * @param board
      */
-    public void fromBoard(byte[][] array)
+    public void fromBoard(Board board)
     {
+        this.board = board;
         for(int x = 0;x<20;x++)
             for(int y = 0;y<20;y++)
             {
-                setColor(x,y,array[x][y]);
+                //if(get(x,y).color!=board.board[x][y])
+                setColor(x, y, board.board[x][y]);
             }
     }
 
@@ -131,6 +170,7 @@ public class GridView extends ZoomView {
         gridView.addView(toAdd);
         grid.add(toAdd);
     }
+
 
 }
 
