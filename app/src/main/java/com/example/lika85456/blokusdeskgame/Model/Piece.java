@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public class Piece {
-    public static ArrayList<Piece> groups;
+    public static final ArrayList<Piece> groups;
 
     static {
         groups = new ArrayList<>(21);

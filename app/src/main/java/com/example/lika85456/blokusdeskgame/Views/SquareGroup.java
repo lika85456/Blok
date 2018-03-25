@@ -13,11 +13,11 @@ import java.util.ArrayList;
 
 public class SquareGroup extends RelativeLayout {
 
-    public ArrayList<SquareView> list;
+    private final ArrayList<SquareView> list;
+    private final int width;
+    private final int height;
     public Piece piece;
-    public int width;
-    public int height;
-    public int squareSize;
+    private int squareSize;
     public SquareGroup(Context ctx, int width, int height) {
         super(ctx);
         list = new ArrayList<>();

@@ -10,7 +10,7 @@ import java.security.InvalidParameterException;
  */
 
 public class Board {
-    public byte[][] board = new byte[20][20];
+    public final byte[][] board = new byte[20][20];
 
     public Board()
     {
@@ -43,7 +43,7 @@ public class Board {
     }
 
     public Point getPositionInside(Piece piece, int x, int y) {
-        while (isInside(piece, x, y) == false)
+        while (!isInside(piece, x, y))
             for (int i = 0; i < piece.list.size(); i++) {
                 Point tPoint = piece.list.get(i);
                 if (tPoint.x + x > 19) {
@@ -67,7 +67,7 @@ public class Board {
         return new Point(x, y);
     }
 
-    public boolean isInside(Piece piece, int x, int y) {
+    private boolean isInside(Piece piece, int x, int y) {
         for (int i = 0; i < piece.list.size(); i++) {
             Point tPoint = piece.list.get(i);
             if (tPoint.x + x > 19 || x + tPoint.x < 0 || tPoint.y + y > 19 || y + tPoint.y < 0)
@@ -81,7 +81,7 @@ public class Board {
      * @param piece
      * @return if piece collides with another piece on the board
      */
-    public boolean collides(Piece piece,int x, int y)
+    private boolean collides(Piece piece, int x, int y)
     {
         for(int i = 0;i<piece.list.size();i++)
         {
@@ -98,7 +98,7 @@ public class Board {
      * @param piece with valid color
      * @return
      */
-    public boolean isOnCorner(Piece piece, int x, int y) {
+    private boolean isOnCorner(Piece piece, int x, int y) {
         if (piece.color == -1) throw new InvalidParameterException();
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);

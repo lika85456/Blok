@@ -15,8 +15,8 @@ import com.example.lika85456.blokusdeskgame.R;
 
 public class SquareView extends View {
 
+    private final byte color;
     public int x = 0, y = 0;
-    public byte color;
 
     /***
      *
@@ -61,7 +61,7 @@ public class SquareView extends View {
         setPos(point.x,point.y);
     }
 
-    public void setPos(int x, int y) {
+    private void setPos(int x, int y) {
         this.x = x;
         this.y = y;
     }

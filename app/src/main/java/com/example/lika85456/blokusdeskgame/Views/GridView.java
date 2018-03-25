@@ -18,9 +18,10 @@ import java.util.ArrayList;
  */
 
 public class GridView extends ZoomView {
-    public int width = 0, height = 0;
-    private Context ctx;
-    private ArrayList<SquareView> grid;
+    private final Context ctx;
+    private final ArrayList<SquareView> grid;
+    private int width = 0;
+    private int height = 0;
     private boolean initialized = false;
     private SquareGroup selected;
     private int pointSize;
@@ -92,7 +93,7 @@ public class GridView extends ZoomView {
         }
         this.setMeasuredDimension(width, Math.min(width, height));
         this.invalidate();
-        if(initialized==false)
+        if (!initialized)
         {
             initialized=true;
             fill();
@@ -138,7 +139,7 @@ public class GridView extends ZoomView {
             }
     }
 
-    public void addPiece(Piece piece,int x,int y)
+    private void addPiece(Piece piece, int x, int y)
     {
         for(int i = 0;i<piece.list.size();i++)
         {
@@ -153,12 +154,12 @@ public class GridView extends ZoomView {
      * @param y
      * @param color (byte)
      */
-    public void setColor(int x,int y,byte color)
+    private void setColor(int x, int y, byte color)
     {
         get(x,y).setColor(color);
     }
 
-    public SquareView get(int x,int y)
+    private SquareView get(int x, int y)
     {
         return grid.get(x*20+y);
     }

@@ -6,7 +6,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.example.lika85456.blokusdeskgame.R;
 
 public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
-    private static String DEBUG_TAG = "GestureDetector";
+    private static final String DEBUG_TAG = "GestureDetector";
     private GestureDetectorCompat gDetector;
 
     private byte color = 0;
@@ -108,7 +107,6 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2,
                            float velocityX, float velocityY) {
-        Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
         if (event1.getRawX() - event2.getRawX() > 100 || event1.getRawX() - event2.getRawX() < -100)
             changeColor(event1.getRawX() > event2.getRawX());
         return false;
@@ -116,7 +114,6 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
 
     @Override
     public void onLongPress(MotionEvent event) {
-        return;
     }
 
     @Override

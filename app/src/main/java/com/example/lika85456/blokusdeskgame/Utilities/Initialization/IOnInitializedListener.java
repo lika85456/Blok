@@ -5,5 +5,5 @@ package com.example.lika85456.blokusdeskgame.Utilities.Initialization;
  */
 
 public interface IOnInitializedListener {
-    public void onInit();
+    void onInit();
 }

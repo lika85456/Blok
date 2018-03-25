@@ -20,16 +20,18 @@ public class ZoomView extends LinearLayout {
     private final Matrix m = new Matrix();
     private final Paint p = new Paint();
     // zooming
-    float zoom = 1.0f;
-    float maxZoom = 2.0f;
-    float minZoom = 1.0f;
-    float smoothZoom = 1.0f;
-    float zoomX, zoomY;
-    float smoothZoomX, smoothZoomY;
-    boolean lastMin = true;
-    boolean init = false;
+    private float zoom = 1.0f;
+    private float maxZoom = 2.0f;
+    private float minZoom = 1.0f;
+    private float smoothZoom = 1.0f;
+    private float zoomX;
+    private float zoomY;
+    private float smoothZoomX;
+    private float smoothZoomY;
+    private boolean lastMin = true;
+    private boolean init = false;
     // listener
-    ZoomViewListener listener;
+    private ZoomViewListener listener;
     private boolean scrolling; // NOPMD by karooolek on 29.06.11 11:45
     // minimap variables
     private boolean showMinimap = false;
@@ -143,7 +145,7 @@ public class ZoomView extends LinearLayout {
         smoothZoomTo(this.zoom, x, y);
     }
 
-    public void smoothZoomTo(final float zoom, final float x, final float y) {
+    private void smoothZoomTo(final float zoom, final float x, final float y) {
         smoothZoom = clamp(minZoom, zoom, maxZoom);
         smoothZoomX = x;
         smoothZoomY = y;
@@ -259,7 +261,7 @@ public class ZoomView extends LinearLayout {
                 if (l < 30.0f) {
                     // check double tap
                     if (System.currentTimeMillis() - lastTapTime < 500) {
-                        if ((smoothZoom == minZoom || smoothZoom == maxZoom) && lastMin == false) {
+                        if ((smoothZoom == minZoom || smoothZoom == maxZoom) && !lastMin) {
                             float minS = Math.abs(getWidth() - getHeight());
 
                             smoothZoomX = getWidth() / 2;
@@ -274,11 +276,11 @@ public class ZoomView extends LinearLayout {
                             smoothZoomTo(1f, smoothZoomX, smoothZoomY);
 
 
-                        } else if (smoothZoom == 1 && lastMin == false && minZoom != 1.f) {
+                        } else if (smoothZoom == 1 && !lastMin && minZoom != 1.f) {
                             smoothZoomTo(minZoom, getWidth() / 2.0f,
                                     getHeight() / 2.0f);
                             lastMin = true;
-                        } else if ((smoothZoom == 1 && lastMin == true) || minZoom == 1.f) {
+                        } else if ((smoothZoom == 1 && lastMin) || minZoom == 1.f) {
                             smoothZoomTo(maxZoom, x, y);
                             lastMin = false;
                         } else
@@ -359,7 +361,7 @@ public class ZoomView extends LinearLayout {
         super.dispatchTouchEvent(ev);
     }
 
-    protected float clamp(final float min, final float value, final float max) {
+    private float clamp(final float min, final float value, final float max) {
         return Math.max(min, Math.min(value, max));
     }
 
@@ -375,7 +377,7 @@ public class ZoomView extends LinearLayout {
     protected void dispatchDraw(final Canvas canvas) {
 
         // do zoom
-        if (init == false) {
+        if (!init) {
             init = true;
             float minS = Math.abs(getWidth() - getHeight());
 
@@ -479,7 +481,7 @@ public class ZoomView extends LinearLayout {
         // }
     }
 
-    public void positionOn(float x, float y) {
+    void positionOn(float x, float y) {
 
     }
 

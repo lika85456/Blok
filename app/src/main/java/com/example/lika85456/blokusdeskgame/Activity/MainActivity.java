@@ -37,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onSinglePlayer() {
+    private void onSinglePlayer() {
         Intent intent = new Intent(this, SinglePlayerChooserActivity.class);
         startActivity(intent);
     }
 
-    public void onMultiPlayer() {
+    private void onMultiPlayer() {
         //Intent intent = new Intent(this,M.class);
         //startActivity(intent);
     }

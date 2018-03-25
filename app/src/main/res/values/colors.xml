@@ -5,7 +5,5 @@
     <color name="colorAccent">#3ff931</color>
     <color name="textOnDark">#FFF</color>
     <color name="smallerTextOnDark">#BBB</color>
-    <color name="menuButtonBackground">#58b539</color>
-    <color name="menuButtonBorder">#12af07</color>
     <color name="black_overlay">#66000000</color>
 </resources>

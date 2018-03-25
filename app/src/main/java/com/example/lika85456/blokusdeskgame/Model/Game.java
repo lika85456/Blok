@@ -5,7 +5,7 @@ package com.example.lika85456.blokusdeskgame.Model;
  */
 
 public class Game {
-    public Board board;
+    public final Board board;
 
     public Game() {
         board = new Board();
