@@ -88,6 +88,7 @@ public class SquareGroup extends ViewGroup {
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
+        this.squareSize = Math.min(width, height) / 5;
         for (int i = 0; i < list.size(); i++) {
             SquareView squareView = list.get(i);
             squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);

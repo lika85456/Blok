@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -12,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.example.lika85456.blokusdeskgame.Views.DrawingGridView
+        <RelativeLayout
             android:id="@+id/insider_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -24,7 +25,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:layout_weight="1"
+        android:layout_weight="5"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -50,12 +51,20 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <om.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView
-        android:id="@+id/scrollView"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="5">
 
-    </om.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView>
+        <com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView>
+
+    </ScrollView>
+
 
 </LinearLayout>

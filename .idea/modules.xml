@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\lika85456\AndroidStudioProjects\BlokusDeskGame\Blokus.iml" filepath="C:\Users\lika85456\AndroidStudioProjects\BlokusDeskGame\Blokus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BlokusDeskGame.iml" filepath="$PROJECT_DIR$/BlokusDeskGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Blokus.iml" filepath="$PROJECT_DIR$/Blokus.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

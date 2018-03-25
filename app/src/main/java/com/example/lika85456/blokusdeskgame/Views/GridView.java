@@ -3,13 +3,12 @@ package com.example.lika85456.blokusdeskgame.Views;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Model.Piece;
 import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 
 import java.util.ArrayList;
 
@@ -54,7 +53,7 @@ public class GridView extends ZoomView {
         for (int i = 0; i < grid.size(); i++) {
             grid.get(i).measure(pointSize, pointSize);
         }
-        this.setMeasuredDimension(width, height);
+        this.setMeasuredDimension(width, Math.min(width, height));
         this.invalidate();
         if(initialized==false)
         {

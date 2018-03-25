@@ -3,6 +3,7 @@ package com.example.lika85456.blokusdeskgame.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.lika85456.blokusdeskgame.Model.Piece;
@@ -17,10 +18,10 @@ import com.example.lika85456.blokusdeskgame.Views.ZoomView;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
+    private final SingleplayerActivity tis = this;
     private TextView consoleView;
     private GridView grid;
     private CircularSelectorView selectorView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +50,17 @@ public class SingleplayerActivity extends AppCompatActivity {
         grid.setOnInitializedListener(new OnOnInitializedListener(){
             public void onInit()
             {
-                //ON GRID INIT
+                SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
+                scrollView.activity = tis;
+                for (int i = 0; i < Piece.groups.size(); i++) {
+                    scrollView.add(Piece.groups.get(i));
+                }
             }
         });
 
         consoleView = findViewById(R.id.consoleView);
 
-        SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
-        for(int i = 0;i< Piece.groups.size();i++)
-        {
 
-        }
     }
 
     /**
@@ -96,7 +97,12 @@ public class SingleplayerActivity extends AppCompatActivity {
         SquareGroup temp3 = new SquareGroup(temp2);
         temp3.piece.rotateBy90();
         selectorView.addElement(new CircularSelectorElement(this, 0, 0, temp3.piece));
+
+        FrameLayout rootLayout = findViewById(android.R.id.content);
+        //rootLayout.removeViewAt(rootLayout.getChildCount()-1);
+        rootLayout.addView(selectorView);
     }
+
 
     protected void onResume() {
         super.onResume();

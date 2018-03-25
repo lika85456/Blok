@@ -3,7 +3,6 @@ package com.example.lika85456.blokusdeskgame.Views;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +17,6 @@ public class SquareView extends View {
 
     public int x = 0, y = 0;
     public byte color;
-    private Context ctx;
 
     /***
      *
@@ -27,7 +25,6 @@ public class SquareView extends View {
      */
     public SquareView(Context ctx, byte color, int x, int y) {
         super(ctx);
-        this.ctx = ctx;
         this.color = color;
         this.setBackgroundResource(R.drawable.block);
         this.getBackground().setColorFilter(SquareColor.getColorFromCode(color), PorterDuff.Mode.MULTIPLY);

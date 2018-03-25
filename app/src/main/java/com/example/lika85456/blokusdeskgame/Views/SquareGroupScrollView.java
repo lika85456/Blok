@@ -3,7 +3,7 @@ package com.example.lika85456.blokusdeskgame.Views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 
 import com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity;
 import com.example.lika85456.blokusdeskgame.Model.Piece;
@@ -14,10 +14,10 @@ import java.util.ArrayList;
  * Created by lika85456 on 24.03.2018.
  */
 
-public class SquareGroupScrollView extends ScrollView {
+public class SquareGroupScrollView extends RelativeLayout {
 
+    public SingleplayerActivity activity;
     private ArrayList<Piece> list;
-    private SingleplayerActivity activity;
     public SquareGroupScrollView(Context context) {
         super(context);
     }
@@ -38,7 +38,7 @@ public class SquareGroupScrollView extends ScrollView {
 
         for(int i = 0;i<list.size();i++)
         {
-            SquareGroup temp = new SquareGroup(this.getContext(), w / 3 - 50, h / 3 - 50, list.get(i));
+            SquareGroup temp = new SquareGroup(this.getContext(), width / 3 - 50, height / 3 - 50, list.get(i));
             temp.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -62,6 +62,8 @@ public class SquareGroupScrollView extends ScrollView {
 
     public void add(Piece piece)
     {
+        if (list == null)
+            list = new ArrayList<>();
         list.add(piece);
     }
 }
