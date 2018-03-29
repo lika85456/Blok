@@ -6,8 +6,8 @@ import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 /**
  * Created by lika85456 on 16.03.2018.
@@ -15,7 +15,7 @@ import com.example.lika85456.blokusdeskgame.R;
 
 public class SquareView extends View {
 
-    private final byte color;
+    public byte color;
     public int x = 0, y = 0;
 
     /***

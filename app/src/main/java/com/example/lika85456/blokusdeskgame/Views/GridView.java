@@ -5,11 +5,10 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.example.lika85456.blokusdeskgame.Model.Board;
-import com.example.lika85456.blokusdeskgame.Model.Piece;
-import com.example.lika85456.blokusdeskgame.Model.SquareColor;
-import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Game.Board;
+import com.example.lika85456.blokusdeskgame.Game.Piece;
 import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
+import com.example.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 import java.util.ArrayList;
 
@@ -46,18 +45,21 @@ public class GridView extends ZoomView {
 
     public void positionOn(float x, float y) {
         if (this.selected != null) {
-            fromBoard(this.board);
+
             int tX = (int) (x / pointSize - selected.piece.mass().x);
             int tY = (int) (y / pointSize - selected.piece.mass().y);
-
-            if (!board.isValid(selected.piece, tX, tY)) {
+            boolean validity = board.isValid(selected.piece, tX, tY);
+            if (validity == false) {
                 Point positionInside = board.getPositionInside(selected.piece, tX, tY);
                 tX = positionInside.x;
                 tY = positionInside.y;
-                if (!board.isValid(selected.piece, tX, tY))
+            }
+            if (tX == selectedX && tY == selectedY)
+                return;
+
+            fromBoard(this.board);
+            if (!validity) {
                     addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
-                else
-                    addPiece(selected.piece, tX, tY);
             } else
                 addPiece(selected.piece, tX, tY);
             selectedX = tX;
@@ -69,6 +71,7 @@ public class GridView extends ZoomView {
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);
             get(temp.x + x, temp.y + y).setColorCode(color);
+            get(temp.x + x, temp.y + y).color = -2;
         }
     }
 
@@ -134,7 +137,7 @@ public class GridView extends ZoomView {
         for(int x = 0;x<20;x++)
             for(int y = 0;y<20;y++)
             {
-                //if(get(x,y).color!=board.board[x][y])
+                if (get(x, y).color != board.board[x][y])
                 setColor(x, y, board.board[x][y]);
             }
     }
@@ -156,7 +159,8 @@ public class GridView extends ZoomView {
      */
     private void setColor(int x, int y, byte color)
     {
-        get(x,y).setColor(color);
+        get(x, y).setColor(color);
+        get(x, y).color = color;
     }
 
     private SquareView get(int x, int y)

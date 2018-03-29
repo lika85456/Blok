@@ -3,7 +3,7 @@ package com.example.lika85456.blokusdeskgame.Views;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
-import com.example.lika85456.blokusdeskgame.Model.Piece;
+import com.example.lika85456.blokusdeskgame.Game.Piece;
 
 import java.util.ArrayList;
 
@@ -17,6 +17,7 @@ public class SquareGroup extends RelativeLayout {
     private final int width;
     private final int height;
     public Piece piece;
+    private float mSize = 1.f;
     private int squareSize;
     public SquareGroup(Context ctx, int width, int height) {
         super(ctx);
@@ -85,21 +86,26 @@ public class SquareGroup extends RelativeLayout {
         //int sizeY = getTotalY();
         this.squareSize = Math.min(width, height) / 5;
         for (int i = 0; i < list.size(); i++)
-            list.get(i).measure(Math.min(width, height) / 5, Math.min(width, height) / 5);
+            list.get(i).measure((int) Math.min(width * mSize, height * mSize) / 5, (int) Math.min(width * mSize, height * mSize) / 5);
 
-        this.setMeasuredDimension(width, height);
+        this.setMeasuredDimension((int) (width * mSize), (int) (height * mSize));
     }
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
-        if (b) {
-            this.squareSize = Math.min(width, height) / 5;
+        if (b || mSize != 1.f) {
+            this.squareSize = Math.min((int) (width * mSize), (int) (height * mSize)) / 5;
             for (int i = 0; i < list.size(); i++) {
                 SquareView squareView = list.get(i);
                 squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
             }
         }
 
+    }
+
+    public void setSize(float size) {
+        this.mSize = size;
+        requestLayout();
     }
 
     public void add(SquareView squareView) {

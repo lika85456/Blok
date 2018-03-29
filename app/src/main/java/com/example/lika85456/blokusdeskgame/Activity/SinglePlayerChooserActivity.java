@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
-import com.example.lika85456.blokusdeskgame.Model.SquareColor;
 import com.example.lika85456.blokusdeskgame.R;
+import com.example.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 

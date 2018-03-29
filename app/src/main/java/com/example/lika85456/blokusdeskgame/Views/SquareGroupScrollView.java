@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.example.lika85456.blokusdeskgame.Model.Piece;
+import com.example.lika85456.blokusdeskgame.Game.Piece;
 
 import java.util.ArrayList;
 

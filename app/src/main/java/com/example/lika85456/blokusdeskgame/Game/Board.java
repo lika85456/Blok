@@ -1,8 +1,9 @@
-package com.example.lika85456.blokusdeskgame.Model;
+package com.example.lika85456.blokusdeskgame.Game;
 
 import android.graphics.Point;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
 /**
  * Logic board containing all pieces + some matrix logic etc.
@@ -10,7 +11,7 @@ import java.security.InvalidParameterException;
  */
 
 public class Board {
-    public final byte[][] board = new byte[20][20];
+    public byte[][] board = new byte[20][20];
 
     public Board()
     {
@@ -24,6 +25,15 @@ public class Board {
         }
     }
 
+    /**
+     * Copy the original board into a new one.
+     *
+     * @param original board
+     */
+    public Board(Board original) {
+        this.board = original.board.clone();
+    }
+
     public boolean isValid(Piece piece,int x, int y)
     {
         return isInside(piece, x, y) && !collides(piece, x, y) && isOnCorner(piece, x, y);
@@ -33,12 +43,12 @@ public class Board {
      * Adds piece to array board !!!WITHOUT CONTROL!!!
      * @param piece
      */
-    public void addPiece(Piece piece)
+    public void addPiece(Piece piece, int x, int y)
     {
         for(int i = 0;i<piece.list.size();i++)
         {
             Point tPoint = piece.list.get(i);
-            board[tPoint.x][tPoint.y] = piece.color;
+            board[tPoint.x + x][tPoint.y + y] = piece.color;
         }
     }
 
@@ -103,7 +113,7 @@ public class Board {
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);
             try {
-            if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
+                if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
             } catch (Exception e) {
             }
             try {
@@ -120,12 +130,25 @@ public class Board {
             }
 
 
-
-
-
-
         }
         return true;
+    }
+
+    /**
+     * Make a move on the board with position and piece
+     *
+     * @param x     position of move
+     * @param y     position of move
+     * @param piece to make the move with
+     */
+    public Board makeSimMove(int x, int y, Piece piece, Player player) {
+        ArrayList<Point> points = piece.list;
+        int color = player.color;
+        Board nextBoard = new Board(this);
+        nextBoard.addPiece(piece, x, y);
+
+
+        return nextBoard;
     }
 
     /***
@@ -134,7 +157,7 @@ public class Board {
      * @param y
      * @return
      */
-    private byte getColor(int x, int y) {
+    public byte getColor(int x, int y) {
         return board[x][y];
     }
 

@@ -1,4 +1,4 @@
-package com.example.lika85456.blokusdeskgame.Model;
+package com.example.lika85456.blokusdeskgame.Game;
 
 import android.graphics.Point;
 import android.graphics.PointF;
