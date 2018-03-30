@@ -9,5 +9,5 @@ import com.example.lika85456.blokusdeskgame.Game.Piece;
 public interface UIListener {
     void onPieceSelected(Piece piece);
 
-    void onMoveConfirm();
+    void onMoveConfirm(int x, int y);
 }

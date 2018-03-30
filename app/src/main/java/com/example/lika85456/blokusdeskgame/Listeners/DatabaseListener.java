@@ -8,10 +8,10 @@ import com.example.lika85456.blokusdeskgame.Game.Move;
 
 public interface DatabaseListener {
     //Called when new game begins
-    void onGameLoad(Game game);
+    //void onGameLoad(Game game);
 
     //Called when game is over
-    void onGameEnd(Game game);
+    //void onGameEnd(Game game);
 
     //Called when oponent is supposed to make a move
     void onOponentTurn();

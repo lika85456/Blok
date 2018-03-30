@@ -8,7 +8,7 @@ import com.example.lika85456.blokusdeskgame.Game.Player;
  * Created by lika85456 on 28.03.2018.
  */
 
-public class GameHandler extends {
+public class GameHandler {
 
     public Board board;
     public Player currentPlayer;
@@ -36,7 +36,7 @@ public class GameHandler extends {
         }
 
         board.addPiece(move.getRealPiece(), move.getX(), move.getY());
-        getNextPlayer().
+
     }
 
     public Player getNextPlayer() {

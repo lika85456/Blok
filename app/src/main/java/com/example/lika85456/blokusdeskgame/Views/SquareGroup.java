@@ -1,7 +1,8 @@
 package com.example.lika85456.blokusdeskgame.Views;
 
 import android.content.Context;
-import android.widget.RelativeLayout;
+import android.graphics.Canvas;
+import android.view.ViewGroup;
 
 import com.example.lika85456.blokusdeskgame.Game.Piece;
 
@@ -11,31 +12,28 @@ import java.util.ArrayList;
  * Created by lika85456 on 18.03.2018.
  */
 
-public class SquareGroup extends RelativeLayout {
+public class SquareGroup extends ViewGroup {
 
     private final ArrayList<SquareView> list;
-    private final int width;
-    private final int height;
     public Piece piece;
     private float mSize = 1.f;
     private int squareSize;
-    public SquareGroup(Context ctx, int width, int height) {
+
+    public SquareGroup(Context ctx) {
         super(ctx);
         list = new ArrayList<>();
-        this.width = width;
-        this.height = height;
+        this.invalidate();
     }
 
     public SquareGroup(SquareGroup squareGroup) {
         super(squareGroup.getContext());
         list = (ArrayList<SquareView>) squareGroup.list.clone();
-        this.width = squareGroup.width;
-        this.height = squareGroup.height;
         this.squareSize = squareGroup.squareSize;
         this.piece = new Piece(squareGroup.piece);
+        this.invalidate();
     }
 
-    public SquareGroup(Context ctx,int width,int height,Piece piece) {
+    public SquareGroup(Context ctx, Piece piece) {
         super(ctx);
         list = new ArrayList<>();
 
@@ -43,10 +41,8 @@ public class SquareGroup extends RelativeLayout {
             this.list.add(new SquareView(ctx,piece.color,piece.list.get(i).x,piece.list.get(i).y));
             this.addView(this.list.get(this.list.size() - 1));
         }
-
-        this.width = width;
-        this.height = height;
         this.piece = piece;
+        this.invalidate();
     }
 
     /***
@@ -60,41 +56,23 @@ public class SquareGroup extends RelativeLayout {
         }
     }
 
-    private int getTotalX() {
-        int toRet = 0;
-        for (int i = 0; i < list.size(); i++)
-            if (list.get(i).x > toRet) toRet = list.get(i).x;
-        if (list.size() > 0)
-            return toRet + 1;
-        else
-            return 0;
-    }
-
-    private int getTotalY() {
-        int toRet = 0;
-        for (int i = 0; i < list.size(); i++)
-            if (list.get(i).y > toRet) toRet = list.get(i).y;
-        if (list.size() > 0)
-            return toRet + 1;
-        else
-            return 0;
-    }
-
     public void onMeasure(int w, int h) {
 
         //int sizeX = getTotalX();
         //int sizeY = getTotalY();
+        int width = MeasureSpec.getSize(w);
+        int height = MeasureSpec.getSize(h);
         this.squareSize = Math.min(width, height) / 5;
         for (int i = 0; i < list.size(); i++)
-            list.get(i).measure((int) Math.min(width * mSize, height * mSize) / 5, (int) Math.min(width * mSize, height * mSize) / 5);
+            list.get(i).measure(Math.min(width, height) / 5, Math.min(width, height) / 5);
 
-        this.setMeasuredDimension((int) (width * mSize), (int) (height * mSize));
+        this.setMeasuredDimension(width, height);
     }
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
-        if (b || mSize != 1.f) {
-            this.squareSize = Math.min((int) (width * mSize), (int) (height * mSize)) / 5;
+        if (b) {
+            this.squareSize = Math.min(getWidth(), getHeight()) / 5;
             for (int i = 0; i < list.size(); i++) {
                 SquareView squareView = list.get(i);
                 squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
@@ -103,9 +81,21 @@ public class SquareGroup extends RelativeLayout {
 
     }
 
-    public void setSize(float size) {
-        this.mSize = size;
-        requestLayout();
+    public void setSize(float fl) {
+        this.mSize = fl;
+        setWillNotDraw(false);
+    }
+
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (mSize > 1.f) {
+            canvas.save();
+            canvas.scale(mSize, mSize, canvas.getWidth() / 2, canvas.getHeight() / 2);
+            canvas.restore();
+        } else {
+            setWillNotDraw(true);
+        }
+
     }
 
     public void add(SquareView squareView) {

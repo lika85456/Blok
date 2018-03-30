@@ -1,7 +1,5 @@
 package com.example.lika85456.blokusdeskgame.Game;
 
-import java.util.Vector;
-
 /**
  * Algorithm class from which all decision making algorithms inherit.
  * Holds all generic functions that are necessary for
@@ -9,6 +7,7 @@ import java.util.Vector;
  *
  * @author Hsing
  */
+/*
 public class AlphaBeta extends Algorithm {
 
     /**
@@ -16,7 +15,7 @@ public class AlphaBeta extends Algorithm {
      *
      * @param moves to get board from
      * @return the board for each move
-     */
+
     private Vector<Board> getBoards(Vector<Move> moves) {
         int size = moves.size();
         Vector<Board> boards = new Vector<Board>();
@@ -34,7 +33,7 @@ public class AlphaBeta extends Algorithm {
      * game.
      *
      * @param currState current game state
-     */
+
     @Override
     public boolean move(Board original, int player) {
         Board currState = new Board(original);
@@ -102,7 +101,7 @@ public class AlphaBeta extends Algorithm {
      * @param currPlayer current player
      * @param origPlayer original player that ran the algorithm
      * @return
-     */
+
     private int alphaBeta(Board board, int depth, int alpha, int beta,
                           int currPlayer, int origPlayer, Vector<Player> players) {
         if (depth < 1)
@@ -149,7 +148,7 @@ public class AlphaBeta extends Algorithm {
      *
      * @param currState
      * @return children
-     */
+
     private Vector<Move> getChildren(Board original,
                                      int player, Vector<Player> players) {
         Vector<Move> children = new Vector<Move>();
@@ -181,3 +180,4 @@ public class AlphaBeta extends Algorithm {
         return children;
     }
 }
+*/

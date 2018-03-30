@@ -3,6 +3,8 @@ package com.example.lika85456.blokusdeskgame.Game;
 import android.graphics.Point;
 import android.graphics.PointF;
 
+import com.example.lika85456.blokusdeskgame.Utilities.Utility;
+
 import java.util.ArrayList;
 
 /**
@@ -121,22 +123,13 @@ public class Piece {
     public void rotateBy90()
     {
         byte[][] arr = toArray();
-        byte[][] newArray = new byte[5][5];
-        //filling array
-        for(int x = 0;x<5;x++)
-            for(int y = 0;y<5;y++)
-                newArray[x][y] = 0;
+        Utility.rotateMatrix(arr);
 
-        for(int i=0; i<arr[0].length; i++){
-            for(int j=arr.length-1; j>=0; j--){
-                newArray[i][j] = arr[j][i];
-            }
-        }
 
         this.list = new ArrayList<>();
         for(int x = 0;x<5;x++)
             for(int y = 0;y<5;y++)
-                if(newArray[x][y]==1)
+                if (arr[x][y] == 1)
                     list.add(new Point(x,y));
     }
 

@@ -2,8 +2,12 @@ package com.example.lika85456.blokusdeskgame.Activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.LinearLayout;
 
+import com.example.lika85456.blokusdeskgame.Game.Board;
+import com.example.lika85456.blokusdeskgame.Game.Piece;
+import com.example.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.example.lika85456.blokusdeskgame.Model.UIHandler;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
@@ -34,13 +38,29 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
         };
 
+        Board board = new Board();
 
         grid.setListner(zoomViewListener);
         final SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
-        TextView consoleView = findViewById(R.id.consoleView);
+        LinearLayout consoleContainer = findViewById(R.id.console_container);
+        final UIHandler uiHandler = new UIHandler(grid, scrollView, consoleContainer);
+        UIListener uiListener = new UIListener() {
 
-        UIHandler uiHandler = new UIHandler(grid, scrollView, consoleView);
+            @Override
+            public void onPieceSelected(Piece piece) {
+                Log.d("UIListener", "Piece selected");
 
+            }
+
+            @Override
+            public void onMoveConfirm(int x, int y) {
+                Log.d("UIListener", "Move confirmed");
+                Piece piece = uiHandler.getSelectedPiece();
+            }
+        };
+
+        uiHandler.setUiListener(uiListener);
+        uiHandler.gridView.board = board;
     }
 
 

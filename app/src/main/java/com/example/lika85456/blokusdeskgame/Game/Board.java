@@ -34,6 +34,10 @@ public class Board {
         this.board = original.board.clone();
     }
 
+    public void Move(Move move) {
+        addPiece(move.getRealPiece(), move.getX(), move.getY());
+    }
+
     public boolean isValid(Piece piece,int x, int y)
     {
         return isInside(piece, x, y) && !collides(piece, x, y) && isOnCorner(piece, x, y);

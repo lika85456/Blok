@@ -7,6 +7,7 @@ public class Move {
 
     private int x;
     private int y;
+    private byte color;
 
     public Move(int piece, int x, int y) {
         this.pieceUsed = piece;
@@ -17,6 +18,10 @@ public class Move {
     public Move(int piece, Board nextBoard) {
         pieceUsed = piece;
         board = nextBoard;
+    }
+
+    public byte getColor() {
+        return color;
     }
 
     public int getPieceUsed() {

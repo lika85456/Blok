@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.example.lika85456.blokusdeskgame.Game.Board;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
+import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Utilities.SquareColor;
 
@@ -19,16 +20,16 @@ import java.util.ArrayList;
 public class GridView extends ZoomView {
     private final Context ctx;
     private final ArrayList<SquareView> grid;
+    public Board board;
+    public int selectedX = 0;
+    public int selectedY = 0;
     private int width = 0;
     private int height = 0;
     private boolean initialized = false;
     private SquareGroup selected;
     private int pointSize;
-    private Board board;
     private OnOnInitializedListener onInitializedListener = new OnOnInitializedListener();
-
-    private int selectedX = 0;
-    private int selectedY = 0;
+    private GridViewMoveListener gridViewMoveListener;
     private RelativeLayout gridView;
 
     public GridView(Context ctx) {
@@ -43,6 +44,10 @@ public class GridView extends ZoomView {
         grid = new ArrayList<>();
     }
 
+    public void setOnMoveListener(GridViewMoveListener l) {
+        this.gridViewMoveListener = l;
+    }
+
     public void positionOn(float x, float y) {
         if (this.selected != null) {
 
@@ -54,6 +59,8 @@ public class GridView extends ZoomView {
                 tX = positionInside.x;
                 tY = positionInside.y;
             }
+            if (validity == false)
+                validity = board.isValid(selected.piece, tX, tY);
             if (tX == selectedX && tY == selectedY)
                 return;
 
@@ -64,6 +71,7 @@ public class GridView extends ZoomView {
                 addPiece(selected.piece, tX, tY);
             selectedX = tX;
             selectedY = tY;
+            gridViewMoveListener.onSelectedSquareGroupMove(tX, tY);
         }
     }
 
@@ -148,6 +156,7 @@ public class GridView extends ZoomView {
         {
             Point temp = piece.list.get(i);
             get(temp.x+x,temp.y+y).setColor(piece.color);
+            get(temp.x + x, temp.y + y).color = SquareColor.UNKNOWN;
         }
     }
 

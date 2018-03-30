@@ -25,7 +25,9 @@ public class DatabaseHistoryGameDTO {
         return winner;
     }
 
+    /*//TODO REPAIR
     public DatabaseBoardDTO getBoard() {
         return board;
     }
+    */
 }
