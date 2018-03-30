@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import com.example.lika85456.blokusdeskgame.Game.Board;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
 import com.example.lika85456.blokusdeskgame.R;
-import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 import java.util.ArrayList;
@@ -25,10 +24,8 @@ public class GridView extends ZoomView {
     public int selectedY = 0;
     private int width = 0;
     private int height = 0;
-    private boolean initialized = false;
     private SquareGroup selected;
     private int pointSize;
-    private OnOnInitializedListener onInitializedListener = new OnOnInitializedListener();
     private GridViewMoveListener gridViewMoveListener;
     private RelativeLayout gridView;
 
@@ -66,7 +63,7 @@ public class GridView extends ZoomView {
 
             fromBoard(this.board);
             if (!validity) {
-                    addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
+                addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
             } else
                 addPiece(selected.piece, tX, tY);
             selectedX = tX;
@@ -84,10 +81,16 @@ public class GridView extends ZoomView {
     }
 
     public void selected(SquareGroup selected) {
-        this.selected = new SquareGroup(selected);
+        if (selected != null)
+            this.selected = new SquareGroup(selected);
+        else
+            this.selected = null;
+        selectedX = 0;
+        selectedY = 0;
     }
 
-    private void fill(){
+
+    private void fill() {
         for (int x = 0; x < 20; x++)
             for (int y = 0; y < 20; y++) {
                 add(new SquareView(ctx, SquareColor.BLANK, x, y));
@@ -103,13 +106,7 @@ public class GridView extends ZoomView {
             grid.get(i).measure(pointSize, pointSize);
         }
         this.setMeasuredDimension(width, Math.min(width, height));
-        this.invalidate();
-        if (!initialized)
-        {
-            initialized=true;
-            fill();
-            onInitializedListener.onInit();
-        }
+
     }
 
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
@@ -127,35 +124,22 @@ public class GridView extends ZoomView {
     }
 
     /***
-     * Sets OnOnInitializedListener
-     * @param onInitializedListener
-     */
-    public void setOnInitializedListener(OnOnInitializedListener onInitializedListener)
-    {
-        this.onInitializedListener = onInitializedListener;
-    }
-
-    /***
      * Sets the grid from board array
      * @param board
      */
-    public void fromBoard(Board board)
-    {
+    public void fromBoard(Board board) {
         this.board = board;
-        for(int x = 0;x<20;x++)
-            for(int y = 0;y<20;y++)
-            {
+        for (int x = 0; x < 20; x++)
+            for (int y = 0; y < 20; y++) {
                 if (get(x, y).color != board.board[x][y])
-                setColor(x, y, board.board[x][y]);
+                    setColor(x, y, board.board[x][y]);
             }
     }
 
-    private void addPiece(Piece piece, int x, int y)
-    {
-        for(int i = 0;i<piece.list.size();i++)
-        {
+    private void addPiece(Piece piece, int x, int y) {
+        for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);
-            get(temp.x+x,temp.y+y).setColor(piece.color);
+            get(temp.x + x, temp.y + y).setColor(piece.color);
             get(temp.x + x, temp.y + y).color = SquareColor.UNKNOWN;
         }
     }
@@ -166,15 +150,18 @@ public class GridView extends ZoomView {
      * @param y
      * @param color (byte)
      */
-    private void setColor(int x, int y, byte color)
-    {
+    private void setColor(int x, int y, byte color) {
         get(x, y).setColor(color);
         get(x, y).color = color;
     }
 
-    private SquareView get(int x, int y)
-    {
-        return grid.get(x*20+y);
+    private SquareView get(int x, int y) {
+        return grid.get(x * 20 + y);
+    }
+
+    public void onFinishInflate() {
+        super.onFinishInflate();
+        fill();
     }
 
     private void add(SquareView toAdd) {

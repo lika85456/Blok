@@ -15,7 +15,6 @@ import com.example.lika85456.blokusdeskgame.Game.Piece;
 import com.example.lika85456.blokusdeskgame.Game.Player;
 import com.example.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.example.lika85456.blokusdeskgame.R;
-import com.example.lika85456.blokusdeskgame.Utilities.Initialization.OnOnInitializedListener;
 import com.example.lika85456.blokusdeskgame.Utilities.Utility;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
 import com.example.lika85456.blokusdeskgame.Views.GridViewMoveListener;
@@ -66,29 +65,24 @@ public class UIHandler {
         this.gridView.setOnMoveListener(new GridViewMoveListener() {
             @Override
             public void onSelectedSquareGroupMove(int x, int y) {
-                if (gridView.board.isValid(selectedPiece, gridView.selectedX, gridView.selectedY))
+                if (gridView.board.isValid(selectedPiece, gridView.selectedX, gridView.selectedY)) {
                     setConfirmButtonColor(0xFF3FF931);
-                else
+                    canConfirm = true;
+                }
+                else {
                     setConfirmButtonColor(Color.RED);
-            }
-        });
-
-        final SquareGroupScrollView temp = scrollView;
-        //SquareGroups initialization
-        gridView.setOnInitializedListener(new OnOnInitializedListener() {
-            public void onInit() {
-
-                for (int i = 0; i < Piece.groups.size(); i++) {
-                    temp.add(Piece.groups.get(i));
+                    canConfirm = false;
                 }
             }
         });
+
+
 
         /***
          * called after selecting is done
          * @param squareGroup
          */
-        scrollView.onClickListener = new View.OnClickListener() {
+        scrollView.setSquareGroupOnClickListener(new View.OnClickListener() {
             private long lastTimeClick;
 
 
@@ -118,6 +112,7 @@ public class UIHandler {
                             if (doubleClick) {
                                 //If its double click - roatte the piece (and call listener?)
                                 selectedPiece.rotateBy90();
+                                view.requestLayout();
                             }
                         }
                         //view.requestLayout();
@@ -130,9 +125,10 @@ public class UIHandler {
                 selectedPiece = ((SquareGroup) view).piece;
                 uiListener.onPieceSelected(selectedPiece);
                 gridView.selected((SquareGroup) view);
+                //gridView.invalidate();
                 //TODO add moer events?
             }
-        };
+        });
 
 
     }
@@ -163,8 +159,10 @@ public class UIHandler {
      * Called when user confirms placing piece
      */
     public void onConfirm() {
-        this.uiListener.onMoveConfirm(gridView.selectedX, gridView.selectedY);
-        this.setConsoleState();
+        if (canConfirm) {
+            this.uiListener.onMoveConfirm(gridView.selectedX, gridView.selectedY);
+            this.setConsoleState();
+        }
     }
 
     public void removeSquareGroupFromList(Piece piece) {
@@ -187,6 +185,11 @@ public class UIHandler {
 
     public Piece getSelectedPiece() {
         return selectedPiece;
+    }
+
+    public void setSelectedPiece(Piece piece) {
+        this.selectedPiece = piece;
+        gridView.selected(null);
     }
 
     public void onPlayerMove(Player player, Move move) {

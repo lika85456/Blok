@@ -29,17 +29,6 @@ public class SquareGroupScrollView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void init() {
-        if (initialized == false) {
-            for (int i = 0; i < this.list.size(); i++) {
-                Piece piece = this.list.get(i);
-                SquareGroup temp = new SquareGroup(this.getContext(), piece);
-                temp.setOnClickListener(onClickListener);
-                this.addView(temp);
-                initialized = true;
-            }
-        }
-    }
 
     public void onMeasure(int w,int h)
     {
@@ -51,8 +40,8 @@ public class SquareGroupScrollView extends RelativeLayout {
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
         //this.setMeasuredDimension(getWidth(), (int) (((float) getWidth() / 3.f - 15.f) * list.size() / 3));
-        init();
-        for (int i = 0; i < this.list.size(); i++) {
+        //init();
+        for (int i = 0; i < this.getChildCount(); i++) {
             SquareGroup temp = (SquareGroup) this.getChildAt(i);
             int width = (i2 - i0) / 3 - 15;
             int margin = (width + 15) * (i % 3) + 7;
@@ -69,11 +58,32 @@ public class SquareGroupScrollView extends RelativeLayout {
         requestLayout();
     }
 
+    public void onFinishInflate() {
+        super.onFinishInflate();
+
+        for (int i = 0; i < Piece.groups.size(); i++) {
+            add(Piece.groups.get(i));
+        }
+
+//        this.requestLayout();
+    }
+
+    public void setSquareGroupOnClickListener(OnClickListener l) {
+        this.onClickListener = l;
+        if (this.getChildCount() > 0) {
+            for (int i = 0; i < this.getChildCount(); i++)
+                this.getChildAt(i).setOnClickListener(l);
+        }
+
+    }
+
     public void add(Piece piece)
     {
         if (list == null)
             list = new ArrayList<>();
         list.add(piece);
-
+        SquareGroup temp = new SquareGroup(this.getContext(), piece);
+        this.addView(temp);
+        temp.setOnClickListener(onClickListener);
     }
 }

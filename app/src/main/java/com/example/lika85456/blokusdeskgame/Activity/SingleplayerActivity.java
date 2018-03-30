@@ -38,7 +38,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
         };
 
-        Board board = new Board();
+        final Board board = new Board();
 
         grid.setListner(zoomViewListener);
         final SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
@@ -56,6 +56,9 @@ public class SingleplayerActivity extends AppCompatActivity {
             public void onMoveConfirm(int x, int y) {
                 Log.d("UIListener", "Move confirmed");
                 Piece piece = uiHandler.getSelectedPiece();
+                board.addPiece(piece, x, y);
+                uiHandler.removeSquareGroupFromList(piece);
+                uiHandler.setSelectedPiece(null);
             }
         };
 
