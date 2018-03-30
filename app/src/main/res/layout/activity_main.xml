@@ -25,7 +25,7 @@
             android:text="Blokus"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/textOnDark"
-            android:textSize="50sp"
+            android:textSize="65sp"
             android:textStyle="bold" />
     </LinearLayout>
 

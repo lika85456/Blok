@@ -24,7 +24,7 @@ public class GridView extends ZoomView {
     public int selectedY = 0;
     private int width = 0;
     private int height = 0;
-    private SquareGroup selected;
+    private Piece selected;
     private int pointSize;
     private GridViewMoveListener gridViewMoveListener;
     private RelativeLayout gridView;
@@ -48,24 +48,24 @@ public class GridView extends ZoomView {
     public void positionOn(float x, float y) {
         if (this.selected != null) {
 
-            int tX = (int) (x / pointSize - selected.piece.mass().x);
-            int tY = (int) (y / pointSize - selected.piece.mass().y);
-            boolean validity = board.isValid(selected.piece, tX, tY);
+            int tX = (int) (x / pointSize - selected.mass().x);
+            int tY = (int) (y / pointSize - selected.mass().y);
+            boolean validity = board.isValid(selected, tX, tY);
             if (validity == false) {
-                Point positionInside = board.getPositionInside(selected.piece, tX, tY);
+                Point positionInside = board.getPositionInside(selected, tX, tY);
                 tX = positionInside.x;
                 tY = positionInside.y;
             }
             if (validity == false)
-                validity = board.isValid(selected.piece, tX, tY);
+                validity = board.isValid(selected, tX, tY);
             if (tX == selectedX && tY == selectedY)
                 return;
 
             fromBoard(this.board);
             if (!validity) {
-                addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
+                addPieceWithColor(selected, tX, tY, SquareColor.getColorFromCode(selected.color) - 0x55222222);
             } else
-                addPiece(selected.piece, tX, tY);
+                addPiece(selected, tX, tY);
             selectedX = tX;
             selectedY = tY;
             gridViewMoveListener.onSelectedSquareGroupMove(tX, tY);
@@ -80,13 +80,10 @@ public class GridView extends ZoomView {
         }
     }
 
-    public void selected(SquareGroup selected) {
-        if (selected != null)
-            this.selected = new SquareGroup(selected);
-        else
-            this.selected = null;
-        selectedX = 0;
-        selectedY = 0;
+    public void selected(Piece selected) {
+        this.selected = selected;
+        selectedX = -10;
+        selectedY = -10;
     }
 
 

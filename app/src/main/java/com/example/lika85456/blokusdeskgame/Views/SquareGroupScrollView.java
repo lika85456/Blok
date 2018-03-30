@@ -51,11 +51,14 @@ public class SquareGroupScrollView extends RelativeLayout {
         }
     }
 
-    public void removeElementAtIndex(Piece piece) {
-        int index = list.indexOf(piece);
+    public void removeElementAtIndex(int index) {
         list.remove(index);
         removeViewAt(index);
         requestLayout();
+    }
+
+    public int getIndexOfElement(Piece piece) {
+        return list.indexOf(piece);
     }
 
     public void onFinishInflate() {
@@ -84,6 +87,15 @@ public class SquareGroupScrollView extends RelativeLayout {
         list.add(piece);
         SquareGroup temp = new SquareGroup(this.getContext(), piece);
         this.addView(temp);
+        temp.setOnClickListener(onClickListener);
+    }
+
+    public void addAtIndex(Piece piece, int index) {
+        if (list == null)
+            list = new ArrayList<>();
+        list.add(piece);
+        SquareGroup temp = new SquareGroup(this.getContext(), piece);
+        this.addView(temp, index);
         temp.setOnClickListener(onClickListener);
     }
 }

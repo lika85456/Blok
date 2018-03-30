@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 
 import com.example.lika85456.blokusdeskgame.Game.Board;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
-import com.example.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.example.lika85456.blokusdeskgame.Model.UIHandler;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
@@ -43,9 +42,7 @@ public class SingleplayerActivity extends AppCompatActivity {
         grid.setListner(zoomViewListener);
         final SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
         LinearLayout consoleContainer = findViewById(R.id.console_container);
-        final UIHandler uiHandler = new UIHandler(grid, scrollView, consoleContainer);
-        UIListener uiListener = new UIListener() {
-
+        final UIHandler uiHandler = new UIHandler(grid, scrollView, consoleContainer) {
             @Override
             public void onPieceSelected(Piece piece) {
                 Log.d("UIListener", "Piece selected");
@@ -55,14 +52,18 @@ public class SingleplayerActivity extends AppCompatActivity {
             @Override
             public void onMoveConfirm(int x, int y) {
                 Log.d("UIListener", "Move confirmed");
-                Piece piece = uiHandler.getSelectedPiece();
+                Piece piece = getSelectedPiece();
                 board.addPiece(piece, x, y);
-                uiHandler.removeSquareGroupFromList(piece);
-                uiHandler.setSelectedPiece(null);
+                removeSquareGroupFromList(piece);
+                setSelectedPiece(null);
+            }
+
+            @Override
+            public boolean isValid(Piece piece, int x, int y) {
+                return board.isValid(piece, x, y);
             }
         };
 
-        uiHandler.setUiListener(uiListener);
         uiHandler.gridView.board = board;
     }
 

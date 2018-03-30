@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.example.lika85456.blokusdeskgame.Game.Move;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
-import com.example.lika85456.blokusdeskgame.Game.Player;
 import com.example.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Utilities.Utility;
@@ -28,7 +27,7 @@ import static android.view.View.VISIBLE;
  * Created by lika85456 on 27.03.2018.
  */
 
-public class UIHandler {
+public class UIHandler implements UIListener {
 
     public static final byte CONSOLE_STATE = 0;
     public static final byte CONFIRM_STATE = 1;
@@ -41,11 +40,10 @@ public class UIHandler {
     public LinearLayout consoleContainer;
 
     private Piece selectedPiece;
-    private UIListener uiListener;
 
     private boolean canConfirm = false;
 
-    public UIHandler(GridView gridViewv, SquareGroupScrollView scrollView, LinearLayout consoleContainer) {
+    public UIHandler(GridView gridViewv, final SquareGroupScrollView scrollView, LinearLayout consoleContainer) {
         this.scrollView = scrollView;
         this.gridView = gridViewv;
 
@@ -65,7 +63,7 @@ public class UIHandler {
         this.gridView.setOnMoveListener(new GridViewMoveListener() {
             @Override
             public void onSelectedSquareGroupMove(int x, int y) {
-                if (gridView.board.isValid(selectedPiece, gridView.selectedX, gridView.selectedY)) {
+                if (isValid(selectedPiece, x, y)) {
                     setConfirmButtonColor(0xFF3FF931);
                     canConfirm = true;
                 }
@@ -108,11 +106,28 @@ public class UIHandler {
                         ((SquareGroup) view).setSize(multiplier);
 
                         if (progress > (Math.PI / 2) - 0.01f) {
+                            lastTimeClick = 0;
                             selectedPiece = ((SquareGroup) view).piece;
                             if (doubleClick) {
                                 //If its double click - roatte the piece (and call listener?)
+
+                                ((SquareGroup) view).rotate();
+                                //Call the event
+                                onPieceSelected(selectedPiece);
+                                //Render it
+                                gridView.selected(selectedPiece);
+                                //Rerender squareGroupView
+                                view = new SquareGroup(gridView.getContext(), selectedPiece);
+                                //Invalidate to be sure its rendered
+                                scrollView.invalidate();
+                                view.invalidate();
+                                /*int index = scrollView.getIndexOfElement(selectedPiece);
+                                scrollView.removeElementAtIndex(index);
                                 selectedPiece.rotateBy90();
-                                view.requestLayout();
+                                scrollView.addAtIndex(selectedPiece,index);
+                                */
+
+
                             }
                         }
                         //view.requestLayout();
@@ -123,15 +138,16 @@ public class UIHandler {
 
                 lastTimeClick = System.currentTimeMillis();
                 selectedPiece = ((SquareGroup) view).piece;
-                uiListener.onPieceSelected(selectedPiece);
-                gridView.selected((SquareGroup) view);
-                //gridView.invalidate();
+                onPieceSelected(selectedPiece);
+                gridView.selected(selectedPiece);
                 //TODO add moer events?
             }
         });
 
 
     }
+
+    public void
 
     /***
      * Makes CONFIRM button apper
@@ -160,18 +176,15 @@ public class UIHandler {
      */
     public void onConfirm() {
         if (canConfirm) {
-            this.uiListener.onMoveConfirm(gridView.selectedX, gridView.selectedY);
+            onMoveConfirm(gridView.selectedX, gridView.selectedY);
             this.setConsoleState();
         }
     }
 
     public void removeSquareGroupFromList(Piece piece) {
-        scrollView.removeElementAtIndex(piece);
+        scrollView.removeElementAtIndex(scrollView.getIndexOfElement(piece));
     }
 
-    public void setUiListener(UIListener l) {
-        this.uiListener = l;
-    }
 
     /**
      * Sets text in consoleView - <font color='red'>red</font>
@@ -192,7 +205,7 @@ public class UIHandler {
         gridView.selected(null);
     }
 
-    public void onPlayerMove(Player player, Move move) {
+    public void move(Move move) {
         //TODO do animation on move.piece, x,y
 
     }
@@ -204,4 +217,18 @@ public class UIHandler {
         drawable.mutate();
     }
 
+    @Override
+    public void onPieceSelected(Piece piece) {
+
+    }
+
+    @Override
+    public boolean isValid(Piece piece, int x, int y) {
+        return false;
+    }
+
+    @Override
+    public void onMoveConfirm(int x, int y) {
+
+    }
 }

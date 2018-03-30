@@ -14,14 +14,12 @@ import java.util.ArrayList;
 
 public class SquareGroup extends ViewGroup {
 
-    private final ArrayList<SquareView> list;
+    private ArrayList<SquareView> list;
     public Piece piece;
     private float mSize = 1.f;
     private int squareSize;
-
     public SquareGroup(Context ctx) {
         super(ctx);
-        list = new ArrayList<>();
         this.invalidate();
     }
 
@@ -30,19 +28,30 @@ public class SquareGroup extends ViewGroup {
         list = (ArrayList<SquareView>) squareGroup.list.clone();
         this.squareSize = squareGroup.squareSize;
         this.piece = new Piece(squareGroup.piece);
-        this.invalidate();
     }
 
     public SquareGroup(Context ctx, Piece piece) {
         super(ctx);
-        list = new ArrayList<>();
 
-        for(int i = 0; i<piece.list.size(); i++) {
-            this.list.add(new SquareView(ctx,piece.color,piece.list.get(i).x,piece.list.get(i).y));
-            this.addView(this.list.get(this.list.size() - 1));
-        }
+        fromPiece(piece);
         this.piece = piece;
-        this.invalidate();
+    }
+
+    public void fromPiece(Piece piece) {
+        this.list = new ArrayList<>();
+        this.piece = piece;
+        for (int i = 0; i < getChildCount(); i++) {
+            removeViewAt(i);
+        }
+
+
+        for (int i = 0; i < piece.list.size(); i++) {
+            SquareView temp = new SquareView(getContext(), piece.color, piece.list.get(i).x, piece.list.get(i).y);
+            this.list.add(temp);
+            this.addView(this.list.get(i));
+            temp.layout(temp.x * squareSize, temp.y * squareSize, (temp.x + 1) * squareSize, (temp.y + 1) * squareSize);
+        }
+        this.requestLayout();
     }
 
     /***
@@ -71,13 +80,14 @@ public class SquareGroup extends ViewGroup {
 
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
-        if (b) {
+
+        forceLayout = false;
             this.squareSize = Math.min(getWidth(), getHeight()) / 5;
             for (int i = 0; i < list.size(); i++) {
                 SquareView squareView = list.get(i);
                 squareView.layout(squareView.x * squareSize, squareView.y * squareSize, (squareView.x + 1) * squareSize, (squareView.y + 1) * squareSize);
             }
-        }
+
 
     }
 
@@ -101,5 +111,10 @@ public class SquareGroup extends ViewGroup {
     public void add(SquareView squareView) {
         list.add(squareView);
         this.addView(squareView);
+    }
+
+    public void rotate() {
+        this.piece.rotateBy90();
+        this.invalidate();
     }
 }
