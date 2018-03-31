@@ -1,5 +1,11 @@
 package com.example.lika85456.blokusdeskgame.Game;
 
+
+import com.example.lika85456.blokusdeskgame.Model.GameHandler;
+
+import java.util.ArrayList;
+import java.util.Vector;
+
 /**
  * Algorithm class from which all decision making algorithms inherit.
  * Holds all generic functions that are necessary for
@@ -7,7 +13,7 @@ package com.example.lika85456.blokusdeskgame.Game;
  *
  * @author Hsing
  */
-/*
+
 public class AlphaBeta extends Algorithm {
 
     /**
@@ -15,7 +21,7 @@ public class AlphaBeta extends Algorithm {
      *
      * @param moves to get board from
      * @return the board for each move
-
+     **/
     private Vector<Board> getBoards(Vector<Move> moves) {
         int size = moves.size();
         Vector<Board> boards = new Vector<Board>();
@@ -28,30 +34,23 @@ public class AlphaBeta extends Algorithm {
         return boards;
     }
 
-    /**
-     * Make a move in the current state of the
-     * game.
-     *
-     * @param currState current game state
-
     @Override
-    public boolean move(Board original, int player) {
-        Board currState = new Board(original);
-        Vector<Player> players = simulatePlayers(game.players);
+    public Move move(Game game, int player) {
+        Board currState = new Board(game.getBoard());
+        Vector<Player> players = simulatePlayers(game.getPlayers());
         Vector<Move> moves = getChildren(currState, player, players);
         Vector<Board> children = getBoards(moves);
         int size = children.size();
 
-        //Game Over
+        //GameHandler Over
         if (size == 0) {
-            System.out.println("Player " + player + " has no more moves.");
-            return false;
+            return null;
         }
 
         Board maxBoard = children.elementAt(0);
         int max = Integer.MAX_VALUE;
         int min = Integer.MIN_VALUE;
-        int nextPlayer = Game.incrementTurn(player);
+        int nextPlayer = Game.getNextPlayerId(player);
         int maxScore = alphaBeta(maxBoard, 1, min, max,
                 nextPlayer, player, players);
 
@@ -60,7 +59,7 @@ public class AlphaBeta extends Algorithm {
 
         for (int index = 1; index < size; index++) {
             Board currBoard = children.elementAt(index);
-            nextPlayer = Game.incrementTurn(player);
+            nextPlayer = Game.getNextPlayerId(player);
             int currScore = alphaBeta(currBoard, 1, min, max,
                     nextPlayer, player, players);
 
@@ -71,19 +70,19 @@ public class AlphaBeta extends Algorithm {
             }
         }
 
-        Game.board = maxBoard;
-        Player currPlayer = Game.players.elementAt(player);
+        //game.getBoard() = maxBoard;
+        Player currPlayer = game.getPlayers()[player];
         Move nextMove = moves.elementAt(select);
         currPlayer.setUsedPiece(nextMove.getPieceUsed());
 
-        return true;
+        return nextMove;
     }
 
-    private Vector<Player> simulatePlayers(Vector<Player> origPlayers) {
+    private Vector<Player> simulatePlayers(Player[] origPlayers) {
         Vector<Player> players = new Vector<Player>();
 
         for (int i = 0; i < 4; i++) {
-            Player origPlayer = origPlayers.elementAt(i);
+            Player origPlayer = origPlayers[i];
             Player newSim = new ComputerPlayer(origPlayer);
             players.add(newSim);
         }
@@ -101,7 +100,7 @@ public class AlphaBeta extends Algorithm {
      * @param currPlayer current player
      * @param origPlayer original player that ran the algorithm
      * @return
-
+     **/
     private int alphaBeta(Board board, int depth, int alpha, int beta,
                           int currPlayer, int origPlayer, Vector<Player> players) {
         if (depth < 1)
@@ -119,7 +118,7 @@ public class AlphaBeta extends Algorithm {
             //TODO unit test
             for (int index = 0; index < size; index++) {
                 Board nextBoard = children.elementAt(index);
-                currPlayer = Game.incrementTurn(currPlayer);
+                currPlayer = GameHandler.incrementTurn(currPlayer);
                 int potentialMax = alphaBeta(nextBoard, depth - 1, alpha, beta,
                         currPlayer, origPlayer, players);
                 alpha = Math.max(alpha, potentialMax);
@@ -131,7 +130,7 @@ public class AlphaBeta extends Algorithm {
         } else {
             for (int index = 0; index < size; index++) {
                 Board nextBoard = children.elementAt(index);
-                currPlayer = Game.incrementTurn(currPlayer);
+                currPlayer = GameHandler.incrementTurn(currPlayer);
                 int potentialMin = alphaBeta(nextBoard, depth - 1, alpha, beta,
                         currPlayer, origPlayer, players);
                 beta = Math.min(beta, potentialMin);
@@ -148,13 +147,13 @@ public class AlphaBeta extends Algorithm {
      *
      * @param currState
      * @return children
-
+     **/
     private Vector<Move> getChildren(Board original,
                                      int player, Vector<Player> players) {
         Vector<Move> children = new Vector<Move>();
         Player currPlayer = players.elementAt(player);
-        boolean[] usedPieces = currPlayer.getUsedPieces();
-        int size = usedPieces.length;
+        ArrayList<Piece> usedPieces = currPlayer.getUsedPieces();
+        int size = usedPieces.size();
 
         for (int i = 0; i < size; i++) {
             Move nextMove;

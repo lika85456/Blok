@@ -27,7 +27,7 @@ import static android.view.View.VISIBLE;
  * Created by lika85456 on 27.03.2018.
  */
 
-public class UIHandler implements UIListener {
+public class UI implements UIListener {
 
     public static final byte CONSOLE_STATE = 0;
     public static final byte CONFIRM_STATE = 1;
@@ -43,7 +43,7 @@ public class UIHandler implements UIListener {
 
     private boolean canConfirm = false;
 
-    public UIHandler(GridView gridViewv, final SquareGroupScrollView scrollView, LinearLayout consoleContainer) {
+    public UI(GridView gridViewv, final SquareGroupScrollView scrollView, LinearLayout consoleContainer) {
         this.scrollView = scrollView;
         this.gridView = gridViewv;
 
@@ -105,9 +105,9 @@ public class UIHandler implements UIListener {
 
                         ((SquareGroup) view).setSize(multiplier);
 
-                        if (progress > (Math.PI / 2) - 0.01f) {
+                        if (progress >= Math.PI / 2) {
                             lastTimeClick = 0;
-                            selectedPiece = ((SquareGroup) view).piece;
+                            selectedPiece = ((SquareGroup) view).getPiece();
                             if (doubleClick) {
                                 //If its double click - roatte the piece (and call listener?)
 
@@ -117,7 +117,7 @@ public class UIHandler implements UIListener {
                                 //Render it
                                 gridView.selected(selectedPiece);
                                 //Rerender squareGroupView
-                                view = new SquareGroup(gridView.getContext(), selectedPiece);
+                                ((SquareGroup) view).fromPiece(selectedPiece);
                                 //Invalidate to be sure its rendered
                                 scrollView.invalidate();
                                 view.invalidate();
@@ -137,7 +137,7 @@ public class UIHandler implements UIListener {
                 singleClickAnimator.start();
 
                 lastTimeClick = System.currentTimeMillis();
-                selectedPiece = ((SquareGroup) view).piece;
+                selectedPiece = ((SquareGroup) view).getPiece();
                 onPieceSelected(selectedPiece);
                 gridView.selected(selectedPiece);
                 //TODO add moer events?
@@ -146,8 +146,6 @@ public class UIHandler implements UIListener {
 
 
     }
-
-    public void
 
     /***
      * Makes CONFIRM button apper

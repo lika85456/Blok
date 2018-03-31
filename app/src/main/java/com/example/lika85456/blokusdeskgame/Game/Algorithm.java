@@ -17,7 +17,7 @@ public abstract class Algorithm {
      * @param currState current game state
      * @return
      */
-    abstract public boolean move(Board currState, int player);
+    abstract public Move move(Game game, int player);
 
     /**
      * Evaluation function for the current state of the game.

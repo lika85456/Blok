@@ -6,8 +6,9 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.example.lika85456.blokusdeskgame.Game.Board;
+import com.example.lika85456.blokusdeskgame.Game.Move;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
-import com.example.lika85456.blokusdeskgame.Model.UIHandler;
+import com.example.lika85456.blokusdeskgame.Model.UI;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Views.GridView;
 import com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
@@ -42,7 +43,7 @@ public class SingleplayerActivity extends AppCompatActivity {
         grid.setListner(zoomViewListener);
         final SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
         LinearLayout consoleContainer = findViewById(R.id.console_container);
-        final UIHandler uiHandler = new UIHandler(grid, scrollView, consoleContainer) {
+        final UI ui = new UI(grid, scrollView, consoleContainer) {
             @Override
             public void onPieceSelected(Piece piece) {
                 Log.d("UIListener", "Piece selected");
@@ -53,9 +54,12 @@ public class SingleplayerActivity extends AppCompatActivity {
             public void onMoveConfirm(int x, int y) {
                 Log.d("UIListener", "Move confirmed");
                 Piece piece = getSelectedPiece();
-                board.addPiece(piece, x, y);
+                Move move = new Move(board, piece, x, y);
                 removeSquareGroupFromList(piece);
                 setSelectedPiece(null);
+                //board.move has to be after new move is created
+                board.move(move);
+                //TODO LOGIC WITH move
             }
 
             @Override
@@ -64,7 +68,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
         };
 
-        uiHandler.gridView.board = board;
+        ui.gridView.board = board;
     }
 
 

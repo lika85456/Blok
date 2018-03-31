@@ -2,35 +2,33 @@ package com.example.lika85456.blokusdeskgame.Game;
 
 public class Move {
 
-    private int pieceUsed;
-    private Board board;
+    public Piece pieceUsed;
+    public Board board;
 
-    private int x;
-    private int y;
-    private byte color;
+    public int x;
+    public int y;
+    public byte color;
 
-    public Move(int piece, int x, int y) {
+    public Move(Board board, Piece piece, int x, int y) {
+        this.board = new Board(board);
+        board.addPiece(pieceUsed, x, y);
         this.pieceUsed = piece;
         this.x = x;
         this.y = y;
-    }
-
-    public Move(int piece, Board nextBoard) {
-        pieceUsed = piece;
-        board = nextBoard;
     }
 
     public byte getColor() {
         return color;
     }
 
-    public int getPieceUsed() {
+    public Piece getPiece() {
         return pieceUsed;
     }
 
-    public Piece getRealPiece() {
+    /*public Piece getRealPiece() {
         return Piece.groups.get(pieceUsed);
     }
+    */
 
     public int getX() {
         return x;

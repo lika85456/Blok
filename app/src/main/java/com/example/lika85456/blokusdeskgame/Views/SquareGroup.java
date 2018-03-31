@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class SquareGroup extends ViewGroup {
 
     private ArrayList<SquareView> list;
-    public Piece piece;
+    private Piece piece;
     private float mSize = 1.f;
     private int squareSize;
     public SquareGroup(Context ctx) {
@@ -37,13 +37,14 @@ public class SquareGroup extends ViewGroup {
         this.piece = piece;
     }
 
+    public Piece getPiece() {
+        return this.piece;
+    }
+
     public void fromPiece(Piece piece) {
         this.list = new ArrayList<>();
         this.piece = piece;
-        for (int i = 0; i < getChildCount(); i++) {
-            removeViewAt(i);
-        }
-
+        this.removeAllViews();
 
         for (int i = 0; i < piece.list.size(); i++) {
             SquareView temp = new SquareView(getContext(), piece.color, piece.list.get(i).x, piece.list.get(i).y);
@@ -81,7 +82,6 @@ public class SquareGroup extends ViewGroup {
     @Override
     protected void onLayout(boolean b, int i0, int i1, int i2, int i3) {
 
-        forceLayout = false;
             this.squareSize = Math.min(getWidth(), getHeight()) / 5;
             for (int i = 0; i < list.size(); i++) {
                 SquareView squareView = list.get(i);

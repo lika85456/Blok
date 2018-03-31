@@ -392,8 +392,8 @@ public class ZoomView extends LinearLayout {
         //int maxS = Math.max(getWidth(),getHeight());
         //float multiplier = 1.f-((maxS-(maxS/20*4))/maxS);
         zoom = lerp(bias(zoom, smoothZoom, 0.05f), smoothZoom, 0.2f);
-        smoothZoomX = clamp(0, smoothZoomX, Math.min(getWidth(), getHeight()));
-        smoothZoomY = clamp(0, smoothZoomY, Math.min(getWidth(), getHeight()));
+        smoothZoomX = clamp(-10, smoothZoomX, Math.min(getWidth(), getHeight()));
+        smoothZoomY = clamp(-10, smoothZoomY, Math.min(getWidth(), getHeight()));
 
         zoomX = lerp(bias(zoomX, smoothZoomX, 0.1f), smoothZoomX, 0.35f);
         zoomY = lerp(bias(zoomY, smoothZoomY, 0.1f), smoothZoomY, 0.35f);
