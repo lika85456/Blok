@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.lika85456.blokusdeskgame.Game.Board;
 import com.example.lika85456.blokusdeskgame.Game.Move;
 import com.example.lika85456.blokusdeskgame.Game.Piece;
+import com.example.lika85456.blokusdeskgame.Game.Player;
 import com.example.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.example.lika85456.blokusdeskgame.R;
 import com.example.lika85456.blokusdeskgame.Utilities.Utility;
@@ -19,6 +21,7 @@ import com.example.lika85456.blokusdeskgame.Views.GridView;
 import com.example.lika85456.blokusdeskgame.Views.GridViewMoveListener;
 import com.example.lika85456.blokusdeskgame.Views.SquareGroup;
 import com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
+import com.example.lika85456.blokusdeskgame.Views.ZoomView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -51,6 +54,28 @@ public class UI implements UIListener {
 
         this.consoleView = consoleContainer.findViewById(R.id.consoleView);
         this.confirmButton = consoleContainer.findViewById(R.id.turn_confirm_button);
+
+        gridView.setMaxZoom(6.f);
+
+        ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
+            @Override
+            public void onZoomStarted(float zoom, float zoomx, float zoomy) {
+            }
+
+            @Override
+            public void onZooming(float zoom, float zoomx, float zoomy) {
+            }
+
+            @Override
+            public void onZoomEnded(float zoom, float zoomx, float zoomy) {
+            }
+        };
+        gridView.setListner(zoomViewListener);
+
+
+
+
+
 
         /** Confirm button onClickListener **/
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -147,10 +172,22 @@ public class UI implements UIListener {
 
     }
 
+    public void onUserMove(Board board) {
+        gridView.fromBoard(board);
+        //TODO On user turn
+        setConsoleText("Your turn");
+    }
+
+    public void onMove(Player player, Move move) {
+        //TODO add some animation method with fromBoard
+        gridView.fromBoard(move.getBoard());
+        setConsoleText(player.name + " turn");
+    }
+
     /***
      * Makes CONFIRM button apper
      */
-    public void setConfirmState() {
+    private void setConfirmState() {
         consoleView.setVisibility(GONE);
         confirmButton.setVisibility(VISIBLE);
         state = CONFIRM_STATE;
@@ -159,7 +196,7 @@ public class UI implements UIListener {
     /***
      * Makes ConsoleView appear
      */
-    public void setConsoleState() {
+    private void setConsoleState() {
         consoleView.setVisibility(VISIBLE);
         confirmButton.setVisibility(GONE);
         state = CONSOLE_STATE;
@@ -204,8 +241,7 @@ public class UI implements UIListener {
     }
 
     public void move(Move move) {
-        //TODO do animation on move.piece, x,y
-
+        gridView.fromBoard(move.getBoard());
     }
 
     public void setConfirmButtonColor(int color) {

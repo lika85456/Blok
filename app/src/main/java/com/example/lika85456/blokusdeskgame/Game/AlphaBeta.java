@@ -1,9 +1,6 @@
 package com.example.lika85456.blokusdeskgame.Game;
 
 
-import com.example.lika85456.blokusdeskgame.Model.GameHandler;
-
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -73,7 +70,7 @@ public class AlphaBeta extends Algorithm {
         //game.getBoard() = maxBoard;
         Player currPlayer = game.getPlayers()[player];
         Move nextMove = moves.elementAt(select);
-        currPlayer.setUsedPiece(nextMove.getPieceUsed());
+        //currPlayer.moveAdd(nextMove);
 
         return nextMove;
     }
@@ -118,7 +115,7 @@ public class AlphaBeta extends Algorithm {
             //TODO unit test
             for (int index = 0; index < size; index++) {
                 Board nextBoard = children.elementAt(index);
-                currPlayer = GameHandler.incrementTurn(currPlayer);
+                currPlayer = Game.getNextPlayerId(currPlayer);
                 int potentialMax = alphaBeta(nextBoard, depth - 1, alpha, beta,
                         currPlayer, origPlayer, players);
                 alpha = Math.max(alpha, potentialMax);
@@ -130,7 +127,7 @@ public class AlphaBeta extends Algorithm {
         } else {
             for (int index = 0; index < size; index++) {
                 Board nextBoard = children.elementAt(index);
-                currPlayer = GameHandler.incrementTurn(currPlayer);
+                currPlayer = Game.getNextPlayerId(currPlayer);
                 int potentialMin = alphaBeta(nextBoard, depth - 1, alpha, beta,
                         currPlayer, origPlayer, players);
                 beta = Math.min(beta, potentialMin);
@@ -145,38 +142,35 @@ public class AlphaBeta extends Algorithm {
     /**
      * get all children of a state
      *
-     * @param currState
      * @return children
      **/
     private Vector<Move> getChildren(Board original,
                                      int player, Vector<Player> players) {
         Vector<Move> children = new Vector<Move>();
         Player currPlayer = players.elementAt(player);
-        ArrayList<Piece> usedPieces = currPlayer.getUsedPieces();
-        int size = usedPieces.size();
+        int size = currPlayer.getPieces().size();
 
         for (int i = 0; i < size; i++) {
             Move nextMove;
+            Piece piece = currPlayer.getPieces().get(i);
+            piece.color = (byte) player;
+            Board nextBoard = null;
+            for (int x = 0; x < original.getWidth(); x++) {
+                for (int y = 0; y < original.getHeight(); y++) {
+                    for (int ii = 0; ii < 4; ii++) {
 
-            if (!usedPieces[i]) {
-                Piece piece = currPlayer.getSelectedPiece(i);
-
-                Board nextBoard = null;
-                for (int x = 0; x < original.getWidth(); x++) {
-                    for (int y = 0; y < original.getHeight(); y++) {
-                        Board currState = new Board(original);
-
-                        if (currState.isValidMove(x, y, piece, currPlayer, currState)) {
-                            nextBoard = currState.makeMove(x, y, piece, currPlayer, currState, true);
-                            nextMove = new Move(i, nextBoard);
+                        if (original.isValid(piece, x, y)) {
+                            nextBoard = original.makeSimMove(x, y, piece, currPlayer);
+                            nextMove = new Move(nextBoard, piece, x, y);
                             children.add(nextMove);
                         }
+                        piece.rotateBy90();
                     }
                 }
             }
+
         }
 
         return children;
     }
 }
-*/

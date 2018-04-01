@@ -12,16 +12,21 @@ public class Player {
     private ArrayList<Piece> pieces;
     private ArrayList<Piece> usedPieces;
 
+    public boolean movesAvailable = true;
+    public String name;
+
     public Player(Player player) {
+        usedPieces = (ArrayList) player.usedPieces.clone();
         this.color = player.color;
-        this.pieces = player.pieces;
-        this.usedPieces = player.usedPieces;
+        this.pieces = (ArrayList) player.pieces.clone();
+        this.name = player.name;
     }
 
-    public Player(byte color) {
-        usedPieces = new ArrayList<Piece>();
+    public Player(byte color, String name) {
+        this.name = name;
         this.color = color;
         pieces = (ArrayList) Piece.groups.clone();
+        usedPieces = new ArrayList<>();
         for (int i = 0; i < pieces.size(); i++) {
             pieces.get(i).color = color;
         }
@@ -29,7 +34,10 @@ public class Player {
 
     public void moveAdd(Move move) {
         pieces.remove(move.getPiece());
-        usedPieces.add(move.getPiece());
+    }
+
+    public ArrayList<Piece> getPieces() {
+        return pieces;
     }
 
     public ArrayList<Piece> getUsedPieces() {

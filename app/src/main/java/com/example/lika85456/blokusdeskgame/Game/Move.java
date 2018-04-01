@@ -11,7 +11,7 @@ public class Move {
 
     public Move(Board board, Piece piece, int x, int y) {
         this.board = new Board(board);
-        board.addPiece(pieceUsed, x, y);
+        board.addPiece(piece, x, y);
         this.pieceUsed = piece;
         this.x = x;
         this.y = y;

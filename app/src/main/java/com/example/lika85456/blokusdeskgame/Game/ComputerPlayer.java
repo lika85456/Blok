@@ -10,7 +10,11 @@ public class ComputerPlayer extends Player {
     final AlphaBeta AI = new AlphaBeta();
 
     public ComputerPlayer(byte setColor) {
-        super(setColor);
+        super(setColor, generateBotName(setColor));
+    }
+
+    public static String generateBotName(byte color) {
+        return "Bot #" + color;
     }
 
     public ComputerPlayer(Player origPlayer) {
@@ -20,8 +24,8 @@ public class ComputerPlayer extends Player {
     /**
      * Take turn by calculation of optimal move and making it.
      */
-    public Move getMove(Board board) {
-        return AI.move(board, color);
+    public Move getMove(Game game) {
+        return AI.move(game, color);
     }
 
 }

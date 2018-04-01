@@ -11,16 +11,21 @@ import java.util.ArrayList;
  */
 
 public class Board {
-    public byte[][] board = new byte[20][20];
+    private int width = 20;
+    private int height = 20;
+
+    public byte[][] board = new byte[height][width];
+
+
     public ArrayList<Move> moves;
 
     public Board()
     {
         moves = new ArrayList<>();
         //Initialize array
-        for(int i = 0;i<20;i++)
+        for (int i = 0; i < getWidth(); i++)
         {
-            for(int ii=0;ii<20;ii++)
+            for (int ii = 0; ii < getHeight(); ii++)
             {
                 board[i][ii] = -1;
             }
@@ -42,11 +47,17 @@ public class Board {
         addPiece(move.getPiece(), move.getX(), move.getY());
     }
 
+    public boolean containsColor(byte color) {
+        for (int i = 0; i < moves.size(); i++) {
+            if (moves.get(i).color == color) return true;
+        }
+        return false;
+    }
 
     public boolean isValid(Piece piece,int x, int y)
     {
         boolean condition = isInside(piece, x, y) && !collides(piece, x, y) && isOnCorner(piece, x, y);
-        if (moves.size() <= piece.color) {
+        if (!containsColor(piece.color)) {
             Point startingPoint = getStartingPoint(piece);
             condition = condition && isOnPos(piece, x, y, startingPoint.x, startingPoint.y);
         } else {
@@ -57,9 +68,9 @@ public class Board {
 
     public Point getStartingPoint(Piece piece) {
         if (piece.color == 0) return new Point(0, 0);
-        if (piece.color == 1) return new Point(19, 0);
-        if (piece.color == 2) return new Point(0, 19);
-        if (piece.color == 3) return new Point(19, 19);
+        if (piece.color == 1) return new Point(getWidth() - 1, 0);
+        if (piece.color == 2) return new Point(0, getHeight() - 1);
+        if (piece.color == 3) return new Point(getWidth() - 1, getHeight() - 1);
         return null;
 
     }
@@ -89,7 +100,7 @@ public class Board {
         while (!isInside(piece, x, y))
             for (int i = 0; i < piece.list.size(); i++) {
                 Point tPoint = piece.list.get(i);
-                if (tPoint.x + x > 19) {
+                if (tPoint.x + x > getWidth() - 1) {
                     x--;
                     break;
                 }
@@ -98,7 +109,7 @@ public class Board {
                     x++;
                     break;
                 }
-                if (tPoint.y + y > 19) {
+                if (tPoint.y + y > getHeight() - 1) {
                     y--;
                     break;
                 }
@@ -113,7 +124,7 @@ public class Board {
     private boolean isInside(Piece piece, int x, int y) {
         for (int i = 0; i < piece.list.size(); i++) {
             Point tPoint = piece.list.get(i);
-            if (tPoint.x + x > 19 || x + tPoint.x < 0 || tPoint.y + y > 19 || y + tPoint.y < 0)
+            if (tPoint.x + x > getWidth() - 1 || x + tPoint.x < 0 || tPoint.y + y > getHeight() - 1 || y + tPoint.y < 0)
                 return false;
         }
         return true;
@@ -227,4 +238,11 @@ public class Board {
         return board[x][y];
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }

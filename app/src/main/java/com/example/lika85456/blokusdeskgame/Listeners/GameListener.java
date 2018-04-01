@@ -1,6 +1,7 @@
 package com.example.lika85456.blokusdeskgame.Listeners;
 
-import com.example.lika85456.blokusdeskgame.Game.Board;
+import com.example.lika85456.blokusdeskgame.Game.Game;
+import com.example.lika85456.blokusdeskgame.Game.Move;
 import com.example.lika85456.blokusdeskgame.Game.Player;
 
 /**
@@ -11,7 +12,8 @@ public interface GameListener {
     //Called when player has no moves
     void noMoves(Player player);
 
-    //Called when player makes move
-    void onMove(Player player, Board board);
+    void onMove(Player player, Move move);
+
+    void onGameEnd(Game game);
 
 }
