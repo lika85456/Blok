@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context="com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
+    tools:context="com.lika85456.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
 
 
-    <com.example.lika85456.blokusdeskgame.Views.GridView
+    <com.lika85456.lika85456.blokusdeskgame.Views.GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:id="@+id/insider_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.example.lika85456.blokusdeskgame.Views.GridView>
+    </com.lika85456.lika85456.blokusdeskgame.Views.GridView>
 
     <LinearLayout
         android:id="@+id/console_container"
@@ -78,12 +78,12 @@
         android:fillViewport="true"
         android:scrollbarStyle="outsideInset">
 
-        <com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView
+        <com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView
             android:id="@+id/scrollView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        </com.example.lika85456.blokusdeskgame.Views.SquareGroupScrollView>
+        </com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView>
 
     </ScrollView>
 

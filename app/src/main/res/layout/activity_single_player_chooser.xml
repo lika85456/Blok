@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context="com.example.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
+    tools:context="com.lika85456.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
