@@ -52,7 +52,10 @@ public class SingleplayerActivity extends AppCompatActivity {
         gameHandler = new SinglePlayerGameHandler(game) {
             @Override
             public void onGameEnd(Game game) {
+
                 Log.d("GameHandler", "OnGameEnd");
+                //TODO add game ending
+                ui.onEnd();
             }
 
             @Override
@@ -61,16 +64,31 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onMove(Player player, Move move) {
-                ui.onMove(player, move);
+            public void onMove(final Player player, final Move move) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        ui.onMove(player, move);
+                    }
+                });
             }
 
             @Override
-            public void onMoving(Player player) {
-                ui.onMoving(player);
+            public void onMoving(final Player player) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        ui.onMoving(player);
+                    }
+                });
+
                 if (player != user) {
-                    AI ai = new AI(1);
-                    gameHandler.move(player, ai.think(gameHandler.game.board, player, board.isStartMove(player.color)));
+                    final AI ai = new AI(1);
+
+                    new Thread(new Runnable() {
+                        public void run() {
+                            gameHandler.move(player, ai.think(gameHandler.game.board, player, board.isStartMove(player.color)));
+                        }
+                    }).start();
+
                 }
             }
 

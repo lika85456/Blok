@@ -46,6 +46,14 @@ public class GridView extends ZoomView {
         this.gridViewMoveListener = l;
     }
 
+    public void onDoubleClick() {
+        selectedPiece.rotateBy90();
+        selectedX = -10;
+        selectedY = -10;
+        //TODO animation
+        //zoomTo(1.f,0,0);
+    }
+
     public void positionOn(float x, float y) {
         if (this.selectedPiece != null) {
 
@@ -59,10 +67,6 @@ public class GridView extends ZoomView {
                 selectedY = tY;
                 gridViewMoveListener.onSelectedSquareGroupMove(tX, tY);
                 fromBoard(board);
-                if (board.isValid(selectedPiece, tX, tY, board.isStartMove(selectedPiece.color)))
-                    addPiece(selectedPiece, tX, tY);
-                else
-                    addPieceWithColor(selectedPiece, tX, tY, 0xCCA9A9A9);
             }
         }
     }
@@ -127,6 +131,13 @@ public class GridView extends ZoomView {
                 if (get(x, y).color != board.board[x][y])
                     setColor(x, y, board.board[x][y]);
             }
+        if (selectedPiece != null) {
+            if (board.isValid(selectedPiece, selectedX, selectedY, board.isStartMove(selectedPiece.color)))
+                addPiece(selectedPiece, selectedX, selectedY);
+            else
+                addPieceWithColor(selectedPiece, selectedX, selectedY, 0xCCA9A9A9);
+        }
+
     }
 
     private void addPiece(Piece piece, int x, int y) {

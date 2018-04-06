@@ -2,6 +2,8 @@ package com.lika85456.lika85456.blokusdeskgame.Model;
 
 import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Html;
 import android.view.View;
@@ -15,12 +17,15 @@ import com.lika85456.lika85456.blokusdeskgame.Game.Piece;
 import com.lika85456.lika85456.blokusdeskgame.Game.Player;
 import com.lika85456.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.lika85456.lika85456.blokusdeskgame.R;
+import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
 import com.lika85456.lika85456.blokusdeskgame.Utilities.Utility;
 import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
 import com.lika85456.lika85456.blokusdeskgame.Views.GridViewMoveListener;
 import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroup;
 import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
 import com.lika85456.lika85456.blokusdeskgame.Views.ZoomView;
+
+import java.util.ArrayList;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -45,11 +50,11 @@ public class UI implements UIListener {
 
     public Player user;
     private boolean canConfirm = false;
+    private boolean userTurn;
 
 
     public UI(GridView gridViewv, final SquareGroupScrollView scrollView, LinearLayout consoleContainer, Player user) {
         this.scrollView = scrollView;
-        scrollView.setColor(user.color);
         scrollView.requestLayout();
         this.user = user;
         this.gridView = gridViewv;
@@ -77,6 +82,10 @@ public class UI implements UIListener {
         gridView.setListner(zoomViewListener);
 
 
+        ArrayList<Piece> pieces = Piece.getAllPieces(user.color);
+        for (int i = 0; i < pieces.size(); i++) {
+            scrollView.add(pieces.get(i));
+        }
 
 
 
@@ -114,7 +123,9 @@ public class UI implements UIListener {
 
 
             public void onClick(final View view) {
-                setConfirmState();
+                if (userTurn)
+                    setConfirmState();
+
 
 
                 final int width = view.getWidth();
@@ -177,23 +188,43 @@ public class UI implements UIListener {
     }
 
     public void onMoving(Player player) {
-        if (state != CONSOLE_STATE)
-            setConsoleState();
-        if (player == user) setConsoleText("This is your turn");
-        else
+
+        setConsoleState();
+        changeHrColor(SquareColor.getColorFromCode(player.color));
+        if (player == user) {
+            userTurn = true;
+            if (selectedPiece == null)
+                setConsoleText("Your turn");
+            else
+                setConfirmState();
+        }
+        else {
+            gridView.zoomOnCenter();
             setConsoleText(player.getName() + " turn");
+            userTurn = false;
+        }
+
     }
 
     public void onMove(Player player, Move move) {
         //TODO add some animation method with fromBoard
         gridView.fromBoard(move.getBoard());
-        setConsoleText(player.name + " turn");
+
+
+    }
+
+    public void changeHrColor(int color) {
+        Drawable background = gridView.findViewById(R.id.hr).getBackground();
+        background.setColorFilter(0, PorterDuff.Mode.CLEAR);
+        background.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
     }
 
     /***
      * Makes CONFIRM button apper
      */
     private void setConfirmState() {
+        if (state == CONFIRM_STATE)
+            return;
         consoleView.setVisibility(GONE);
         confirmButton.setVisibility(VISIBLE);
         state = CONFIRM_STATE;
@@ -203,6 +234,8 @@ public class UI implements UIListener {
      * Makes ConsoleView appear
      */
     private void setConsoleState() {
+        if (state == CONSOLE_STATE)
+            return;
         consoleView.setVisibility(VISIBLE);
         confirmButton.setVisibility(GONE);
         state = CONSOLE_STATE;
@@ -267,5 +300,10 @@ public class UI implements UIListener {
     @Override
     public void onMoveConfirm(int x, int y) {
 
+    }
+
+    public void onEnd() {
+        setConsoleState();
+        setConsoleText("Game end TODO:Show ending stuff");
     }
 }

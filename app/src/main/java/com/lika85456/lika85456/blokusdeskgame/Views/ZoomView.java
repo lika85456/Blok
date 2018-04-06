@@ -261,7 +261,8 @@ public class ZoomView extends LinearLayout {
                 if (l < 30.0f) {
                     // check double tap
                     if (System.currentTimeMillis() - lastTapTime < 500) {
-                        if ((smoothZoom == minZoom || smoothZoom == maxZoom) && !lastMin) {
+                        onDoubleClick();
+                       /* if ((smoothZoom == minZoom || smoothZoom == maxZoom) && !lastMin) {
                             float minS = Math.abs(getWidth() - getHeight());
 
                             smoothZoomX = getWidth() / 2;
@@ -285,6 +286,7 @@ public class ZoomView extends LinearLayout {
                             lastMin = false;
                         } else
                             smoothZoomTo(maxZoom, x, y);
+                        */
                         lastTapTime = 0;
                         ev.setAction(MotionEvent.ACTION_CANCEL);
                         super.dispatchTouchEvent(ev);
@@ -349,6 +351,7 @@ public class ZoomView extends LinearLayout {
 
                 }
 
+
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -388,6 +391,7 @@ public class ZoomView extends LinearLayout {
                 smoothZoomX -= minS / 2;
             else
                 smoothZoomY -= minS / 2;
+            zoomTo(1.f, smoothZoomX, smoothZoomY);
         }
         //int maxS = Math.max(getWidth(),getHeight());
         //float multiplier = 1.f-((maxS-(maxS/20*4))/maxS);
@@ -479,6 +483,24 @@ public class ZoomView extends LinearLayout {
         getRootView().invalidate();
         invalidate();
         // }
+    }
+
+    public void zoomOnCenter() {
+        float minS = Math.abs(getWidth() - getHeight());
+
+        smoothZoomX = getWidth() / 2;
+        smoothZoomY = getHeight() / 2;
+
+        if (getWidth() > getHeight())
+            smoothZoomX -= minS / 2;
+        else
+            smoothZoomY -= minS / 2;
+        //zoomTo(1.f,smoothZoomX,smoothZoomY);
+
+    }
+
+    void onDoubleClick() {
+
     }
 
     void positionOn(float x, float y) {

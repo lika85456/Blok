@@ -57,20 +57,11 @@ public class SquareGroupScrollView extends RelativeLayout {
         requestLayout();
     }
 
-    public void setColor(byte color) {
-        for (Piece piece : list) {
-            piece.color = color;
-        }
-        for (int i = 0; i < this.getChildCount(); i++)
-            this.getChildAt(i).requestLayout();
-
-    }
-
     public int getIndexOfElement(Piece piece) {
         return list.indexOf(piece);
     }
 
-    public void onFinishInflate() {
+    /*public void onFinishInflate() {
         super.onFinishInflate();
         ArrayList<Piece> pieces = Piece.getAllPieces(color);
         for (int i = 0; i < pieces.size(); i++) {
@@ -79,6 +70,7 @@ public class SquareGroupScrollView extends RelativeLayout {
 
 //        this.requestLayout();
     }
+    */
 
     public void setSquareGroupOnClickListener(OnClickListener l) {
         this.onClickListener = l;

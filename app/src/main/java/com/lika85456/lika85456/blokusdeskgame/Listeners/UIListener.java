@@ -12,4 +12,5 @@ public interface UIListener {
     boolean isValid(Piece piece, int x, int y);
 
     void onMoveConfirm(int x, int y);
+
 }
