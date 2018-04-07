@@ -132,6 +132,7 @@ public class AI {
                                     moves.clear();
                                 moves.add(tempMove);
                                 maxScore = tempMoveScore;
+                                badMoves = 0;
                             } else
                                 badMoves++;
 
