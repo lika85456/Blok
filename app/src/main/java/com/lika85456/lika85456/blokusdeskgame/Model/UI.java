@@ -1,9 +1,8 @@
 package com.lika85456.lika85456.blokusdeskgame.Model;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Html;
 import android.view.View;
@@ -39,6 +38,7 @@ public class UI implements UIListener {
     public static final byte CONSOLE_STATE = 0;
     public static final byte CONFIRM_STATE = 1;
     public final GridView gridView;
+    public Activity activity;
     public byte state = CONSOLE_STATE;
     public SquareGroupScrollView scrollView;
 
@@ -53,13 +53,13 @@ public class UI implements UIListener {
     private boolean userTurn;
 
 
-    public UI(GridView gridViewv, final SquareGroupScrollView scrollView, LinearLayout consoleContainer, Player user) {
-        this.scrollView = scrollView;
+    public UI(Activity activity, Player user) {
+        gridView = activity.findViewById(R.id.grid);
+        scrollView = activity.findViewById(R.id.scrollView);
+        consoleContainer = activity.findViewById(R.id.console_container);
+        this.activity = activity;
         scrollView.requestLayout();
         this.user = user;
-        this.gridView = gridViewv;
-
-        this.consoleContainer = consoleContainer;
 
         this.consoleView = consoleContainer.findViewById(R.id.consoleView);
         this.confirmButton = consoleContainer.findViewById(R.id.turn_confirm_button);
@@ -199,7 +199,8 @@ public class UI implements UIListener {
                 setConfirmState();
         }
         else {
-            gridView.zoomOnCenter();
+            if (selectedPiece == null)
+                gridView.zoomOnCenter();
             setConsoleText(player.getName() + " turn");
             userTurn = false;
         }
@@ -208,15 +209,14 @@ public class UI implements UIListener {
 
     public void onMove(Player player, Move move) {
         //TODO add some animation method with fromBoard
-        gridView.fromBoard(move.getBoard());
+        if (move != null)
+            gridView.fromBoard(move.getBoard());
 
 
     }
 
     public void changeHrColor(int color) {
-        Drawable background = gridView.findViewById(R.id.hr).getBackground();
-        background.setColorFilter(0, PorterDuff.Mode.CLEAR);
-        background.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        activity.findViewById(R.id.hr).setBackgroundColor(color);
     }
 
     /***

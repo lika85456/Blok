@@ -40,13 +40,15 @@ public class Piece {
 
     public ArrayList<Point> list;
     public byte color;
+    public static int lastIndex = 0;
+    public int index;
 
     public Piece(Piece piece) {
         this.list = new ArrayList<Point>();
         for (Point point : piece.list)
             list.add(new Point(point));
         this.color = piece.color;
-
+        this.index = piece.index;
     }
 
     public static ArrayList<Piece> getAllPieces(byte color) {
@@ -67,6 +69,8 @@ public class Piece {
         {
             this.list.add(params[i]);
         }
+        this.index = lastIndex;
+        lastIndex++;
     }
 
     private static void rotateMatrix(byte[][] matrix) {

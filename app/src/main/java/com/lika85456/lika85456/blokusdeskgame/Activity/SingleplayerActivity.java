@@ -3,7 +3,6 @@ package com.lika85456.lika85456.blokusdeskgame.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 import com.lika85456.lika85456.blokusdeskgame.Game.AI;
 import com.lika85456.lika85456.blokusdeskgame.Game.Board;
@@ -14,8 +13,6 @@ import com.lika85456.lika85456.blokusdeskgame.Game.Player;
 import com.lika85456.lika85456.blokusdeskgame.Model.SinglePlayerGameHandler;
 import com.lika85456.lika85456.blokusdeskgame.Model.UI;
 import com.lika85456.lika85456.blokusdeskgame.R;
-import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
-import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
@@ -27,12 +24,8 @@ public class SingleplayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Utility.hideTopBar(this);
         setContentView(R.layout.activity_singleplayer);
-        final GridView grid = findViewById(R.id.grid);
-
         final Board board = new Board();
 
-        final SquareGroupScrollView scrollView = findViewById(R.id.scrollView);
-        LinearLayout consoleContainer = findViewById(R.id.console_container);
 
         byte MY_COLOR = 1;
 
@@ -94,7 +87,7 @@ public class SingleplayerActivity extends AppCompatActivity {
 
         };
 
-        ui = new UI(grid, scrollView, consoleContainer, user) {
+        ui = new UI(this, user) {
             @Override
             public void onPieceSelected(Piece piece) {
                 Log.d("UIListener", "Piece selected");

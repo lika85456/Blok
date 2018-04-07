@@ -47,6 +47,7 @@ public class GridView extends ZoomView {
     }
 
     public void onDoubleClick() {
+        if (selectedPiece == null) return;
         selectedPiece.rotateBy90();
         selectedX = -10;
         selectedY = -10;

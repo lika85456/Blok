@@ -25,8 +25,9 @@ public class GameHandler implements GameListener {
     public void move(Player player, Move move) {
         if (move != null || player == null) {
             game.play(player, move);
-            onMove(player, move);
         }
+        onMove(player, move);
+
         onMoving(game.getCurrentPlayer());
     }
 

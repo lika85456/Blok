@@ -34,7 +34,11 @@ public class SquareGroupScrollView extends RelativeLayout {
     {
         int width = MeasureSpec.getSize(w);
         int height = MeasureSpec.getSize(h);
-        this.setMeasuredDimension(width, (int) (((float) width / 3.f - 15.f) * 7.f));
+        int childs = getChildCount();
+        int rows = 7;
+        if (childs > 0)
+            rows = childs / 3;
+        this.setMeasuredDimension(width, (int) (((float) width / 3.f - 15.f) * rows));
     }
 
     @Override

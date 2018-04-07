@@ -39,9 +39,19 @@ public class Player {
 
     public void iDidMove(Move move) {
         if (move != null)
-        pieces.remove(move.getPiece());
+            removePieceWithIndex(move.getPiece().index);
+        return;
     }
 
+    public void removePieceWithIndex(int index) {
+        for (int i = 0; i < pieces.size(); i++) {
+            Piece toRemove = pieces.get(i);
+            if (toRemove.index == index) {
+                pieces.remove(toRemove);
+                return;
+            }
+        }
+    }
     public ArrayList<Piece> getPieces() {
         return pieces;
     }

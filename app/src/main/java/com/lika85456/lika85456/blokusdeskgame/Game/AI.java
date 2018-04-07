@@ -4,13 +4,15 @@ import android.graphics.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Random;
 
 public class AI {
 
     //1 level = easiest
     //3 level = hardest
     public int level = 1;
+    public Random random = new Random();
 
     public AI(int level) {
         this.level = level;
@@ -32,7 +34,9 @@ public class AI {
         Collections.sort(possibleMoves);
         Collections.reverse(possibleMoves);
         Move max = Collections.max(possibleMoves);
-        if (level == 1) return possibleMoves.get(possibleMoves.size() / 2);
+        if (possibleMoves.size() == 1) return possibleMoves.get(0);
+        if (level == 1)
+            return possibleMoves.get((possibleMoves.size() / 2) - random.nextInt(possibleMoves.size() / 2));
         if (level == 2) return max;
         if (level == 3) {
             Board tempBoard = new Board(board);
@@ -90,45 +94,28 @@ public class AI {
         return false;
     }
 
-    public ArrayList<Move> lightWeightMoves(Board board, Player player, boolean start) {
-        ArrayList<Point> seeds = board.getSeeds(player.color);
-        List<Piece> usablePieces = player.getPieces();
-
-        while (usablePieces.size() > 5)
-            usablePieces.remove(0);
-
-        ArrayList<Move> moves = new ArrayList<Move>();
-
-        if (start)
-            seeds.add(board.getStartingPoint(player.color));
-
-        for (Point seed : seeds) {
-            for (Piece usablePiece : usablePieces) {
-                for (int rotation = 0; rotation < 3; rotation++, usablePiece.rotateBy90()) {
-                    Piece tempPiece = new Piece(usablePiece);
-
-                    for (Point square : usablePiece.list) {
-                        int x = seed.x - square.x;
-                        int y = seed.y - square.y;
-                        if (board.isValid(tempPiece, x, y, start)) {
-                            moves.add(new Move(board, tempPiece, x, y));
-                        }
-                    }
-                }
-            }
-        }
-
-        return moves;
-    }
-
     public ArrayList<Move> getPossibleMoves(Board board, Player player, boolean start) {
         ArrayList<Point> seeds = board.getSeeds(player.color);
         ArrayList<Piece> usablePieces = player.getPieces();
         ArrayList<Move> moves = new ArrayList<Move>();
 
+        //To have bigger pieces at the start
+        Collections.reverse(usablePieces);
+
+        Comparator<Point> comparator = new Comparator<Point>() {
+            @Override
+            public int compare(Point left, Point right) {
+                return (left.x - 10) * (left.x - 10) + (left.y - 10) * (left.y - 10) - (right.x - 10) * (right.x - 10) + (right.y - 10) * (right.y - 10);
+            }
+        };
+
+        //Thanks to sorted array we firstly generate better moves (its more in center)
+        Collections.sort(seeds, comparator);
+
         if (start)
             seeds.add(board.getStartingPoint(player.color));
-
+        int maxScore = 0;
+        int badMoves = 0;
         for (Point seed : seeds) {
             for (Piece usablePiece : usablePieces) {
                 for (int rotation = 0; rotation < 3; rotation++, usablePiece.rotateBy90()) {
@@ -138,7 +125,18 @@ public class AI {
                         int x = seed.x - square.x;
                         int y = seed.y - square.y;
                         if (board.isValid(tempPiece, x, y, start)) {
-                            moves.add(new Move(board, tempPiece, x, y));
+                            Move tempMove = new Move(board, tempPiece, x, y);
+                            int tempMoveScore = tempMove.getScore();
+                            if (tempMoveScore >= maxScore) {
+                                if (tempMoveScore > maxScore)
+                                    moves.clear();
+                                moves.add(tempMove);
+                                maxScore = tempMoveScore;
+                            } else
+                                badMoves++;
+
+                            //To reduce time
+                            if (moves.size() > 5 || badMoves > 10) return moves;
                         }
                     }
                 }
