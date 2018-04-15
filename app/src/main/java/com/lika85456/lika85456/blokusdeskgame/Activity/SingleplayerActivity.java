@@ -1,5 +1,6 @@
 package com.lika85456.lika85456.blokusdeskgame.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,25 +19,37 @@ public class SingleplayerActivity extends AppCompatActivity {
 
     public UI ui;
     public SinglePlayerGameHandler gameHandler;
-
+    public byte MY_COLOR;
+    public byte[] difficulties = new byte[4];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Utility.hideTopBar(this);
         setContentView(R.layout.activity_singleplayer);
+
+        Intent intent = getIntent();
+        Log.d("DEBUG",intent.getStringExtra("MY_COLOR"));
+        MY_COLOR = Byte.parseByte(intent.getStringExtra("MY_COLOR"));
+
+
+
+        final String MY_NAME = "You";
+
         final Board board = new Board();
 
-
-        byte MY_COLOR = 1;
-
-        String MY_NAME = "You";
         final Player user = new Player(MY_COLOR, MY_NAME);
         Player[] players = new Player[4];
+        int tI = 1;
         for (int i = 0; i < 4; i++) {
             if (i == MY_COLOR) {
                 players[i] = user;
             } else
+            {
                 players[i] = new Player((byte) i, "Bot #" + i);
+                difficulties[i] = Byte.parseByte(intent.getStringExtra("D"+tI));
+                tI++;
+            }
+
         }
 
         final Game game = new Game(players);
@@ -63,6 +76,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                         ui.onMove(player, move);
                     }
                 });
+                Log.d("GameHandler", "onMove: "+player.color);
             }
 
             @Override
@@ -72,9 +86,10 @@ public class SingleplayerActivity extends AppCompatActivity {
                         ui.onMoving(player);
                     }
                 });
+                Log.d("GameHandler", "onMoving: "+player.color);
 
                 if (player != user) {
-                    final AI ai = new AI(1);
+                    final AI ai = new AI(difficulties[player.color]);
 
                     new Thread(new Runnable() {
                         public void run() {

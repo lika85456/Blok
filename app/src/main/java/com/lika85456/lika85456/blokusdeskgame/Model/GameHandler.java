@@ -1,5 +1,6 @@
 package com.lika85456.lika85456.blokusdeskgame.Model;
 
+import com.lika85456.lika85456.blokusdeskgame.Game.AI;
 import com.lika85456.lika85456.blokusdeskgame.Game.Game;
 import com.lika85456.lika85456.blokusdeskgame.Game.Move;
 import com.lika85456.lika85456.blokusdeskgame.Game.Player;
@@ -11,7 +12,7 @@ import com.lika85456.lika85456.blokusdeskgame.Listeners.GameListener;
 
 public class GameHandler implements GameListener {
     public Game game;
-
+    public AI ai = new AI(1);
     public GameHandler(Game game) {
         this.game = game;
         onMoving(game.getCurrentPlayer());
@@ -25,17 +26,20 @@ public class GameHandler implements GameListener {
     public void move(Player player, Move move) {
         game.play(player, move);
 
+        if(!ai.hasPossibleMove(game.board,game.players[Game.getNextPlayerId(player.color)]))
+        {
+            game.currentPlayerIndex = Game.getNextPlayerId(game.currentPlayerIndex);
+            noMoves(game.getCurrentPlayer());
+            if(isGameEnd())
+            {
+                onGameEnd(game);
+            }
+        }
+        else
         onMove(player, move);
 
         onMoving(game.getCurrentPlayer());
     }
-
-    public void onMoveNotify(Player player) {
-        //  if (player instanceof ComputerPlayer) {
-        //      move(player, ((ComputerPlayer) (player)).getMove(game));
-        //  }
-    }
-
 
     @Override
     public void noMoves(Player player) {

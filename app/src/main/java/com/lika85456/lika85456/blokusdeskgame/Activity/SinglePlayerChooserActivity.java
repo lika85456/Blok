@@ -1,11 +1,15 @@
 package com.lika85456.lika85456.blokusdeskgame.Activity;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +23,6 @@ import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 public class SinglePlayerChooserActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
-    private static final String DEBUG_TAG = "GestureDetector";
     private GestureDetectorCompat gDetector;
 
     private byte color = 0;
@@ -45,11 +48,11 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
 
     private void onContinue() {
         Intent intent = new Intent(this, SingleplayerActivity.class);
-        intent.putExtra("playerColor", color);
+        intent.putExtra("MY_COLOR", String.valueOf(color));
 
-        intent.putExtra("difficulty1", ((SeekBar) findViewById(R.id.seekBar_bot1)).getProgress());
-        intent.putExtra("difficulty2", ((SeekBar) findViewById(R.id.seekBar_bot2)).getProgress());
-        intent.putExtra("difficulty3", ((SeekBar) findViewById(R.id.seekBar_bot3)).getProgress());
+        intent.putExtra("D1", String.valueOf(((SeekBar) findViewById(R.id.seekBar_bot1)).getProgress()+1));
+        intent.putExtra("D2", String.valueOf(((SeekBar) findViewById(R.id.seekBar_bot2)).getProgress()+1));
+        intent.putExtra("D3", String.valueOf(((SeekBar) findViewById(R.id.seekBar_bot3)).getProgress()+1));
         startActivity(intent);
     }
 
@@ -60,30 +63,28 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
         //true = right
 
         final int iColor = SquareColor.getColorFromCode(color);
+        if (side)
+            color++;
+        else
+            color--;
+
         if (color < 0)
             color = 3;
         if (color > 3) {
             color = 0;
         }
 
-        if (side)
-            color++;
-        else
-            color--;
 
         final RelativeLayout circle = findViewById(R.id.colored_circle);
         final int newColor = SquareColor.getColorFromCode(color);
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
+        ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(),iColor, newColor);
         valueAnimator.setInterpolator(new LinearInterpolator());
-
         valueAnimator.setDuration(250);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float progress = (float) animation.getAnimatedValue();
-                int c = (int) (iColor + ((newColor - iColor) * progress));
-                circle.getBackground().setColorFilter(c, PorterDuff.Mode.MULTIPLY);
-
+                circle.getBackground().clearColorFilter();
+                circle.getBackground().setColorFilter((int)animation.getAnimatedValue()+0x22000000,PorterDuff.Mode.MULTIPLY);
             }
         });
 
