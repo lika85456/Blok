@@ -490,7 +490,7 @@ public class ZoomView extends LinearLayout {
 
         smoothZoomX = getWidth() / 2;
         smoothZoomY = getHeight() / 2;
-
+        smoothZoom = 1.f;
         if (getWidth() > getHeight())
             smoothZoomX -= minS / 2;
         else

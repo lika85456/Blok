@@ -45,7 +45,7 @@ public class Move implements Comparable<Move> {
     }
 
     public int getScore() {
-        return getBoardScore() + getSeedScore() * 10 + piece.list.size() * 10;
+        return getBoardScore() * 5 + getSeedScore() * 10 + piece.list.size() * 10;
     }
 
     @Override

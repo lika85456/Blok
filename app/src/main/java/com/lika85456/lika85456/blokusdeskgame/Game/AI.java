@@ -1,6 +1,7 @@
 package com.lika85456.lika85456.blokusdeskgame.Game;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class AI {
         Move max = Collections.max(possibleMoves);
         if (possibleMoves.size() == 1) return possibleMoves.get(0);
         if (level == 1)
-            return possibleMoves.get((possibleMoves.size() / 2) - random.nextInt(possibleMoves.size() / 2));
+            return possibleMoves.get(random.nextInt(possibleMoves.size()));
         if (level == 2) return max;
         if (level == 3) {
             Board tempBoard = new Board(board);
@@ -105,13 +106,18 @@ public class AI {
         Comparator<Point> comparator = new Comparator<Point>() {
             @Override
             public int compare(Point left, Point right) {
-                return (left.x - 10) * (left.x - 10) + (left.y - 10) * (left.y - 10) - (right.x - 10) * (right.x - 10) + (right.y - 10) * (right.y - 10);
+                return ((left.x - 10) * (left.x - 10) + (left.y - 10) * (left.y - 10)) - ((right.x - 10) * (right.x - 10) + (right.y - 10) * (right.y - 10));
             }
         };
 
         //Thanks to sorted array we firstly generate better moves (its more in center)
         Collections.sort(seeds, comparator);
 
+        try {
+            Log.d("DEBUG1", seeds.get(0).x + " " + seeds.get(0).y);
+
+        } catch (Exception e) {
+        }
         if (start)
             seeds.add(board.getStartingPoint(player.color));
         int maxScore = 0;
@@ -137,7 +143,7 @@ public class AI {
                                 badMoves++;
 
                             //To reduce time
-                            if (moves.size() > 5 || badMoves > 10) return moves;
+                            if (moves.size() > 20 || badMoves > 10) return moves;
                         }
                     }
                 }

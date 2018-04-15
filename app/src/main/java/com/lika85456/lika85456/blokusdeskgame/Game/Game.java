@@ -17,8 +17,12 @@ public class Game {
     }
 
     public void play(Player player, Move move) {
-        board.move(move);
-        player.iDidMove(move);
+        if (move != null) {
+            board.move(move);
+            player.iDidMove(move);
+
+
+        }
         currentPlayerIndex++;
         if (currentPlayerIndex >= players.length)
             currentPlayerIndex = 0;

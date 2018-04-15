@@ -1,0 +1,689 @@
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AIPlayer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AIPlayer.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AIPlayer.java	(revision )
+@@ -0,0 +1,23 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++/**
++ * Created by lika85456 on 26.03.2018.
++ */
++
++public class AIPlayer extends Player {
++
++    //Make aiplayer from color (might be more than 5 so validate it please)
++    public AIPlayer(byte color) {
++        this.color = SquareColor.validateColor(color);
++    }
++
++    @Override
++    public Move move(Board board) {
++        return null;
++    }
++
++    @Override
++    public void onMove(Board board) {
++
++    }
++}
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Move.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Move.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Move.java	(revision )
+@@ -0,0 +1,21 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++public class Move {
++
++    private int pieceUsed;
++    private Board board;
++
++    public Move(int piece, Board nextBoard) {
++        pieceUsed = piece;
++        board = nextBoard;
++    }
++
++    public int getPieceUsed() {
++        return pieceUsed;
++    }
++
++    public Board getBoard() {
++        return board;
++    }
++}
++
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/modules.xml	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ .idea/modules.xml	(revision )
+@@ -2,7 +2,8 @@
+ <project version="4">
+   <component name="ProjectModuleManager">
+     <modules>
+-      <module fileurl="file://$PROJECT_DIR$/Blokus.iml" filepath="$PROJECT_DIR$/Blokus.iml" />
++      <module fileurl="file://C:\Users\lika85456\AndroidStudioProjects\BlokusDeskGame\Blokus.iml" filepath="C:\Users\lika85456\AndroidStudioProjects\BlokusDeskGame\Blokus.iml" />
++      <module fileurl="file://$PROJECT_DIR$/BlokusDeskGame.iml" filepath="$PROJECT_DIR$/BlokusDeskGame.iml" />
+       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+     </modules>
+   </component>
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AlphaBeta.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AlphaBeta.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/AlphaBeta.java	(revision )
+@@ -0,0 +1,183 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++import java.util.Vector;
++
++/**
++ * Algorithm class from which all decision making algorithms inherit.
++ * Holds all generic functions that are necessary for
++ * decision making.
++ *
++ * @author Hsing
++ */
++public class AlphaBeta extends Algorithm {
++
++    /**
++     * Get all the boards from a vector of moves
++     *
++     * @param moves to get board from
++     * @return the board for each move
++     */
++    private Vector<Board> getBoards(Vector<Move> moves) {
++        int size = moves.size();
++        Vector<Board> boards = new Vector<Board>();
++
++        for (int i = 0; i < size; i++) {
++            Move move = moves.elementAt(i);
++            boards.add(move.getBoard());
++        }
++
++        return boards;
++    }
++
++    /**
++     * Make a move in the current state of the
++     * game.
++     *
++     * @param currState current game state
++     */
++    @Override
++    public boolean move(Board original, int player) {
++        Board currState = new Board(original);
++        Vector<Player> players = simulatePlayers(game.players);
++        Vector<Move> moves = getChildren(currState, player, players);
++        Vector<Board> children = getBoards(moves);
++        int size = children.size();
++
++        //Game Over
++        if (size == 0) {
++            System.out.println("Player " + player + " has no more moves.");
++            return false;
++        }
++
++        Board maxBoard = children.elementAt(0);
++        int max = Integer.MAX_VALUE;
++        int min = Integer.MIN_VALUE;
++        int nextPlayer = Game.incrementTurn(player);
++        int maxScore = alphaBeta(maxBoard, 1, min, max,
++                nextPlayer, player, players);
++
++        // Get board with maximum score value
++        int select = 0;
++
++        for (int index = 1; index < size; index++) {
++            Board currBoard = children.elementAt(index);
++            nextPlayer = Game.incrementTurn(player);
++            int currScore = alphaBeta(currBoard, 1, min, max,
++                    nextPlayer, player, players);
++
++            if (currScore > maxScore) {
++                maxScore = currScore;
++                maxBoard = currBoard;
++                select = index;
++            }
++        }
++
++        Game.board = maxBoard;
++        Player currPlayer = Game.players.elementAt(player);
++        Move nextMove = moves.elementAt(select);
++        currPlayer.setUsedPiece(nextMove.getPieceUsed());
++
++        return true;
++    }
++
++    private Vector<Player> simulatePlayers(Vector<Player> origPlayers) {
++        Vector<Player> players = new Vector<Player>();
++
++        for (int i = 0; i < 4; i++) {
++            Player origPlayer = origPlayers.elementAt(i);
++            Player newSim = new ComputerPlayer(origPlayer);
++            players.add(newSim);
++        }
++
++        return players;
++    }
++
++    /**
++     * The actual algorithm for selecting the minimax value with pruning.
++     *
++     * @param board      current state of the game
++     * @param depth      current depth
++     * @param alpha
++     * @param beta
++     * @param currPlayer current player
++     * @param origPlayer original player that ran the algorithm
++     * @return
++     */
++    private int alphaBeta(Board board, int depth, int alpha, int beta,
++                          int currPlayer, int origPlayer, Vector<Player> players) {
++        if (depth < 1)
++            return evaluate(board, origPlayer);
++
++        Vector<Move> moves = getChildren(board, currPlayer, players);
++        Vector<Board> children = getBoards(moves);
++        int size = children.size();
++
++        if (children.isEmpty())
++            return evaluate(board, origPlayer);
++
++        if (currPlayer == origPlayer) {
++            //TODO take out
++            //TODO unit test
++            for (int index = 0; index < size; index++) {
++                Board nextBoard = children.elementAt(index);
++                currPlayer = Game.incrementTurn(currPlayer);
++                int potentialMax = alphaBeta(nextBoard, depth - 1, alpha, beta,
++                        currPlayer, origPlayer, players);
++                alpha = Math.max(alpha, potentialMax);
++                if (beta <= alpha)
++                    break;
++            }
++
++            return alpha;
++        } else {
++            for (int index = 0; index < size; index++) {
++                Board nextBoard = children.elementAt(index);
++                currPlayer = Game.incrementTurn(currPlayer);
++                int potentialMin = alphaBeta(nextBoard, depth - 1, alpha, beta,
++                        currPlayer, origPlayer, players);
++                beta = Math.min(beta, potentialMin);
++                if (beta <= alpha)
++                    break;
++            }
++
++            return beta;
++        }
++    }
++
++    /**
++     * get all children of a state
++     *
++     * @param currState
++     * @return children
++     */
++    private Vector<Move> getChildren(Board original,
++                                     int player, Vector<Player> players) {
++        Vector<Move> children = new Vector<Move>();
++        Player currPlayer = players.elementAt(player);
++        boolean[] usedPieces = currPlayer.getUsedPieces();
++        int size = usedPieces.length;
++
++        for (int i = 0; i < size; i++) {
++            Move nextMove;
++
++            if (!usedPieces[i]) {
++                Piece piece = currPlayer.getSelectedPiece(i);
++
++                Board nextBoard = null;
++                for (int x = 0; x < original.getWidth(); x++) {
++                    for (int y = 0; y < original.getHeight(); y++) {
++                        Board currState = new Board(original);
++
++                        if (currState.isValidMove(x, y, piece, currPlayer, currState)) {
++                            nextBoard = currState.makeMove(x, y, piece, currPlayer, currState, true);
++                            nextMove = new Move(i, nextBoard);
++                            children.add(nextMove);
++                        }
++                    }
++                }
++            }
++        }
++
++        return children;
++    }
++}
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SquareColor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SquareColor.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SquareColor.java	(revision )
+@@ -12,6 +12,9 @@
+     public static final byte BLUE=2;
+     public static final byte YELLOW=3;
+ 
++    public static byte validateColor(byte color) {
++        return (byte) Math.max(Math.min(color, 3), 0);
++    }
+ 
+     public static int getColorFromCode(byte color) {
+         switch (color) {
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Views/GridView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Views/GridView.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Views/GridView.java	(revision )
+@@ -46,18 +46,21 @@
+ 
+     public void positionOn(float x, float y) {
+         if (this.selected != null) {
+-            fromBoard(this.board);
++
+             int tX = (int) (x / pointSize - selected.piece.mass().x);
+             int tY = (int) (y / pointSize - selected.piece.mass().y);
+-
+-            if (!board.isValid(selected.piece, tX, tY)) {
++            boolean validity = board.isValid(selected.piece, tX, tY);
++            if (validity == false) {
+                 Point positionInside = board.getPositionInside(selected.piece, tX, tY);
+                 tX = positionInside.x;
+                 tY = positionInside.y;
+-                if (!board.isValid(selected.piece, tX, tY))
++            }
++            if (tX == selectedX && tY == selectedY)
++                return;
++
++            fromBoard(this.board);
++            if (!validity) {
+                     addPieceWithColor(selected.piece, tX, tY, SquareColor.getColorFromCode(selected.piece.color) - 0x55222222);
+-                else
+-                    addPiece(selected.piece, tX, tY);
+             } else
+                 addPiece(selected.piece, tX, tY);
+             selectedX = tX;
+@@ -69,6 +72,7 @@
+         for (int i = 0; i < piece.list.size(); i++) {
+             Point temp = piece.list.get(i);
+             get(temp.x + x, temp.y + y).setColorCode(color);
++            get(temp.x + x, temp.y + y).color = -2;
+         }
+     }
+ 
+@@ -134,7 +138,7 @@
+         for(int x = 0;x<20;x++)
+             for(int y = 0;y<20;y++)
+             {
+-                //if(get(x,y).color!=board.board[x][y])
++                if (get(x, y).color != board.board[x][y])
+                 setColor(x, y, board.board[x][y]);
+             }
+     }
+@@ -156,7 +160,8 @@
+      */
+     private void setColor(int x, int y, byte color)
+     {
+-        get(x,y).setColor(color);
++        get(x, y).setColor(color);
++        get(x, y).color = color;
+     }
+ 
+     private SquareView get(int x, int y)
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SinglePlayer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SinglePlayer.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/SinglePlayer.java	(revision )
+@@ -0,0 +1,19 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++/**
++ * Created by lika85456 on 26.03.2018.
++ */
++
++public class SinglePlayer extends Player {
++
++    @Override
++    public Move move(Board board) {
++        //Called when user confirm his turn (it is already validated)
++        return null;
++    }
++
++    @Override
++    public void onMove(Board board) {
++        //TODO warn user to make turn
++    }
++}
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Utilities/Utility.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Utilities/Utility.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Utilities/Utility.java	(revision )
+@@ -9,7 +9,6 @@
+ 
+ public class Utility {
+ 
+-
+     public static int convertDpToPixels(float dp, Context context) {
+         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+     }
+Index: app/src/main/res/layout/activity_single_player_chooser.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_single_player_chooser.xml	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/res/layout/activity_single_player_chooser.xml	(revision )
+@@ -110,7 +110,7 @@
+ 
+         <LinearLayout
+             android:layout_width="match_parent"
+-            android:layout_height="0dp"
++            android:layout_height="wrap_content"
+             android:layout_weight="0"
+             android:orientation="vertical">
+ 
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Views/SquareView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Views/SquareView.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Views/SquareView.java	(revision )
+@@ -15,7 +15,7 @@
+ 
+ public class SquareView extends View {
+ 
+-    private final byte color;
++    public byte color;
+     public int x = 0, y = 0;
+ 
+     /***
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Board.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Board.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Board.java	(revision )
+@@ -3,6 +3,7 @@
+ import android.graphics.Point;
+ 
+ import java.security.InvalidParameterException;
++import java.util.ArrayList;
+ 
+ /**
+  * Logic board containing all pieces + some matrix logic etc.
+@@ -10,7 +11,7 @@
+  */
+ 
+ public class Board {
+-    public final byte[][] board = new byte[20][20];
++    public byte[][] board = new byte[20][20];
+ 
+     public Board()
+     {
+@@ -24,6 +25,15 @@
+         }
+     }
+ 
++    /**
++     * Copy the original board into a new one.
++     *
++     * @param original board
++     */
++    public Board(Board original) {
++        this.board = original.board.clone();
++    }
++
+     public boolean isValid(Piece piece,int x, int y)
+     {
+         return isInside(piece, x, y) && !collides(piece, x, y) && isOnCorner(piece, x, y);
+@@ -103,7 +113,7 @@
+         for (int i = 0; i < piece.list.size(); i++) {
+             Point temp = piece.list.get(i);
+             try {
+-            if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
++                if (getColor(temp.x - 1 + x, temp.y + y) == piece.color) return false;
+             } catch (Exception e) {
+             }
+             try {
+@@ -120,21 +130,34 @@
+             }
+ 
+ 
+-
+-
+-
+-
+         }
+         return true;
+     }
+ 
++    /**
++     * Make a move on the board with position and piece
++     *
++     * @param x     position of move
++     * @param y     position of move
++     * @param piece to make the move with
++     */
++    public Board makeSimMove(int x, int y, Piece piece, Player player) {
++        ArrayList<Point> points = piece.list;
++        int color = player.color;
++        Board nextBoard = new Board(this);
++        nextBoard.addPiece(piece);
++
++
++        return nextBoard;
++    }
++
+     /***
+      * returns color in byte
+      * @param x
+      * @param y
+      * @return
+      */
+-    private byte getColor(int x, int y) {
++    public byte getColor(int x, int y) {
+         return board[x][y];
+     }
+ 
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Player.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Player.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Player.java	(revision )
+@@ -0,0 +1,13 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++/**
++ * Created by lika85456 on 26.03.2018.
++ */
++
++public abstract class Player {
++    byte color;
++
++    public abstract Move move(Board board);
++
++    public abstract void onMove(Board board);
++}
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Algorithm.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Algorithm.java	(revision )
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Algorithm.java	(revision )
+@@ -0,0 +1,54 @@
++package com.example.lika85456.blokusdeskgame.Model;
++
++/**
++ * Algorithm class from which all decision making algorithms inherit.
++ * Holds all generic functions that are necessary for
++ * decision making.
++ *
++ * @author Hsing
++ */
++public abstract class Algorithm {
++    /**
++     * Make a move in the current state of the
++     * game.
++     *
++     * @param currState current game state
++     * @return
++     */
++    abstract public boolean move(Board currState, int player);
++
++    /**
++     * Evaluation function for the current state of the game.
++     *
++     * @param currState current game state
++     * @param playerId  of the player calling evaluate
++     * @return the value of the state
++     */
++    public int evaluate(Board currState, int playerId) {
++        int[] colorCount = new int[4];
++
++        for (int x = 0; x < 20; x++) {
++            for (int y = 0; y < 20; y++) {
++                int color = currState.getColor(x, y);
++
++                if (color == SquareColor.BLANK)
++                    continue;
++
++                colorCount[color]++;
++            }
++        }
++
++        // Estimate by summing my squares as positive and others'
++        // squares as negative.
++        int stateEstimate = 0;
++        for (int i = 0; i < 4; i++) {
++            int currCount = colorCount[i];
++            if (i == playerId)
++                stateEstimate += currCount;
++            else
++                stateEstimate -= currCount;
++        }
++
++        return stateEstimate;
++    }
++}
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Game.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Game.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Model/Game.java	(revision )
+@@ -6,8 +6,19 @@
+ 
+ public class Game {
+     public final Board board;
++    public Player[] players = new Player[4];
+ 
+     public Game() {
+         board = new Board();
+     }
++
++    public static Game Singleplayer(SinglePlayer player) {
++        Game game = new Game();
++        game.players[0] = player;
++        game.players[1] = new AIPlayer(player.color + 1);
++        game.players[2] = new AIPlayer(player.color + 2);
++        game.players[3] = new AIPlayer(player.color + 3);
++
++    }
++
+ }
+Index: app/src/main/java/com/example/lika85456/blokusdeskgame/Activity/SingleplayerActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lika85456/blokusdeskgame/Activity/SingleplayerActivity.java	(revision 1e2dcd6d26c356dc431cbafdea3eaa080f0d6f0c)
++++ app/src/main/java/com/example/lika85456/blokusdeskgame/Activity/SingleplayerActivity.java	(revision )
+@@ -1,9 +1,11 @@
+ package com.example.lika85456.blokusdeskgame.Activity;
+ 
++import android.animation.ValueAnimator;
+ import android.os.Bundle;
+ import android.support.v7.app.AppCompatActivity;
+ import android.text.Html;
+ import android.view.View;
++import android.view.animation.LinearInterpolator;
+ import android.widget.TextView;
+ 
+ import com.example.lika85456.blokusdeskgame.Model.Game;
+@@ -66,8 +68,48 @@
+          * @param squareGroup
+          */
+         scrollView.onClickListener = new View.OnClickListener() {
++            private long lastTimeClick;
++
+             @Override
+-            public void onClick(View view) {
++            public void onClick(final View view) {
++                if (System.currentTimeMillis() - lastTimeClick < 400) {
++                    ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
++                    valueAnimator.setInterpolator(new LinearInterpolator());
++
++                    valueAnimator.setDuration(200);
++                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
++                        @Override
++                        public void onAnimationUpdate(ValueAnimator animation) {
++                            float progress = (float) animation.getAnimatedValue();
++                            if (progress == 1.f) {
++                                //piece.rotate(
++                            }
++                            view.setRotation();
++                        }
++                    });
++
++                    valueAnimator.start();
++
++                    //ROTATE
++                } else {
++                    //Singleclick animation
++                    ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1f);
++                    valueAnimator.setInterpolator(new LinearInterpolator());
++
++                    valueAnimator.setDuration(150);
++                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
++                        @Override
++                        public void onAnimationUpdate(ValueAnimator animation) {
++                            float progress = (float) animation.getAnimatedValue();
++                            if (progress == 1.f) {
++                                //oncsingleclick SquareGroup animation
++                            }
++                        }
++                    });
++
++                    valueAnimator.start();
++                }
++                lastTimeClick = System.currentTimeMillis();
+                 selectedSquareGroup = (SquareGroup) view;
+                 grid.selected(selectedSquareGroup);
+             }

@@ -25,6 +25,7 @@ import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
 import com.lika85456.lika85456.blokusdeskgame.Views.ZoomView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -83,6 +84,7 @@ public class UI implements UIListener {
 
 
         ArrayList<Piece> pieces = Piece.getAllPieces(user.color);
+        Collections.reverse(pieces);
         for (int i = 0; i < pieces.size(); i++) {
             scrollView.add(pieces.get(i));
         }
@@ -256,7 +258,7 @@ public class UI implements UIListener {
     }
 
     public void removeSquareGroupFromList(Piece piece) {
-        scrollView.removeElementAtIndex(scrollView.getIndexOfElement(piece));
+        scrollView.removeElementWithIndex(piece.index);
     }
 
 

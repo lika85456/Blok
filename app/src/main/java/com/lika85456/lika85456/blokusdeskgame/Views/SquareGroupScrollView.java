@@ -37,7 +37,7 @@ public class SquareGroupScrollView extends RelativeLayout {
         int childs = getChildCount();
         int rows = 7;
         if (childs > 0)
-            rows = childs / 3;
+            rows = childs / 3 + 1;
         this.setMeasuredDimension(width, (int) (((float) width / 3.f - 15.f) * rows));
     }
 
@@ -55,9 +55,16 @@ public class SquareGroupScrollView extends RelativeLayout {
         }
     }
 
-    public void removeElementAtIndex(int index) {
-        list.remove(index);
-        removeViewAt(index);
+    public void removeElementWithIndex(int index) {
+        int realIndex = 0;
+        for (Piece p : list) {
+            if (p.index == index) {
+                break;
+            }
+            realIndex++;
+        }
+        list.remove(realIndex);
+        removeViewAt(realIndex);
         requestLayout();
     }
 

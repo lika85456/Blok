@@ -2,6 +2,7 @@ package com.lika85456.lika85456.blokusdeskgame.Game;
 
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * Created by lika85456 on 24.03.2018.
  */
 
-public class Piece {
+public class Piece implements Comparable<Piece> {
     private static final ArrayList<Piece> groups;
 
     static {
@@ -173,6 +174,10 @@ public class Piece {
     }
 
 
+    @Override
+    public int compareTo(@NonNull Piece o) {
+        return this.list.size() - o.list.size();
+    }
 }
 
 /*
