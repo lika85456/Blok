@@ -22,15 +22,15 @@ public class SquareColor {
             case -1:
                 return 0xFF303030;
             case 0:
-                return 0xCCFF0000;
+                return 0xEEFF0000;
             case 1:
-                return 0xCC00FF00;
+                return 0xEE00FF00;
             case 2:
-                return 0xCC0000FF;
+                return 0xEE0000FF;
             case 3:
-                return 0xCCFFFF00;
+                return 0xEEFFFF00;
             default:
-                return 0xCCFF0000;
+                return 0xEEFF0000;
         }
 
     }

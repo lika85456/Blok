@@ -37,7 +37,7 @@
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:ems="10"
             android:fontFamily="@font/coiny"
             android:inputType="textPersonName"
@@ -46,8 +46,10 @@
             android:textSize="18sp" />
 
         <LinearLayout
+            android:id="@+id/colorCircleChooserLayout"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -63,6 +65,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -119,7 +122,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:requiresFadingEdge="horizontal|vertical">
 
                 <TextView
                     android:id="@+id/textView5"
@@ -132,15 +136,7 @@
 
                 <SeekBar
                     android:id="@+id/seekBar_bot1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:max="2"
-                    android:min="0"
-                    android:progress="1"
-                    android:progressBackgroundTint="@color/smallerTextOnDark"
-                    android:progressBackgroundTintMode="@color/smallerTextOnDark" />
+                    style="@style/mySeekBar" />
             </LinearLayout>
 
             <LinearLayout
@@ -161,15 +157,7 @@
 
                 <SeekBar
                     android:id="@+id/seekBar_bot2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:max="2"
-                    android:min="0"
-                    android:progress="1"
-                    android:progressBackgroundTint="@color/smallerTextOnDark"
-                    android:progressBackgroundTintMode="@color/smallerTextOnDark" />
+                    style="@style/mySeekBar" />
             </LinearLayout>
 
             <LinearLayout
@@ -190,15 +178,7 @@
 
                 <SeekBar
                     android:id="@+id/seekBar_bot3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:max="2"
-                    android:min="0"
-                    android:progress="1"
-                    android:progressBackgroundTint="@color/smallerTextOnDark"
-                    android:progressBackgroundTintMode="@color/smallerTextOnDark" />
+                    style="@style/mySeekBar" />
             </LinearLayout>
 
         </LinearLayout>
@@ -212,13 +192,13 @@
 
         <Button
             android:id="@+id/singleplayer_chooser_continue_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/menu_button"
-            android:fontFamily="@font/coiny"
+            style="@style/myButton"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+
+            android:layout_marginRight="8dp"
+            android:padding="10dp"
             android:text="Continue"
-            android:textColor="@color/colorAccent"
             android:textSize="18sp" />
     </LinearLayout>
 

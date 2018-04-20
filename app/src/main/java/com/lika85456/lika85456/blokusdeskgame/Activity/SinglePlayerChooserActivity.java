@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -82,7 +84,7 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 circle.getBackground().clearColorFilter();
-                circle.getBackground().setColorFilter((int)animation.getAnimatedValue()+0x22000000,PorterDuff.Mode.MULTIPLY);
+                circle.getBackground().setColorFilter((int) animation.getAnimatedValue(), PorterDuff.Mode.MULTIPLY);
             }
         });
 
@@ -106,7 +108,11 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2,
                            float velocityX, float velocityY) {
-        if (event1.getRawX() - event2.getRawX() > 100 || event1.getRawX() - event2.getRawX() < -100)
+        LinearLayout colorCircleChooserLayout = findViewById(R.id.colorCircleChooserLayout);
+        Rect rect = new Rect();
+
+        colorCircleChooserLayout.getGlobalVisibleRect(rect);
+        if ((event1.getRawX() - event2.getRawX() > 100 || event1.getRawX() - event2.getRawX() < -100) && rect.contains((int) event1.getX(), (int) event1.getY()))
             changeColor(event1.getRawX() > event2.getRawX());
         return false;
     }

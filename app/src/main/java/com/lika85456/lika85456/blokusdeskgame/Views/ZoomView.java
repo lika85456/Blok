@@ -376,9 +376,10 @@ public class ZoomView extends LinearLayout {
         return Math.abs(b - a) >= k ? a + k * Math.signum(b - a) : b;
     }
 
+    private boolean shouldRedraw = false;
+
     @Override
     protected void dispatchDraw(final Canvas canvas) {
-
         // do zoom
         if (!init) {
             init = true;
@@ -402,8 +403,10 @@ public class ZoomView extends LinearLayout {
         zoomX = lerp(bias(zoomX, smoothZoomX, 0.1f), smoothZoomX, 0.35f);
         zoomY = lerp(bias(zoomY, smoothZoomY, 0.1f), smoothZoomY, 0.35f);
         this.positionOn(zoomX, zoomY);
+        if (zoomX != smoothZoomX || zoomY != smoothZoomY) shouldRedraw = true;
         if (zoom != smoothZoom && listener != null) {
             listener.onZooming(zoom, zoomX, zoomY);
+            shouldRedraw = true;
         }
 
         final boolean animating = Math.abs(zoom - smoothZoom) > 0.0000001f
@@ -479,10 +482,17 @@ public class ZoomView extends LinearLayout {
         }
 
         // redraw
-        // if (animating) {
+        if (animating || shouldRedraw) {
+            getRootView().invalidate();
+            invalidate();
+            shouldRedraw = false;
+        }
+    }
+
+    public void redraw() {
+        shouldRedraw = false;
         getRootView().invalidate();
         invalidate();
-        // }
     }
 
     public void zoomOnCenter() {

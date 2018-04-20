@@ -14,6 +14,7 @@ import com.lika85456.lika85456.blokusdeskgame.Game.Player;
 import com.lika85456.lika85456.blokusdeskgame.Model.SinglePlayerGameHandler;
 import com.lika85456.lika85456.blokusdeskgame.Model.UI;
 import com.lika85456.lika85456.blokusdeskgame.R;
+import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
@@ -54,6 +55,7 @@ public class SingleplayerActivity extends AppCompatActivity {
 
         final Game game = new Game(players);
         game.setBoard(board);
+
 
         gameHandler = new SinglePlayerGameHandler(game) {
             @Override
@@ -113,6 +115,9 @@ public class SingleplayerActivity extends AppCompatActivity {
 
         };
 
+        GridView gridView = findViewById(R.id.grid);
+        gridView.board = board;
+
         ui = new UI(this, user) {
             @Override
             public void onPieceSelected(Piece piece) {
@@ -137,8 +142,9 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
         };
 
-        ui.gridView.board = board;
+
         gameHandler.onMoving(gameHandler.game.getCurrentPlayer());
+
     }
 
 

@@ -8,24 +8,41 @@
     tools:context="com.lika85456.lika85456.blokusdeskgame.Activity.SingleplayerActivity">
 
 
-    <com.lika85456.lika85456.blokusdeskgame.Views.GridView
-        android:id="@+id/grid"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_weight="2"
+        android:layout_weight="8"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/insider_grid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.lika85456.lika85456.blokusdeskgame.Views.GridView>
+
+        <include
+            android:id="@+id/score_board"
+            layout="@layout/score_layout"
+            android:layout_width="@dimen/score_layout_size"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_weight="0" />
+
+        <com.lika85456.lika85456.blokusdeskgame.Views.GridView
+            android:id="@+id/grid"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/insider_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.lika85456.lika85456.blokusdeskgame.Views.GridView>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/console_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:layout_weight="0"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -56,19 +73,10 @@
 
         <Button
             android:id="@+id/turn_confirm_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            style="@style/myButton"
             android:layout_weight="0"
-            android:background="@drawable/menu_button"
-            android:paddingBottom="2dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="2dp"
             android:text="Confirm"
-            android:textColor="@color/colorAccent"
-            android:textSize="23sp"
-            android:textStyle="bold"
+            android:textSize="18sp"
             android:visibility="gone" />
     </LinearLayout>
 

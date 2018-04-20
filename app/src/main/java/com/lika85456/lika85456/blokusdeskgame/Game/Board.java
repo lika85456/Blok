@@ -206,7 +206,7 @@ public class Board {
         for(int i = 0;i<piece.list.size();i++)
         {
             Point tPoint = piece.list.get(i);
-            if(board[tPoint.x+x][tPoint.y+y]!=-1)
+            if (board[tPoint.x + x][tPoint.y + y] > -1)
                 return true;
 
         }

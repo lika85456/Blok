@@ -27,7 +27,7 @@ public class GridView extends ZoomView {
     private int height = 0;
     private Piece selectedPiece;
     private int pointSize;
-    private GridViewMoveListener gridViewMoveListener;
+    private GridViewEventListener gridViewEventListener;
     private RelativeLayout gridView;
 
     public GridView(Context ctx) {
@@ -42,8 +42,8 @@ public class GridView extends ZoomView {
         grid = new ArrayList<>();
     }
 
-    public void setOnMoveListener(GridViewMoveListener l) {
-        this.gridViewMoveListener = l;
+    public void setOnMoveListener(GridViewEventListener l) {
+        this.gridViewEventListener = l;
     }
 
     public void onDoubleClick() {
@@ -51,6 +51,8 @@ public class GridView extends ZoomView {
         selectedPiece.rotateBy90();
         selectedX = -10;
         selectedY = -10;
+        gridViewEventListener.onSelectedPieceRotate(selectedPiece);
+        redraw();
         //TODO animation
         //zoomTo(1.f,0,0);
     }
@@ -66,7 +68,7 @@ public class GridView extends ZoomView {
             if (tX != selectedX || tY != selectedY) {
                 selectedX = tX;
                 selectedY = tY;
-                gridViewMoveListener.onSelectedSquareGroupMove(tX, tY);
+                gridViewEventListener.onSelectedPieceMove(tX, tY);
                 fromBoard(board);
             }
         }
@@ -85,6 +87,7 @@ public class GridView extends ZoomView {
         this.selectedPiece = selected;
         selectedX = -10;
         selectedY = -10;
+        redraw();
     }
 
 
@@ -136,9 +139,10 @@ public class GridView extends ZoomView {
             if (board.isValid(selectedPiece, selectedX, selectedY, board.isStartMove(selectedPiece.color)))
                 addPiece(selectedPiece, selectedX, selectedY);
             else
-                addPieceWithColor(selectedPiece, selectedX, selectedY, 0xCCA9A9A9);
+                addPieceWithColor(selectedPiece, selectedX, selectedY, 0xCCBBBBBB);
         }
 
+        redraw();
     }
 
     private void addPiece(Piece piece, int x, int y) {
@@ -160,7 +164,7 @@ public class GridView extends ZoomView {
         get(x, y).color = color;
     }
 
-    private SquareView get(int x, int y) {
+    public SquareView get(int x, int y) {
         return grid.get(x * 20 + y);
     }
 

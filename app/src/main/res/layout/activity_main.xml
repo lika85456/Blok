@@ -12,27 +12,42 @@
     <AbsoluteLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="30dp"
         android:layout_weight="4"
-        android:gravity="center_horizontal"
         android:keepScreenOn="false"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="bottom"
             android:orientation="vertical">
 
-            <com.lika85456.lika85456.blokusdeskgame.Views.CircleNumberView
-                style="@style/circleNumberViewStyle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="0"
-                app:backgroundColor="0xFF0000FF"
-                app:text="27" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/blockView"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/block" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="0"
+                    android:fontFamily="@font/coiny"
+                    android:text="0"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="36sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -59,47 +74,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
-        android:layout_weight="3"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_weight="4"
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/singlePlayerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:width="250dp"
-            android:background="@drawable/menu_button"
-            android:fontFamily="@font/coiny"
-            android:text="Singleplayer"
-            android:textColor="@color/colorAccent"
-            android:textSize="25sp" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="13" />
 
-        <Button
-            android:id="@+id/multiPlayerButton"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:width="250dp"
-            android:background="@drawable/menu_button"
-            android:fontFamily="@font/coiny"
-            android:text="Multiplayer"
-            android:textColor="@color/colorAccent"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
             android:layout_weight="0"
-            android:width="250dp"
-            android:background="@drawable/menu_button"
-            android:fontFamily="@font/coiny"
-            android:text="Rate me pls"
-            android:textColor="@color/colorAccent"
-            android:textSize="25sp" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
+            <Button
+                android:id="@+id/singlePlayerButton"
+                style="@style/myButton"
+                android:text="Singleplayer" />
+
+            <Button
+                android:id="@+id/multiPlayerButton"
+                style="@style/myButton"
+                android:text="Multiplayer" />
+
+            <Button
+                android:id="@+id/button4"
+                style="@style/myButton"
+                android:text="Rate me pls" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="13" />
     </LinearLayout>
+
 </LinearLayout>

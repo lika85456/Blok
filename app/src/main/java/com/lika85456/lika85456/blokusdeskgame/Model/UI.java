@@ -3,12 +3,14 @@ package com.lika85456.lika85456.blokusdeskgame.Model;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.text.Html;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lika85456.lika85456.blokusdeskgame.Game.Move;
@@ -17,11 +19,11 @@ import com.lika85456.lika85456.blokusdeskgame.Game.Player;
 import com.lika85456.lika85456.blokusdeskgame.Listeners.UIListener;
 import com.lika85456.lika85456.blokusdeskgame.R;
 import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
-import com.lika85456.lika85456.blokusdeskgame.Utilities.Utility;
 import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
-import com.lika85456.lika85456.blokusdeskgame.Views.GridViewMoveListener;
+import com.lika85456.lika85456.blokusdeskgame.Views.GridViewEventListener;
 import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroup;
 import com.lika85456.lika85456.blokusdeskgame.Views.SquareGroupScrollView;
+import com.lika85456.lika85456.blokusdeskgame.Views.SquareView;
 import com.lika85456.lika85456.blokusdeskgame.Views.ZoomView;
 
 import java.util.ArrayList;
@@ -54,8 +56,9 @@ public class UI implements UIListener {
     private boolean canConfirm = false;
     private boolean userTurn;
 
+    private TextView[] scores;
 
-    public UI(Activity activity, Player user) {
+    public UI(Activity activity, final Player user) {
         gridView = activity.findViewById(R.id.grid);
         scrollView = activity.findViewById(R.id.scrollView);
         consoleContainer = activity.findViewById(R.id.console_container);
@@ -67,6 +70,18 @@ public class UI implements UIListener {
         this.confirmButton = consoleContainer.findViewById(R.id.turn_confirm_button);
 
         gridView.setMaxZoom(6.f);
+
+        scores = new TextView[4];
+        scores[0] = activity.findViewById(R.id.score1);
+        scores[1] = activity.findViewById(R.id.score2);
+        scores[2] = activity.findViewById(R.id.score3);
+        scores[3] = activity.findViewById(R.id.score4);
+
+        for (int i = 0; i < 4; i++) {
+            scores[i].setTextColor(SquareColor.getColorFromCode((byte) i));
+            ((RelativeLayout) scores[i].getParent()).getBackground().setColorFilter(0xFF333333, PorterDuff.Mode.MULTIPLY);
+            ((RelativeLayout) scores[i].getParent()).getBackground().mutate();
+        }
 
         ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
             @Override
@@ -91,30 +106,54 @@ public class UI implements UIListener {
         }
 
 
-
-
         /** Confirm button onClickListener **/
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onConfirm();
+                Point startPoint = gridView.board.getStartingPoint(user.color);
+                SquareView squareView = gridView.get(startPoint.x, startPoint.y);
+                squareView.setBackgroundResource(R.drawable.block);
+                //squareView.getBackground().setColorFilter();
             }
         });
 
-        this.gridView.setOnMoveListener(new GridViewMoveListener() {
+        this.gridView.setOnMoveListener(new GridViewEventListener() {
             @Override
-            public void onSelectedSquareGroupMove(int x, int y) {
+            public void onSelectedPieceMove(int x, int y) {
+
                 if (isValid(selectedPiece, x, y)) {
                     setConfirmButtonColor(0xFF3FF931);
                     canConfirm = true;
-                }
-                else {
+                    if (gridView.board.isStartMove(user.color)) {
+                        Point startPoint = gridView.board.getStartingPoint(user.color);
+                        SquareView squareView = gridView.get(startPoint.x, startPoint.y);
+                        squareView.setBackgroundResource(R.drawable.block);
+                        squareView.getBackground().mutate();
+                    }
+                } else {
                     setConfirmButtonColor(Color.RED);
                     canConfirm = false;
+                    if (gridView.board.isStartMove(user.color)) {
+                        Point startPoint = gridView.board.getStartingPoint(user.color);
+                        SquareView squareView = gridView.get(startPoint.x, startPoint.y);
+                        squareView.color = -1;
+                        squareView.setBackgroundResource(R.drawable.block_seed);
+                        squareView.getBackground().setColorFilter(SquareColor.getColorFromCode(user.color), PorterDuff.Mode.MULTIPLY);
+                        squareView.getBackground().mutate();
+                    }
+                }
+            }
+
+            @Override
+            public void onSelectedPieceRotate(Piece piece) {
+                for (int i = 0; i < scrollView.getChildCount(); i++) {
+                    if (((SquareGroup) scrollView.getChildAt(i)).getPiece().index == piece.index) {
+                        ((SquareGroup) scrollView.getChildAt(i)).fromPiece(piece);
+                    }
                 }
             }
         });
-
 
 
         /***
@@ -128,7 +167,6 @@ public class UI implements UIListener {
             public void onClick(final View view) {
                 if (userTurn)
                     setConfirmState();
-
 
 
                 final int width = view.getWidth();
@@ -150,28 +188,6 @@ public class UI implements UIListener {
 
                         if (progress >= Math.PI / 2) {
                             lastTimeClick = 0;
-                            selectedPiece = ((SquareGroup) view).getPiece();
-                            if (doubleClick) {
-                                //If its double click - roatte the piece (and call listener?)
-
-                                ((SquareGroup) view).rotate();
-                                //Call the event
-                                onPieceSelected(selectedPiece);
-                                //Render it
-                                gridView.selected(selectedPiece);
-                                //Rerender squareGroupView
-                                ((SquareGroup) view).fromPiece(selectedPiece);
-                                //Invalidate to be sure its rendered
-                                scrollView.invalidate();
-                                view.invalidate();
-                                /*int index = scrollView.getIndexOfElement(selectedPiece);
-                                scrollView.removeElementAtIndex(index);
-                                selectedPiece.rotateBy90();
-                                scrollView.addAtIndex(selectedPiece,index);
-                                */
-
-
-                            }
                         }
                         //view.requestLayout();
                     }
@@ -181,14 +197,33 @@ public class UI implements UIListener {
 
                 lastTimeClick = System.currentTimeMillis();
                 selectedPiece = ((SquareGroup) view).getPiece();
+                if (doubleClick) {
+                    ((SquareGroup) view).rotate();
+                    gridView.selected(selectedPiece);
+                    ((SquareGroup) view).fromPiece(selectedPiece);
+                    scrollView.invalidate();
+
+
+                }
                 onPieceSelected(selectedPiece);
                 gridView.selected(selectedPiece);
                 //TODO add moer events?
             }
         });
 
-
+        Point startPoint = gridView.board.getStartingPoint(user.color);
+        SquareView squareView = gridView.get(startPoint.x, startPoint.y);
+        squareView.setBackgroundResource(R.drawable.block_seed);
+        squareView.getBackground().setColorFilter(SquareColor.getColorFromCode(user.color), PorterDuff.Mode.MULTIPLY);
+        squareView.getBackground().mutate();
     }
+
+    public void updateScores() {
+        for (int i = 0; i < 4; i++) {
+            scores[i].setText("" + gridView.board.getColorScore((byte) i));
+        }
+    }
+
 
     public void onMoving(Player player) {
 
@@ -214,8 +249,11 @@ public class UI implements UIListener {
 
     public void onMove(Player player, Move move) {
         //TODO add some animation method with fromBoard
-        if (move != null)
+        if (move != null) {
             gridView.fromBoard(move.getBoard());
+            updateScores();
+        }
+
 
 
     }
@@ -286,9 +324,6 @@ public class UI implements UIListener {
 
 
     public void setConfirmButtonColor(int color) {
-        GradientDrawable drawable = (GradientDrawable) confirmButton.getBackground();
-        drawable.mutate();
-        drawable.setStroke(Utility.convertDpToPixels(2.f, confirmButton.getContext()), color);
         confirmButton.setTextColor(color);
     }
 

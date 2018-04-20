@@ -32,6 +32,7 @@ public class SquareView extends View {
         setPos(x, y);
     }
 
+
     public void setColorCode(int color) {
         //this.setBackgroundResource(R.drawable.block);
         this.getBackground().clearColorFilter();
