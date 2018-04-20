@@ -23,4 +23,10 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="circleNumberViewStyle">
+        <item name="android:background">@drawable/block</item>
+        <item name="android:fontFamily">@font/coiny</item>
+        <item name="android:textColor">@color/textOnDark</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

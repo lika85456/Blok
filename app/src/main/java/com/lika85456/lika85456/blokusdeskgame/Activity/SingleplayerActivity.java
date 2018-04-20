@@ -61,7 +61,12 @@ public class SingleplayerActivity extends AppCompatActivity {
 
                 Log.d("GameHandler", "OnGameEnd");
                 //TODO add game ending
-                ui.onEnd();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ui.onEnd();
+                    }
+                });
             }
 
             @Override
@@ -97,6 +102,12 @@ public class SingleplayerActivity extends AppCompatActivity {
                         }
                     }).start();
 
+                } else {
+                    AI ai = new AI(1);
+                    if (!ai.hasPossibleMove(board, user)) {
+                        //no moves possible - skip
+                        gameHandler.move(user, null);
+                    }
                 }
             }
 

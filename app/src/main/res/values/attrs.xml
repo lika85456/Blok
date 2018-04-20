@@ -9,4 +9,9 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="CircleNumberView">
+        <attr name="text" format="string" />
+        <attr name="backgroundColor" format="integer" />
+    </declare-styleable>
+
 </resources>

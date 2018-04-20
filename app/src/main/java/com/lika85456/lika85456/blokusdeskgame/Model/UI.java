@@ -38,6 +38,7 @@ public class UI implements UIListener {
 
     public static final byte CONSOLE_STATE = 0;
     public static final byte CONFIRM_STATE = 1;
+    public boolean gameState = true; //if false  game is over
     public final GridView gridView;
     public Activity activity;
     public byte state = CONSOLE_STATE;
@@ -194,6 +195,7 @@ public class UI implements UIListener {
         setConsoleState();
         changeHrColor(SquareColor.getColorFromCode(player.color));
         if (player == user) {
+            if (!gameState) return;
             userTurn = true;
             if (selectedPiece == null)
                 setConsoleText("Your turn");
@@ -203,6 +205,7 @@ public class UI implements UIListener {
         else {
             if (selectedPiece == null)
                 gridView.zoomOnCenter();
+            if (!gameState) return;
             setConsoleText(player.getName() + " turn");
             userTurn = false;
         }
@@ -284,9 +287,9 @@ public class UI implements UIListener {
 
     public void setConfirmButtonColor(int color) {
         GradientDrawable drawable = (GradientDrawable) confirmButton.getBackground();
+        drawable.mutate();
         drawable.setStroke(Utility.convertDpToPixels(2.f, confirmButton.getContext()), color);
         confirmButton.setTextColor(color);
-        drawable.mutate();
     }
 
     @Override
@@ -307,5 +310,6 @@ public class UI implements UIListener {
     public void onEnd() {
         setConsoleState();
         setConsoleText("Game end TODO:Show ending stuff");
+        gameState = false;
     }
 }

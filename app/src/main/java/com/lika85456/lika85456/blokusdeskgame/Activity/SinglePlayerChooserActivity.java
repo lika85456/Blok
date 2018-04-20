@@ -4,12 +4,9 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +31,7 @@ public class SinglePlayerChooserActivity extends AppCompatActivity implements Ge
         setContentView(R.layout.activity_single_player_chooser);
 
         Button continueButton = findViewById(R.id.singleplayer_chooser_continue_button);
+        continueButton.getBackground().mutate();
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

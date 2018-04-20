@@ -1,7 +1,6 @@
 package com.lika85456.lika85456.blokusdeskgame.Game;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -113,11 +112,6 @@ public class AI {
         //Thanks to sorted array we firstly generate better moves (its more in center)
         Collections.sort(seeds, comparator);
 
-        try {
-            Log.d("DEBUG1", seeds.get(0).x + " " + seeds.get(0).y);
-
-        } catch (Exception e) {
-        }
         if (start)
             seeds.add(board.getStartingPoint(player.color));
         int maxScore = 0;
