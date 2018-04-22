@@ -57,6 +57,7 @@ public class SingleplayerActivity extends AppCompatActivity {
         game.setBoard(board);
 
 
+
         gameHandler = new SinglePlayerGameHandler(game) {
             @Override
             public void onGameEnd(Game game) {
@@ -83,7 +84,9 @@ public class SingleplayerActivity extends AppCompatActivity {
                         ui.onMove(player, move);
                     }
                 });
-                Log.d("GameHandler", "onMove: "+player.color);
+                if (move != null)
+                    Log.d("GameHandler", "onMove: " + player.color + " move value: " + move.score);
+
             }
 
             @Override
@@ -129,7 +132,7 @@ public class SingleplayerActivity extends AppCompatActivity {
             public void onMoveConfirm(int x, int y) {
                 Log.d("UIListener", "Move confirmed");
                 Piece piece = getSelectedPiece();
-                Move move = new Move(board, piece, x, y);
+                Move move = new Move(piece, x, y);
                 removeSquareGroupFromList(piece);
                 setSelectedPiece(null);
                 gameHandler.move(user, move);

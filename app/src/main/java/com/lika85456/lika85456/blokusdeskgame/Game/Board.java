@@ -13,8 +13,6 @@ public class Board {
     public static final byte NOTHING = -1;
     private int size = 20;
     public byte[][] board = new byte[size][size];
-
-
     public ArrayList<Move> moves;
 
     public Board()
@@ -37,7 +35,6 @@ public class Board {
      */
 
     public Board(Board original) {
-
         moves = (ArrayList<Move>) original.moves.clone();
         this.board = new byte[size][size];
 
@@ -73,22 +70,14 @@ public class Board {
         return true;
     }
 
-    public ArrayList<Point> getSeeds(byte color) {
+    public ArrayList<Point> getSeeds(int color) {
         ArrayList<Point> toRet = new ArrayList<Point>();
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                if (isSeed(color, x, y)) toRet.add(new Point(x, y));
+                if (isSeed((byte) color, x, y)) toRet.add(new Point(x, y));
             }
         }
         return toRet;
-    }
-
-    //Gets value of array but with try catch block
-    private byte getSafe(int x, int y) {
-        if (x < 0 || x >= size || y < 0 || y >= size)
-            return NOTHING;
-        else
-            return board[x][y];
     }
 
     private boolean isSeed(byte color, int x, int y) {
@@ -101,6 +90,16 @@ public class Board {
                         getSafe(x, y - 1) != color &&
                         getSafe(x, y + 1) != color);
     }
+
+    //Gets value of array but with try catch block
+    private byte getSafe(int x, int y) {
+        if (x < 0 || x >= size || y < 0 || y >= size)
+            return NOTHING;
+        else
+            return board[x][y];
+    }
+
+
 
     public void move(Move move) {
         if (move != null) {
@@ -123,12 +122,22 @@ public class Board {
 
     public boolean isValid(Piece piece, int x, int y, boolean start) {
         //If start = true -> only position to control is the start position
-        if (start == false)
-            return isInside(piece, x, y) && !collides(piece, x, y) && !isNextToAnotherPieceOfSameColor(piece, x, y) && isOnCornerOfAnotherPiece(piece, x, y);
+        if (start == false) {
+            if (isInside(piece, x, y)) {
+                if (!collides(piece, x, y)) {
+                    if (!isNextToAnotherPieceOfSameColor(piece, x, y)) {
+                        return isOnCornerOfAnotherPiece(piece, x, y);
+                    }
+                }
+            }
+        }
         else {
             Point startingPoint = getStartingPoint(piece.color);
-            return isInside(piece, x, y) && isOnPos(piece, x, y, startingPoint.x, startingPoint.y);
+            if (isInside(piece, x, y)) {
+                return isOnPos(piece, x, y, startingPoint.x, startingPoint.y);
+            }
         }
+        return false;
     }
 
     public Point getStartingPoint(byte color) {

@@ -61,13 +61,19 @@ public class UI implements UIListener {
     public UI(Activity activity, final Player user) {
         gridView = activity.findViewById(R.id.grid);
         scrollView = activity.findViewById(R.id.scrollView);
+        scrollView.color = user.color;
         consoleContainer = activity.findViewById(R.id.console_container);
         this.activity = activity;
-        scrollView.requestLayout();
         this.user = user;
 
         this.consoleView = consoleContainer.findViewById(R.id.consoleView);
         this.confirmButton = consoleContainer.findViewById(R.id.turn_confirm_button);
+
+        ArrayList<Piece> pieces = Piece.getAllPieces(user.color);
+        Collections.reverse(pieces);
+        for (int i = 0; i < pieces.size(); i++) {
+            scrollView.add(pieces.get(i));
+        }
 
         gridView.setMaxZoom(6.f);
 
@@ -82,7 +88,6 @@ public class UI implements UIListener {
             ((RelativeLayout) scores[i].getParent()).getBackground().setColorFilter(0xFF333333, PorterDuff.Mode.MULTIPLY);
             ((RelativeLayout) scores[i].getParent()).getBackground().mutate();
         }
-
         ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
             @Override
             public void onZoomStarted(float zoom, float zoomx, float zoomy) {
@@ -97,13 +102,6 @@ public class UI implements UIListener {
             }
         };
         gridView.setListner(zoomViewListener);
-
-
-        ArrayList<Piece> pieces = Piece.getAllPieces(user.color);
-        Collections.reverse(pieces);
-        for (int i = 0; i < pieces.size(); i++) {
-            scrollView.add(pieces.get(i));
-        }
 
 
         /** Confirm button onClickListener **/
@@ -211,12 +209,15 @@ public class UI implements UIListener {
             }
         });
 
+
         Point startPoint = gridView.board.getStartingPoint(user.color);
         SquareView squareView = gridView.get(startPoint.x, startPoint.y);
         squareView.setBackgroundResource(R.drawable.block_seed);
         squareView.getBackground().setColorFilter(SquareColor.getColorFromCode(user.color), PorterDuff.Mode.MULTIPLY);
         squareView.getBackground().mutate();
+
     }
+
 
     public void updateScores() {
         for (int i = 0; i < 4; i++) {
@@ -250,11 +251,12 @@ public class UI implements UIListener {
     public void onMove(Player player, Move move) {
         //TODO add some animation method with fromBoard
         if (move != null) {
-            gridView.fromBoard(move.getBoard());
+            gridView.board.move(move);
+            gridView.fromBoard(gridView.board);
             updateScores();
         }
 
-
+        gridView.redraw();
 
     }
 

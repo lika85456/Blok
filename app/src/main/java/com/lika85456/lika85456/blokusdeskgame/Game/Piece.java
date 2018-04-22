@@ -39,9 +39,11 @@ public class Piece implements Comparable<Piece> {
 
     }
 
+    public static int lastIndex = 0;
+
     public ArrayList<Point> list;
     public byte color;
-    public static int lastIndex = 0;
+    public ArrayList<Point> seedable; //List of points which can be placed on seed
     public int index;
 
     public Piece(Piece piece) {
@@ -50,6 +52,7 @@ public class Piece implements Comparable<Piece> {
             list.add(new Point(point));
         this.color = piece.color;
         this.index = piece.index;
+        this.seedable = generateSeedable();
     }
 
     public static ArrayList<Piece> getAllPieces(byte color) {
@@ -72,7 +75,41 @@ public class Piece implements Comparable<Piece> {
         }
         this.index = lastIndex;
         lastIndex++;
+        this.seedable = generateSeedable();
     }
+
+    private ArrayList<Point> generateSeedable() {
+        ArrayList<Point> points = new ArrayList<Point>();
+        for (Point point : this.list) {
+            if (isSeed(point.x - 1, point.y - 1) ||
+                    isSeed(point.x + 1, point.y - 1) ||
+                    isSeed(point.x + 1, point.y + 1) ||
+                    isSeed(point.x - 1, point.y + 1)) points.add(point);
+
+        }
+        return points;
+    }
+
+    private boolean isSeed(int x, int y) {
+        Point point = new Point(x, y);
+        return (isPiece(point.x - 1, point.y - 1) == true ||
+                isPiece(point.x + 1, point.y + 1) == true ||
+                isPiece(point.x + 1, point.y - 1) == true ||
+                isPiece(point.x - 1, point.y + 1) == true) &&
+                (isPiece(point.x - 1, point.y) != true &&
+                        isPiece(point.x + 1, point.y) != true &&
+                        isPiece(point.x, point.y - 1) != true &&
+                        isPiece(point.x, point.y + 1) != true);
+    }
+
+    private boolean isPiece(int x, int y) {
+        for (Point piece : list) {
+            if (x == piece.x && y == piece.y) return true;
+        }
+        return false;
+    }
+
+
 
     private static void rotateMatrix(byte[][] matrix) {
         if (matrix == null)
@@ -159,6 +196,7 @@ public class Piece implements Comparable<Piece> {
             for(int y = 0; y<5; y++)
                 if (arr[x][y] == 1)
                     list.add(new Point(x,y));
+        seedable = generateSeedable();
         return;
     }
 

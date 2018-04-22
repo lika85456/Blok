@@ -21,16 +21,16 @@ public class SquareColor {
         switch (color) {
             case -1:
                 return 0xFF303030;
-            case 0:
-                return 0xEEFF0000;
-            case 1:
-                return 0xEE00FF00;
-            case 2:
-                return 0xEE0000FF;
-            case 3:
-                return 0xEEFFFF00;
+            case RED:
+                return 0xCCFF0000;
+            case GREEN:
+                return 0xCC00FF00;
+            case BLUE:
+                return 0xCC0000FF;
+            case YELLOW:
+                return 0xCCFFFF00;
             default:
-                return 0xEEFF0000;
+                return 0xCCFF0000;
         }
 
     }

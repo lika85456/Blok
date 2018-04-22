@@ -22,8 +22,7 @@ public class SinglePlayerGameHandler implements GameListener {
         game.play(player, move);
         onMove(player, move);
 
-        if (!ai.hasPossibleMove(game.board, game.players[Game.getNextPlayerId(player.color)])) {
-            game.currentPlayerIndex = Game.getNextPlayerId(game.currentPlayerIndex);
+        if (move == null) {
             noMoves(game.getCurrentPlayer());
             if (isGameEnd()) {
                 onGameEnd(game);
