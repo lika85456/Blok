@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
@@ -23,31 +22,6 @@
             android:gravity="bottom"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right|center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/blockView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="0"
-                    app:srcCompat="@drawable/block" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_weight="0"
-                    android:fontFamily="@font/coiny"
-                    android:text="0"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="36sp" />
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -93,17 +67,13 @@
             <Button
                 android:id="@+id/singlePlayerButton"
                 style="@style/myButton"
-                android:text="Singleplayer" />
+                android:text="Play" />
 
             <Button
-                android:id="@+id/multiPlayerButton"
+                android:id="@+id/rateButton"
                 style="@style/myButton"
-                android:text="Multiplayer" />
-
-            <Button
-                android:id="@+id/button4"
-                style="@style/myButton"
-                android:text="Rate me pls" />
+                android:padding="10dp"
+                android:text="Rate and delete ads" />
 
         </LinearLayout>
 
