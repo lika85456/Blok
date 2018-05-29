@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +9,7 @@
     tools:context="com.lika85456.lika85456.blokusdeskgame.Activity.MainActivity">
 
 
-    <AbsoluteLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="30dp"
@@ -19,19 +20,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/coiny"
@@ -43,7 +36,7 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-    </AbsoluteLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,23 +50,28 @@
             android:layout_weight="13" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="30dp"
-            android:layout_weight="0"
+            android:layout_weight="2"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/singlePlayerButton"
                 style="@style/myButton"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                app:backgroundTint="@color/colorPrimary"
                 android:text="Play" />
 
             <Button
-                android:id="@+id/rateButton"
+                android:id="@+id/exitButton"
                 style="@style/myButton"
-                android:padding="10dp"
-                android:text="Rate and delete ads" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Exit"
+                app:backgroundTint="@color/colorPrimary" />
 
         </LinearLayout>
 

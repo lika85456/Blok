@@ -12,13 +12,13 @@ import com.lika85456.lika85456.blokusdeskgame.Listeners.GameListener;
 
 public class GameHandler implements GameListener {
     public Game game;
-    public AI ai = new AI(1);
+    private AI ai = new AI(1);
     public GameHandler(Game game) {
         this.game = game;
         onMoving(game.getCurrentPlayer());
     }
 
-    public boolean isGameEnd() {
+    private boolean isGameEnd() {
         return game.getBoard().isOver(game.players);
     }
 
@@ -26,9 +26,9 @@ public class GameHandler implements GameListener {
     public void move(Player player, Move move) {
         game.play(player, move);
 
-        if(!ai.hasPossibleMove(game.board,game.players[Game.getNextPlayerId(player.color)]))
+        if (!ai.hasPossibleMove(game.getBoard(), game.players[Game.getNextPlayerId(player.color)]))
         {
-            game.currentPlayerIndex = Game.getNextPlayerId(game.currentPlayerIndex);
+            game.setCurrentPlayerIndex(Game.getNextPlayerId(game.getCurrentPlayerIndex()));
             noMoves(game.getCurrentPlayer());
             if(isGameEnd())
             {

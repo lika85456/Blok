@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by lika85456 on 24.03.2018.
@@ -39,24 +40,32 @@ public class Piece implements Comparable<Piece> {
 
     }
 
-    public static int lastIndex = 0;
+    private static int lastIndex = 0;
 
     public ArrayList<Point> list;
     public byte color;
-    public ArrayList<Point> seedable; //List of points which can be placed on seed
+    public ArrayList<Point> seeds; //List of points which can be placed on seed (wtf?)
     public int index;
 
     public Piece(Piece piece) {
-        this.list = new ArrayList<Point>();
+        this.list = new ArrayList<>();
         for (Point point : piece.list)
             list.add(new Point(point));
         this.color = piece.color;
         this.index = piece.index;
-        this.seedable = generateSeedable();
+        this.seeds = generateSeeds();
     }
 
+    public Piece(Point... params) {
+        this.list = new ArrayList<>();
+        Collections.addAll(this.list, params);
+        this.index = lastIndex;
+        lastIndex++;
+        this.seeds = generateSeeds();
+    }
+    
     public static ArrayList<Piece> getAllPieces(byte color) {
-        ArrayList<Piece> toRet = new ArrayList<Piece>();
+        ArrayList<Piece> toRet = new ArrayList<>();
         for (Piece toCopy : groups) {
             Piece temp = new Piece(toCopy);
             temp.color = color;
@@ -65,21 +74,9 @@ public class Piece implements Comparable<Piece> {
         }
         return toRet;
     }
-    
-    public Piece(Point... params)
-    {
-        this.list = new ArrayList<>();
-        for(int i = 0;i<params.length;i++)
-        {
-            this.list.add(params[i]);
-        }
-        this.index = lastIndex;
-        lastIndex++;
-        this.seedable = generateSeedable();
-    }
 
-    private ArrayList<Point> generateSeedable() {
-        ArrayList<Point> points = new ArrayList<Point>();
+    private ArrayList<Point> generateSeeds() {
+        ArrayList<Point> points = new ArrayList<>();
         for (Point point : this.list) {
             if (isSeed(point.x - 1, point.y - 1) ||
                     isSeed(point.x + 1, point.y - 1) ||
@@ -128,6 +125,25 @@ public class Piece implements Comparable<Piece> {
                 matrix[j][i] = temp;
             }
         }
+    }
+
+    public void flip() {
+        byte[][] array = toArray();
+        for (int j = 0; j < array.length; j++) {
+            for (int i = 0; i < array[j].length / 2; i++) {
+                int temp = array[j][i];
+                array[j][i] = array[j][array[j].length - i - 1];
+                array[j][array[j].length - i - 1] = (byte) temp;
+            }
+        }
+
+        this.list = new ArrayList<>();
+        for (int x = 0; x < 5; x++)
+            for (int y = 0; y < 5; y++)
+                if (array[x][y] == 1)
+                    list.add(new Point(x, y));
+        seeds = generateSeeds();
+
     }
 
     /***
@@ -196,8 +212,7 @@ public class Piece implements Comparable<Piece> {
             for(int y = 0; y<5; y++)
                 if (arr[x][y] == 1)
                     list.add(new Point(x,y));
-        seedable = generateSeedable();
-        return;
+        seeds = generateSeeds();
     }
 
     public String toString() {
@@ -217,41 +232,3 @@ public class Piece implements Comparable<Piece> {
         return this.list.size() - o.list.size();
     }
 }
-
-/*
-		String toParse = "2,2\n"
-				+ "2,2,3,2\n"
-				+ "1,2,2,2,3,2\n"
-				+ "1,2,2,2,2,3\n"
-				+ "0,2,1,2,2,2,3,2\n"
-				+ "1,2,2,2,3,2,3,3\n"
-				+ "2,1,1,2,2,2,3,2\n"
-				+ "1,1,2,1,1,2,2,2\n"
-				+ "1,1,1,2,2,2,2,3\n"
-				+ "1,1,1,2,2,2,2,3,2,4\n"
-				+ "2,1,1,2,2,2,3,2,3,3\n"
-				+ "2,1,2,2,1,3,2,3,3,3\n"
-				+ "2,1,1,2,2,2,3,2,2,3\n"
-				+ "3,1,3,2,3,3,2,3,1,3\n"
-				+ "3,1,1,2,2,2,3,2,4,2\n"
-				+ "1,1,1,2,2,2,2,3,3,3\n"
-				+ "1,1,2,1,1,2,2,2,3,2\n"
-				+ "3,1,1,2,2,2,3,2,1,3\n"
-				+ "1,1,3,1,1,2,2,2,3,2\n"
-				+ "3,1,0,2,1,2,2,2,3,2\n"
-				+ "0,2,1,2,2,2,3,2,4,2";
-
-		String[] splited = toParse.split("\n");
-
-		for(int i =0;i<splited.length;i++)
-		{
-
-			String[] pointSplited = splited[i].split(",");
-			String pointString = "new Point("+pointSplited[0]+","+pointSplited[1]+")";
-			for(int x=2;x<pointSplited.length;x+=2)
-			{
-				pointString+=",new Point("+pointSplited[x]+","+pointSplited[x+1]+")";
-			}
-			System.out.println("groups.add(new Piece("+pointString+"));");
-		}
- */

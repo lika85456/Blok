@@ -1,6 +1,5 @@
 package com.lika85456.lika85456.blokusdeskgame.Model;
 
-import com.lika85456.lika85456.blokusdeskgame.Game.AI;
 import com.lika85456.lika85456.blokusdeskgame.Game.Game;
 import com.lika85456.lika85456.blokusdeskgame.Game.Move;
 import com.lika85456.lika85456.blokusdeskgame.Game.Player;
@@ -8,12 +7,12 @@ import com.lika85456.lika85456.blokusdeskgame.Listeners.GameListener;
 
 public class SinglePlayerGameHandler implements GameListener {
     public Game game;
-    public AI ai = new AI(1);
-    public SinglePlayerGameHandler(Game game) {
+
+    protected SinglePlayerGameHandler(Game game) {
         this.game = game;
     }
 
-    public boolean isGameEnd() {
+    private boolean isGameEnd() {
         return game.getBoard().isOver(game.players);
     }
 
@@ -24,6 +23,7 @@ public class SinglePlayerGameHandler implements GameListener {
 
         if (move == null) {
             noMoves(game.getCurrentPlayer());
+            player.hasMoves = false;
             if (isGameEnd()) {
                 onGameEnd(game);
                 return;

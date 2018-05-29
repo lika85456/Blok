@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class SquareGroupScrollView extends RelativeLayout {
 
     public OnClickListener onClickListener;
-    private ArrayList<Piece> list;
+    public ArrayList<Piece> list;
     public byte color = 0;
     public SquareGroupScrollView(Context context) {
         super(context);
@@ -37,7 +37,7 @@ public class SquareGroupScrollView extends RelativeLayout {
         int childs = getChildCount();
         int rows = 7;
         if (childs > 0)
-            rows = childs / 3 + 1;
+            rows = (int) Math.ceil((double) childs / (double) 3);
         this.setMeasuredDimension(width, (int) (((float) width / 3.f - 15.f) * rows));
     }
 
@@ -100,6 +100,13 @@ public class SquareGroupScrollView extends RelativeLayout {
         SquareGroup temp = new SquareGroup(this.getContext(), piece);
         this.addView(temp);
         temp.setOnClickListener(onClickListener);
+    }
+
+    public void updatePiece(Piece piece) {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (((SquareGroup) getChildAt(i)).getPiece().index == piece.index)
+                ((SquareGroup) getChildAt(i)).fromPiece(piece);
+        }
     }
 
     public void addAtIndex(Piece piece, int index) {

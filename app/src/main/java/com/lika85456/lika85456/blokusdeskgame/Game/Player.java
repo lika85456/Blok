@@ -1,6 +1,7 @@
 package com.lika85456.lika85456.blokusdeskgame.Game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by lika85456 on 26.03.2018.
@@ -10,26 +11,14 @@ public class Player {
     public byte color;
 
     private ArrayList<Piece> pieces;
-
-    public boolean movesAvailable = true;
+    public boolean hasMoves = true;
     public String name;
-
-    public Player(Player player) {
-        this.color = player.color;
-        this.pieces = (ArrayList) player.pieces.clone();
-        this.name = player.name;
-    }
-
-    //Just to carry color
-    public Player(byte color) {
-        this.color = color;
-        pieces = Piece.getAllPieces(color);
-    }
 
     public Player(int color, String name) {
         this.name = name;
         this.color = (byte) color;
         pieces = Piece.getAllPieces((byte) color);
+        Collections.reverse(pieces);
        
     }
 
@@ -37,13 +26,12 @@ public class Player {
         return name;
     }
 
-    public void iDidMove(Move move) {
+    public void onMove(Move move) {
         if (move != null)
             removePieceWithIndex(move.getPiece().index);
-        return;
     }
 
-    public void removePieceWithIndex(int index) {
+    private void removePieceWithIndex(int index) {
         for (int i = 0; i < pieces.size(); i++) {
             Piece toRemove = pieces.get(i);
             if (toRemove.index == index) {
@@ -53,7 +41,12 @@ public class Player {
         }
     }
     public ArrayList<Piece> getPieces() {
-        return pieces;
+        ArrayList<Piece> toRet = new ArrayList<>();
+        for (Piece piece : pieces) {
+            toRet.add(new Piece(piece));
+        }
+        return toRet;
     }
+
 
 }

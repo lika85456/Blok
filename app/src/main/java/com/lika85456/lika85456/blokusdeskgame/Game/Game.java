@@ -1,13 +1,16 @@
 package com.lika85456.lika85456.blokusdeskgame.Game;
 
 public class Game {
-    public Board board;
+    private Board board;
     public Player[] players;
-    public int currentPlayerIndex = 0;
+
+
+    private int currentPlayerIndex;
 
 
     public Game(Player[] players) {
         this.players = players;
+        currentPlayerIndex = 0;
     }
 
     public static int getNextPlayerId(int id) {
@@ -19,7 +22,7 @@ public class Game {
     public void play(Player player, Move move) {
         if (move != null) {
             board.move(move);
-            player.iDidMove(move);
+            player.onMove(move);
 
 
         }
@@ -39,5 +42,13 @@ public class Game {
 
     public void setBoard(Board board) {
         this.board = board;
+    }
+
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
     }
 }

@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import com.lika85456.lika85456.blokusdeskgame.Game.Board;
 import com.lika85456.lika85456.blokusdeskgame.Game.Piece;
 import com.lika85456.lika85456.blokusdeskgame.R;
-import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 import java.util.ArrayList;
 
@@ -132,14 +131,22 @@ public class GridView extends ZoomView {
         this.board = board;
         for (int x = 0; x < 20; x++)
             for (int y = 0; y < 20; y++) {
-                if (get(x, y).color != board.board[x][y])
-                    setColor(x, y, board.board[x][y]);
+                if (get(x, y).color != board.getColor(x, y))
+                    setColor(x, y, board.getColor(x, y));
             }
         if (selectedPiece != null) {
             if (board.isValid(selectedPiece, selectedX, selectedY, board.isStartMove(selectedPiece.color)))
                 addPiece(selectedPiece, selectedX, selectedY);
-            else
+            else {
+                if (!board.isValid(selectedPiece, selectedX, selectedY)) {
+                    Point position = board.getPositionInside(selectedPiece, selectedX, selectedY);
+                    selectedX = position.x;
+                    selectedY = position.y;
+                }
                 addPieceWithColor(selectedPiece, selectedX, selectedY, 0xCCBBBBBB);
+
+            }
+
         }
 
         redraw();
@@ -177,7 +184,11 @@ public class GridView extends ZoomView {
         if (gridView == null) {
             gridView = findViewById(R.id.insider_grid);
         }
-        gridView.addView(toAdd);
+        try {
+            gridView.addView(toAdd);
+        } catch (Exception e) {
+        }
+
         grid.add(toAdd);
     }
 

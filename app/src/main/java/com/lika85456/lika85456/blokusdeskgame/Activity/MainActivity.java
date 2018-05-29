@@ -1,79 +1,54 @@
 package com.lika85456.lika85456.blokusdeskgame.Activity;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.lika85456.lika85456.blokusdeskgame.EventLogger;
 import com.lika85456.lika85456.blokusdeskgame.R;
-import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 public class MainActivity extends AppCompatActivity {
+    private AdView mAdView;
 
-    private int index = 0;
-    private ImageView block;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Utility.hideTopBar(this);
         setContentView(R.layout.activity_main);
+        EventLogger eventLogger = new EventLogger(this);
+        eventLogger.logStart();
+
+        MobileAds.initialize(this, "ca-app-pub-2326084372481940~5170580875");
 
         Button singlePlayerButton = findViewById(R.id.singlePlayerButton);
-        Button multiPlayerButton = findViewById(R.id.multiPlayerButton);
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
         singlePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSinglePlayer();
             }
         });
-        multiPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onMultiPlayer();
-            }
-        });
 
-        block = findViewById(R.id.blockView);
-        animation(block, SquareColor.getColorFromCode((byte) index), SquareColor.getColorFromCode(index + 1 >= 3 ? (byte) 0 : (byte) (index + 1)));
-    }
 
-    public void onAnimationEnd() {
-        index = (index + 1) % 4;
-        animation(block, SquareColor.getColorFromCode((byte) index), SquareColor.getColorFromCode(index + 1 >= 3 ? (byte) 0 : (byte) (index + 1)));
-    }
 
-    public void animation(final ImageView block, int firstColor, final int lastColor) {
-        ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), firstColor, lastColor);
-        valueAnimator.setInterpolator(new LinearInterpolator());
-        valueAnimator.setDuration(1000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                block.getDrawable().clearColorFilter();
-                block.getDrawable().setColorFilter((int) animation.getAnimatedValue() + 0x11000000, PorterDuff.Mode.MULTIPLY);
-                if ((int) (animation.getAnimatedValue()) == lastColor)
-                    onAnimationEnd();
-            }
-        });
-
-        valueAnimator.start();
     }
 
     private void onSinglePlayer() {
         Intent intent = new Intent(this, SinglePlayerChooserActivity.class);
         startActivity(intent);
-    }
-
-    private void onMultiPlayer() {
-        //Intent intent = new Intent(this,M.class);
-        //startActivity(intent);
     }
 
 

@@ -1,4 +1,4 @@
-package com.lika85456.lika85456.blokusdeskgame.Utilities;
+package com.lika85456.lika85456.blokusdeskgame.Views;
 
 /**
  * Created by lika85456 on 24.03.2018.
@@ -12,10 +12,6 @@ public class SquareColor {
     public static final byte GREEN=1;
     public static final byte BLUE=2;
     public static final byte YELLOW=3;
-
-    public static byte validateColor(byte color) {
-        return (byte) Math.max(Math.min(color, 3), 0);
-    }
 
     public static int getColorFromCode(byte color) {
         switch (color) {

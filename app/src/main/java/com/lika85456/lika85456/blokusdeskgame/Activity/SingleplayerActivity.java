@@ -1,10 +1,16 @@
 package com.lika85456.lika85456.blokusdeskgame.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.lika85456.lika85456.blokusdeskgame.EventLogger;
 import com.lika85456.lika85456.blokusdeskgame.Game.AI;
 import com.lika85456.lika85456.blokusdeskgame.Game.Board;
 import com.lika85456.lika85456.blokusdeskgame.Game.Game;
@@ -14,50 +20,31 @@ import com.lika85456.lika85456.blokusdeskgame.Game.Player;
 import com.lika85456.lika85456.blokusdeskgame.Model.SinglePlayerGameHandler;
 import com.lika85456.lika85456.blokusdeskgame.Model.UI;
 import com.lika85456.lika85456.blokusdeskgame.R;
+import com.lika85456.lika85456.blokusdeskgame.Views.EndGameDialog;
 import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class SingleplayerActivity extends AppCompatActivity {
 
-    public UI ui;
-    public SinglePlayerGameHandler gameHandler;
-    public byte MY_COLOR;
-    public byte[] difficulties = new byte[4];
+    public boolean[] player = new boolean[4]; //TRUE = AI, FALSE = USER
+    private UI ui;
+    private SinglePlayerGameHandler gameHandler;
+    private InterstitialAd mInterstitialAd;
+    private Game game;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Utility.hideTopBar(this);
         setContentView(R.layout.activity_singleplayer);
 
         Intent intent = getIntent();
-        Log.d("DEBUG",intent.getStringExtra("MY_COLOR"));
-        MY_COLOR = Byte.parseByte(intent.getStringExtra("MY_COLOR"));
 
+        initializeAds();
+        initializeGame(intent);
 
-
-        final String MY_NAME = "You";
-
-        final Board board = new Board();
-
-        final Player user = new Player(MY_COLOR, MY_NAME);
-        Player[] players = new Player[4];
-        int tI = 1;
-        for (int i = 0; i < 4; i++) {
-            if (i == MY_COLOR) {
-                players[i] = user;
-            } else
-            {
-                players[i] = new Player((byte) i, "Bot #" + i);
-                difficulties[i] = Byte.parseByte(intent.getStringExtra("D"+tI));
-                tI++;
-            }
-
-        }
-
-        final Game game = new Game(players);
-        game.setBoard(board);
-
-
-
+        final Board board = game.getBoard();
         gameHandler = new SinglePlayerGameHandler(game) {
             @Override
             public void onGameEnd(Game game) {
@@ -67,9 +54,13 @@ public class SingleplayerActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ui.onEnd();
+                        showAd();
                     }
                 });
+
+                showEndDialog(board);
+
+
             }
 
             @Override
@@ -90,28 +81,38 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onMoving(final Player player) {
+            public void onMoving(final Player currentPlayer) {
+
+                Log.d("GameHandler", "onMoving: " + currentPlayer.color);
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        ui.onMoving(player);
+                        ui.onMoving(currentPlayer);
+                        if (player[currentPlayer.color] == true) /*AI*/ {
+                            AdView adView = findViewById(R.id.adView);
+                            adView.setVisibility(VISIBLE);
+                        } else {
+                            AdView adView = findViewById(R.id.adView);
+                            adView.setVisibility(GONE);
+                        }
                     }
                 });
-                Log.d("GameHandler", "onMoving: "+player.color);
+                if (player[currentPlayer.color] == true) /*AI*/ {
 
-                if (player != user) {
-                    final AI ai = new AI(difficulties[player.color]);
+                    final AI ai = new AI(1);
 
                     new Thread(new Runnable() {
                         public void run() {
-                            gameHandler.move(player, ai.think(gameHandler.game.board, player, board.isStartMove(player.color)));
+                            gameHandler.move(currentPlayer, ai.think(gameHandler.game.getBoard(), currentPlayer, board.isStartMove(currentPlayer.color)));
                         }
                     }).start();
 
                 } else {
+
                     AI ai = new AI(1);
-                    if (!ai.hasPossibleMove(board, user)) {
+                    if (!ai.hasPossibleMove(board, currentPlayer)) {
+                        currentPlayer.hasMoves = false;
                         //no moves possible - skip
-                        gameHandler.move(user, null);
+                        gameHandler.move(currentPlayer, null);
                     }
                 }
             }
@@ -121,7 +122,7 @@ public class SingleplayerActivity extends AppCompatActivity {
         GridView gridView = findViewById(R.id.grid);
         gridView.board = board;
 
-        ui = new UI(this, user) {
+        ui = new UI(this, player) {
             @Override
             public void onPieceSelected(Piece piece) {
                 Log.d("UIListener", "Piece selected");
@@ -135,8 +136,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                 Move move = new Move(piece, x, y);
                 removeSquareGroupFromList(piece);
                 setSelectedPiece(null);
-                gameHandler.move(user, move);
-                //TODO LOGIC WITH move
+                gameHandler.move(game.players[colorTurn], move);
             }
 
             @Override
@@ -147,13 +147,97 @@ public class SingleplayerActivity extends AppCompatActivity {
 
 
         gameHandler.onMoving(gameHandler.game.getCurrentPlayer());
+    }
+
+    private void initializeGame(Intent intent) {
+        Board board = new Board();
+        Player[] players = new Player[4];
+
+        players[0] = new Player(0, "Red");
+        players[1] = new Player(1, "Green");
+        players[2] = new Player(2, "Blue");
+        players[3] = new Player(3, "Yellow");
+
+        player[0] = intent.getBooleanExtra("P1", true);
+        player[1] = intent.getBooleanExtra("P2", true);
+        player[2] = intent.getBooleanExtra("P3", true);
+        player[3] = intent.getBooleanExtra("P4", true);
+
+        game = new Game(players);
+        game.setBoard(board);
+    }
+
+    private void initializeAds() {
+        //INTERESTIAL
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-2326084372481940/5334232407");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+        //BANNER
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
+
+
+    private void showEndDialog(final Board board) {
+        final int[] score = new int[4];
+        score[0] = board.getColorScore(0);
+        score[1] = board.getColorScore(1);
+        score[2] = board.getColorScore(2);
+        score[3] = board.getColorScore(3);
+
+        final Activity activity = this;
+        runOnUiThread(new Runnable() {
+            public void run() {
+                EventLogger eventLogger = new EventLogger(activity);
+                eventLogger.logGameEnd(score);
+                EndGameDialog endGameDialog = new EndGameDialog(activity, score);
+                endGameDialog.show();
+            }
+        });
 
     }
 
 
+    private void showAd() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mInterstitialAd.loadAd(adRequest);
+        } else {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mInterstitialAd.loadAd(adRequest);
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+
+                }
+
+                @Override
+                public void onAdOpened() {
 
 
+                }
 
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+
+                }
+            });
+        }
+        ui.onEnd();
+    }
 
     protected void onResume() {
         super.onResume();

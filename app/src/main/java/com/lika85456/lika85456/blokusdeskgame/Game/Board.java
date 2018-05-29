@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Board {
     public static final byte NOTHING = -1;
     private int size = 20;
-    public byte[][] board = new byte[size][size];
+    private byte[][] board = new byte[size][size];
     public ArrayList<Move> moves;
 
     public Board()
@@ -45,7 +45,7 @@ public class Board {
         }
     }
 
-    public int getColorScore(byte color) {
+    public int getColorScore(int color) {
         int t = 0;
         for (int i = 0; i < getWidth(); i++) {
             for (int ii = 0; ii < getHeight(); ii++) {
@@ -56,22 +56,23 @@ public class Board {
     }
 
     public boolean isOver(Player[] players) {
-        AI ai = new AI();
         if (moves.size() < players.length) return false;
-        for (int i = 0; i < players.length; i++) {
-            if (ai.hasPossibleMove(this, players[i])) return false;
+        for (Player player : players) {
+            if (player.hasMoves) return false;
         }
         return true;
     }
 
     public boolean isStartMove(byte color) {
-        for (Move move : moves)
-            if (move.piece.color == color) return false;
+        for (int i = 0; i < moves.size(); i++) {
+            if (moves.get(i).getPiece().color == color) return false;
+        }
+
         return true;
     }
 
     public ArrayList<Point> getSeeds(int color) {
-        ArrayList<Point> toRet = new ArrayList<Point>();
+        ArrayList<Point> toRet = new ArrayList<>();
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (isSeed((byte) color, x, y)) toRet.add(new Point(x, y));
@@ -110,7 +111,7 @@ public class Board {
 
     public boolean containsColor(byte color) {
         for (int i = 0; i < moves.size(); i++) {
-            if (moves.get(i).color == color) return true;
+            if (moves.get(i).getColor() == color) return true;
         }
         return false;
     }
@@ -122,7 +123,7 @@ public class Board {
 
     public boolean isValid(Piece piece, int x, int y, boolean start) {
         //If start = true -> only position to control is the start position
-        if (start == false) {
+        if (!start) {
             if (isInside(piece, x, y)) {
                 if (!collides(piece, x, y)) {
                     if (!isNextToAnotherPieceOfSameColor(piece, x, y)) {
@@ -149,7 +150,7 @@ public class Board {
 
     }
 
-    public boolean isOnPos(Piece piece, int x1, int y1, int x2, int y2) {
+    private boolean isOnPos(Piece piece, int x1, int y1, int x2, int y2) {
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);
             if (temp.x + x1 == x2 && temp.y + y1 == y2) return true;
@@ -161,7 +162,7 @@ public class Board {
      * Adds piece to array board !!!WITHOUT CONTROL!!!
      * @param piece
      */
-    public void addPiece(Piece piece, int x, int y)
+    private void addPiece(Piece piece, int x, int y)
     {
         for(int i = 0;i<piece.list.size();i++)
         {
@@ -230,7 +231,7 @@ public class Board {
      * @param y
      * @return
      */
-    public boolean isOnCornerOfAnotherPiece(Piece piece, int x, int y) {
+    private boolean isOnCornerOfAnotherPiece(Piece piece, int x, int y) {
         //TODO refactor with getSafe
         for (int i = 0; i < piece.list.size(); i++) {
             Point temp = piece.list.get(i);

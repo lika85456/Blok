@@ -11,17 +11,13 @@ public class AI {
 
     //1 level = easiest
     //3 level = hardest
-    public int level = 1;
-    public Random random = new Random();
+    private int level = 1;
+    private Random random = new Random();
 
     public AI(int level) {
         this.level = level;
         if (level > 3) level = 3;
         if (level < 1) level = 1;
-    }
-
-    public AI() {
-
     }
 
     public Move think(Board board, Player player) {
@@ -30,22 +26,12 @@ public class AI {
 
 
     public Move think(Board board, Player player, boolean start) {
-        ArrayList<Move> possibleMoves = getPossibleMoves(board, player, start, 20);
-        possibleMoves = getBestMovesFromList(possibleMoves);
 
-        if (possibleMoves.size() == 0) return null;
-
-        if (board.moves.size() < 16) return possibleMoves.get(random.nextInt(possibleMoves.size()));
-
-        if (level == 1)
-            return possibleMoves.get(random.nextInt(possibleMoves.size()));
-        if (level == 2)
-            return deepThink(board, player, start, 0, 2).get(0);
-        if (level == 3)
-            return deepThink(board, player, start, 0, 4).get(0);
-
-        return null;
-        //TODO make better ai plz
+        if (board.moves.size() < 28) {
+            ArrayList<Move> moves = getBestMovesFromList(getPossibleMoves(board, player, start, 30));
+            return moves.get(random.nextInt(moves.size()));
+        }
+        return deepThink(board, player, start, 0, 3, System.currentTimeMillis());
     }
 
 
@@ -58,44 +44,47 @@ public class AI {
      * @param maxDepth
      * @return
      */
-    public ArrayList<Move> deepThink(Board board, Player player, boolean start, int depth, int maxDepth) {
-        ArrayList<Move> moves = getPossibleMoves(board, player, start, 25);
+    private Move deepThink(Board board, Player player, boolean start, int depth, int maxDepth, long millis) {
+        ArrayList<Move> moves = getPossibleMoves(board, player, start, 20);
         moves = getBestMovesFromList(moves);
-        while (moves.size() > 15)
-            moves.remove(moves.size() - 1);
+
+        //if it takes too long just return what we have
+        if (System.currentTimeMillis() - millis > 500)
+            return moves.get(random.nextInt(moves.size()));
 
         ArrayList<Move> bestMoves = new ArrayList<Move>();
 
-        int maxScore = 0;
-        if (depth < maxDepth) {
-            for (int i = 0; i < moves.size(); i++) {
-                Board tempBoard = new Board(board);
-                tempBoard.move(moves.get(i));
 
-                Player tempPlayer = new Player(player);
-                tempPlayer.iDidMove(moves.get(i));
-
-                //Theese are the best moves possible after one of the bestMoves
-                ArrayList<Move> bestMovesInDeep = deepThink(tempBoard, tempPlayer, false, depth + 1, maxDepth);
-
-                if (bestMovesInDeep.size() == 0) continue;
-
-                if (bestMovesInDeep.get(0).score >= maxScore) {
-
-                    if (bestMovesInDeep.get(0).score > maxScore) {
-                        bestMoves.clear();
-                        maxScore = bestMovesInDeep.get(0).score;
-                    }
-                    bestMoves.add(moves.get(i));
-                }
+        int bestScore = 0;
+        for (int i = 0; i < moves.size(); i++) {
+            Move move = moves.get(i);
+            Board tempBoard = board.makeSimMove(move.getX(), move.getY(), move.getPiece(), player);
+            int tempScore = deep(tempBoard, player, start, depth, maxDepth, millis);
+            if (tempScore > bestScore) {
+                bestMoves.clear();
+                bestScore = tempScore;
+                bestMoves.add(move);
             }
         }
+        if (bestMoves.size() == 0) return null;
+        return bestMoves.get(random.nextInt(bestMoves.size()));
+    }
 
-        if (bestMoves.size() > 0)
-            return bestMoves;
-        if (moves.size() == 0)
-            moves.add(null);
-        return moves;
+    private int deep(Board board, Player player, boolean start, int depth, int maxDepth, long millis) {
+        if (depth >= maxDepth) return 0;
+        ArrayList<Move> moves = getPossibleMoves(board, player, start, 20);
+        moves = getBestMovesFromList(moves);
+
+        //if it takes too long just return what we have
+        if (System.currentTimeMillis() - millis > 500) return 0;
+        int score = 0;
+        for (int i = 0; i < moves.size(); i++) {
+            Move move = moves.get(i);
+            score += move.score;
+            Board tempBoard = board.makeSimMove(move.getX(), move.getY(), move.getPiece(), player);
+            score += deep(tempBoard, player, start, depth + 1, maxDepth, millis);
+        }
+        return score;
     }
 
     /***
@@ -106,11 +95,11 @@ public class AI {
      * @param limit - limit of moves
      * @return
      */
-    public ArrayList<Move> getPossibleMoves(Board board, Player player, boolean start, int limit) {
+    private ArrayList<Move> getPossibleMoves(Board board, Player player, boolean start, int limit) {
 
         ArrayList<Point> seeds = board.getSeeds(player.color);
         ArrayList<Piece> usablePieces = player.getPieces();
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         if (start)
             seeds.add(board.getStartingPoint(player.color));
@@ -130,23 +119,27 @@ public class AI {
         Collections.sort(seeds, comparator);
 
         long time = System.currentTimeMillis();
-
+        Piece usablePiece;
+        Point seed;
+        Move tempMove;
+        Piece tempPiece;
         for (int usablePieceIndex = 0; usablePieceIndex < usablePieces.size(); usablePieceIndex++) {
             for (int seedIndex = 0; seedIndex < seeds.size(); seedIndex++) {
-                Piece usablePiece = usablePieces.get(usablePieceIndex);
-                Point seed = seeds.get(seedIndex);
+                usablePiece = usablePieces.get(usablePieceIndex);
+                seed = seeds.get(seedIndex);
+                for (int flips = 0; flips < 1; flips++, usablePiece.flip())
                 for (int rotation = 0; rotation < 3; rotation++, usablePiece.rotateBy90()) {
-                    Piece tempPiece = new Piece(usablePiece);
+                    tempPiece = new Piece(usablePiece);
 
-                    for (Point square : usablePiece.seedable) {
+                    for (Point square : usablePiece.seeds) {
                         int x = seed.x - square.x;
                         int y = seed.y - square.y;
                         if (board.isValid(tempPiece, x, y, start)) {
-                            Move tempMove = new Move(tempPiece, x, y);
+                            tempMove = new Move(tempPiece, x, y);
                             tempMove.score = Move.generateScore(board, tempPiece, x, y);
                             moves.add(tempMove);
                         }
-                        if ((System.currentTimeMillis() - time > 250 || moves.size() > limit) && moves.size() > 3) {
+                        if ((System.currentTimeMillis() - time > 500 || moves.size() > limit) && moves.size() > 0) {
                             //moves = getBestMovesFromList(moves);
                             return moves;
                         }
@@ -159,10 +152,10 @@ public class AI {
 
 
     private ArrayList<Move> getBestMovesFromList(ArrayList<Move> list) {
-        if (list == null || list.size() == 0) return new ArrayList<Move>();
+        if (list == null || list.size() == 0) return new ArrayList<>();
         Move max = Collections.max(list);
         int maxScore = max.score;
-        ArrayList<Move> toRet = new ArrayList<Move>();
+        ArrayList<Move> toRet = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).score == maxScore)
                 toRet.add(list.get(i));
@@ -171,26 +164,27 @@ public class AI {
     }
 
     public boolean hasPossibleMove(Board board, Player player) {
-        if (board.moves.size() < 5) return true;
+        if (board.moves.size() < 8) return true;
         ArrayList<Point> seeds = board.getSeeds(player.color);
         ArrayList<Piece> usablePieces = player.getPieces();
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         if (seeds.size() == 0 || usablePieces.size() == 0) return false;
 
         for (Point seed : seeds) {
             for (Piece usablePiece : usablePieces) {
-                for (int rotation = 0; rotation < 3; rotation++, usablePiece.rotateBy90()) {
-                    Piece tempPiece = new Piece(usablePiece);
+                for (int flips = 0; flips < 1; flips++, usablePiece.flip())
+                    for (int rotation = 0; rotation < 3; rotation++, usablePiece.rotateBy90()) {
+                        Piece tempPiece = new Piece(usablePiece);
 
-                    for (Point square : usablePiece.list) {
-                        int x = seed.x - square.x;
-                        int y = seed.y - square.y;
-                        if (board.isValid(tempPiece, x, y, false)) {
-                            return true;
+                        for (Point square : usablePiece.list) {
+                            int x = seed.x - square.x;
+                            int y = seed.y - square.y;
+                            if (board.isValid(tempPiece, x, y, false)) {
+                                return true;
+                            }
                         }
                     }
-                }
             }
         }
 

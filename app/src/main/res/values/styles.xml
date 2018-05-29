@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -44,13 +44,27 @@
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginLeft">15dp</item>
         <item name="android:layout_marginRight">15dp</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
         <item name="android:minWidth">250dp</item>
-        <item name="android:tint">@color/colorPrimary</item>
-        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/colorPrimary</item>
         <item name="android:fontFamily">@font/coiny</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="myButton.small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">50dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:layout_marginRight">0dp</item>
     </style>
 
 
@@ -58,6 +72,11 @@
         <item name="android:fontFamily">@font/coiny</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">17.5sp</item>
+    </style>
+
+    <style name="myText.smaller">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#FFCCCCCC</item>
     </style>
 
 </resources>

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lika85456.lika85456.blokusdeskgame.R;
-import com.lika85456.lika85456.blokusdeskgame.Utilities.SquareColor;
 
 /**
  * Created by lika85456 on 16.03.2018.
