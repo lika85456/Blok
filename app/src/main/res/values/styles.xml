@@ -79,4 +79,9 @@
         <item name="android:textColor">#FFCCCCCC</item>
     </style>
 
+    <style name="MyCheckBox" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
 </resources>

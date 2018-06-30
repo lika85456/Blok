@@ -39,8 +39,7 @@ public class SquareView extends View {
         this.getBackground().mutate();
     }
 
-    public void setColor(byte color)
-    {
+    public void setColor(byte color) {
         //this.setBackgroundResource(R.drawable.block);
         this.getBackground().clearColorFilter();
         this.getBackground().setColorFilter(SquareColor.getColorFromCode(color), PorterDuff.Mode.MULTIPLY);
@@ -56,9 +55,8 @@ public class SquareView extends View {
     }
 
 
-    public void setPos(Point point)
-    {
-        setPos(point.x,point.y);
+    public void setPos(Point point) {
+        setPos(point.x, point.y);
     }
 
     private void setPos(int x, int y) {

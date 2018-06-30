@@ -4,6 +4,7 @@ import android.graphics.Point;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+
 /**
  * Logic board containing all pieces + some matrix logic etc.
  * Created by lika85456 on 24.03.2018.
@@ -11,18 +12,15 @@ import java.util.ArrayList;
 
 public class Board {
     public static final byte NOTHING = -1;
+    public ArrayList<Move> moves;
     private int size = 20;
     private byte[][] board = new byte[size][size];
-    public ArrayList<Move> moves;
 
-    public Board()
-    {
+    public Board() {
         moves = new ArrayList<>();
         //Initialize array
-        for (int i = 0; i < getWidth(); i++)
-        {
-            for (int ii = 0; ii < getHeight(); ii++)
-            {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int ii = 0; ii < getHeight(); ii++) {
                 board[i][ii] = NOTHING;
             }
         }
@@ -43,6 +41,10 @@ public class Board {
                 board[x][y] = original.getColor(x, y);
             }
         }
+    }
+
+    public Board clone() {
+        return new Board(this);
     }
 
     public int getColorScore(int color) {
@@ -101,7 +103,6 @@ public class Board {
     }
 
 
-
     public void move(Move move) {
         if (move != null) {
             moves.add(move);
@@ -116,8 +117,7 @@ public class Board {
         return false;
     }
 
-    public boolean isValid(Piece piece, int x, int y)
-    {
+    public boolean isValid(Piece piece, int x, int y) {
         return isValid(piece, x, y, false);
     }
 
@@ -131,8 +131,7 @@ public class Board {
                     }
                 }
             }
-        }
-        else {
+        } else {
             Point startingPoint = getStartingPoint(piece.color);
             if (isInside(piece, x, y)) {
                 return isOnPos(piece, x, y, startingPoint.x, startingPoint.y);
@@ -162,10 +161,8 @@ public class Board {
      * Adds piece to array board !!!WITHOUT CONTROL!!!
      * @param piece
      */
-    private void addPiece(Piece piece, int x, int y)
-    {
-        for(int i = 0;i<piece.list.size();i++)
-        {
+    private void addPiece(Piece piece, int x, int y) {
+        for (int i = 0; i < piece.list.size(); i++) {
             Point tPoint = piece.list.get(i);
             board[tPoint.x + x][tPoint.y + y] = piece.color;
         }
@@ -211,10 +208,8 @@ public class Board {
      * @param piece
      * @return if piece collides with another piece on the board
      */
-    private boolean collides(Piece piece, int x, int y)
-    {
-        for(int i = 0;i<piece.list.size();i++)
-        {
+    private boolean collides(Piece piece, int x, int y) {
+        for (int i = 0; i < piece.list.size(); i++) {
             Point tPoint = piece.list.get(i);
             if (board[tPoint.x + x][tPoint.y + y] > -1)
                 return true;
@@ -254,7 +249,6 @@ public class Board {
         }
         return false;
     }
-
 
 
     /***
@@ -302,8 +296,7 @@ public class Board {
         }
         return toRet;
     }
-    
-    
+
 
     /***
      * returns color in byte

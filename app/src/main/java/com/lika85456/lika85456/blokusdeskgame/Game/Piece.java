@@ -13,6 +13,7 @@ import java.util.Collections;
 
 public class Piece implements Comparable<Piece> {
     private static final ArrayList<Piece> groups;
+    private static int lastIndex = 0;
 
     static {
         groups = new ArrayList<>(21);
@@ -40,8 +41,6 @@ public class Piece implements Comparable<Piece> {
 
     }
 
-    private static int lastIndex = 0;
-
     public ArrayList<Point> list;
     public byte color;
     public ArrayList<Point> seeds; //List of points which can be placed on seed (wtf?)
@@ -63,7 +62,7 @@ public class Piece implements Comparable<Piece> {
         lastIndex++;
         this.seeds = generateSeeds();
     }
-    
+
     public static ArrayList<Piece> getAllPieces(byte color) {
         ArrayList<Piece> toRet = new ArrayList<>();
         for (Piece toCopy : groups) {
@@ -73,6 +72,41 @@ public class Piece implements Comparable<Piece> {
 
         }
         return toRet;
+    }
+
+    private static void rotateMatrix(byte[][] matrix) {
+        if (matrix == null)
+            return;
+        if (matrix.length != matrix[0].length)//INVALID INPUT
+            return;
+        getTranspose(matrix);
+        rorateAlongMidRow(matrix);
+    }
+
+    private static void getTranspose(byte[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = i + 1; j < matrix.length; j++) {
+                byte temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+
+    private static void rorateAlongMidRow(byte[][] matrix) {
+        int len = matrix.length;
+        for (int i = 0; i < len / 2; i++) {
+            for (int j = 0; j < len; j++) {
+                byte temp = matrix[i][j];
+                matrix[i][j] = matrix[len - 1 - i][j];
+                matrix[len - 1 - i][j] = temp;
+            }
+        }
+    }
+
+    public Piece clone() {
+        Piece piece = new Piece(this);
+        return piece;
     }
 
     private ArrayList<Point> generateSeeds() {
@@ -106,27 +140,6 @@ public class Piece implements Comparable<Piece> {
         return false;
     }
 
-
-
-    private static void rotateMatrix(byte[][] matrix) {
-        if (matrix == null)
-            return;
-        if (matrix.length != matrix[0].length)//INVALID INPUT
-            return;
-        getTranspose(matrix);
-        rorateAlongMidRow(matrix);
-    }
-
-    private static void getTranspose(byte[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = i + 1; j < matrix.length; j++) {
-                byte temp = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = temp;
-            }
-        }
-    }
-
     public void flip() {
         byte[][] array = toArray();
         for (int j = 0; j < array.length; j++) {
@@ -150,32 +163,19 @@ public class Piece implements Comparable<Piece> {
      * Converts this.list (ArrayList) of points to 2D array (to be rotated)
      * @return 2D array
      */
-    private byte[][] toArray()
-    {
+    private byte[][] toArray() {
         byte[][] toRet = new byte[5][5];
         //filling array
-        for(int x = 0;x<5;x++)
-            for(int y = 0;y<5;y++)
+        for (int x = 0; x < 5; x++)
+            for (int y = 0; y < 5; y++)
                 toRet[x][y] = 0;
 
         //adding list points to the array
-        for(int i = 0;i<list.size();i++)
-        {
+        for (int i = 0; i < list.size(); i++) {
             Point temp = list.get(i);
             toRet[temp.x][temp.y] = 1;
         }
         return toRet;
-    }
-
-    private static void rorateAlongMidRow(byte[][] matrix) {
-        int len = matrix.length;
-        for (int i = 0; i < len / 2; i++) {
-            for (int j = 0; j < len; j++) {
-                byte temp = matrix[i][j];
-                matrix[i][j] = matrix[len - 1 - i][j];
-                matrix[len - 1 - i][j] = temp;
-            }
-        }
     }
 
     public ArrayList<Point> getSquares() {
@@ -208,10 +208,10 @@ public class Piece implements Comparable<Piece> {
 
 
         this.list = new ArrayList<>();
-        for(int x = 0; x<5; x++)
-            for(int y = 0; y<5; y++)
+        for (int x = 0; x < 5; x++)
+            for (int y = 0; y < 5; y++)
                 if (arr[x][y] == 1)
-                    list.add(new Point(x,y));
+                    list.add(new Point(x, y));
         seeds = generateSeeds();
     }
 

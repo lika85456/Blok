@@ -18,6 +18,7 @@ public class SinglePlayerGameHandler implements GameListener {
 
 
     public void move(Player player, Move move) {
+
         game.play(player, move);
         onMove(player, move);
 

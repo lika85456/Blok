@@ -17,22 +17,6 @@ public class Move implements Comparable<Move> {
         this.color = piece.color;
     }
 
-    public byte getColor() {
-        return color;
-    }
-
-    public Piece getPiece() {
-        return piece;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public static int generateScore(Board board, Piece piece, int x, int y) {
         int boardScore = (-(int) Math.hypot((board.getWidth() / 2 - piece.getMass().x - x), (board.getHeight() / 2 - piece.getMass().y - y)));
 
@@ -60,6 +44,23 @@ public class Move implements Comparable<Move> {
         int enemySeedScore = (after - before) * 5;
         return boardScore + seedScore + size - enemySeedScore;
     }
+
+    public byte getColor() {
+        return color;
+    }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     @Override
     public int compareTo(@NonNull Move o) {
         return score - o.score;

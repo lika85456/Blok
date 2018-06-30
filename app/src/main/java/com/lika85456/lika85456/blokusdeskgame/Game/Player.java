@@ -9,17 +9,24 @@ import java.util.Collections;
 
 public class Player {
     public byte color;
-
-    private ArrayList<Piece> pieces;
     public boolean hasMoves = true;
     public String name;
+    private ArrayList<Piece> pieces;
 
     public Player(int color, String name) {
         this.name = name;
         this.color = (byte) color;
         pieces = Piece.getAllPieces((byte) color);
         Collections.reverse(pieces);
-       
+
+    }
+
+    public Player clone() {
+        Player player = new Player(color, name);
+        player.pieces = new ArrayList<Piece>();
+        for (int i = 0; i < this.pieces.size(); i++)
+            player.pieces.add(this.pieces.get(i).clone());
+        return player;
     }
 
     public String getName() {
@@ -40,6 +47,7 @@ public class Player {
             }
         }
     }
+
     public ArrayList<Piece> getPieces() {
         ArrayList<Piece> toRet = new ArrayList<>();
         for (Piece piece : pieces) {

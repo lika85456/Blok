@@ -59,18 +59,37 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/consoleView"
+        <LinearLayout
+            android:id="@+id/consoleLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/coiny"
-            android:gravity="center_vertical"
-            android:text="Your turn"
-            android:textColor="@color/colorAccent"
-            android:textSize="23sp"
-            android:visibility="visible" />
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/consoleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/coiny"
+                android:gravity="center_vertical"
+                android:text="Your turn"
+                android:textColor="@color/colorAccent"
+                android:textSize="23sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/backButton"
+                style="@style/myButton.small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_weight="0"
+                android:text="Step Back"
+                app:backgroundTint="@color/colorPrimary" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/confirmLayout"

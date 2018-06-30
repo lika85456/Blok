@@ -7,11 +7,11 @@ package com.lika85456.lika85456.blokusdeskgame.Views;
 public class SquareColor {
 
     public static final byte UNKNOWN = -2;
-    public static final byte BLANK=-1;
-    public static final byte RED=0;
-    public static final byte GREEN=1;
-    public static final byte BLUE=2;
-    public static final byte YELLOW=3;
+    public static final byte BLANK = -1;
+    public static final byte RED = 0;
+    public static final byte GREEN = 1;
+    public static final byte BLUE = 2;
+    public static final byte YELLOW = 3;
 
     public static int getColorFromCode(byte color) {
         switch (color) {
@@ -22,7 +22,7 @@ public class SquareColor {
             case GREEN:
                 return 0xCC00FF00;
             case BLUE:
-                return 0xCC0000FF;
+                return 0xCC1111EE;
             case YELLOW:
                 return 0xCCFFFF00;
             default:

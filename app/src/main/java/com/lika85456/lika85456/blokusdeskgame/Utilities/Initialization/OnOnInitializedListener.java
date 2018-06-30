@@ -5,8 +5,7 @@ package com.lika85456.lika85456.blokusdeskgame.Utilities.Initialization;
  */
 
 public class OnOnInitializedListener implements IOnInitializedListener {
-    public void onInit()
-    {
+    public void onInit() {
 
     }
 }

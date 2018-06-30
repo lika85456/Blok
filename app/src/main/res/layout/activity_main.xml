@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
@@ -8,77 +8,86 @@
     android:orientation="vertical"
     tools:context="com.lika85456.lika85456.blokusdeskgame.Activity.MainActivity">
 
+    <com.lika85456.lika85456.blokusdeskgame.Views.BackgroundView
+        android:id="@+id/backgroundView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_weight="4"
-        android:keepScreenOn="false"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginTop="30dp"
+            android:layout_weight="4"
+            android:keepScreenOn="false"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/coiny"
-                android:gravity="center_horizontal"
-                android:text="Blokus"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/textOnDark"
-                android:textSize="73sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/coiny"
+                    android:gravity="center_horizontal"
+                    android:text="Blokus"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/textOnDark"
+                    android:textSize="73sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:orientation="horizontal">
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="13" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_weight="2"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_weight="4"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/singlePlayerButton"
-                style="@style/myButton"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                app:backgroundTint="@color/colorPrimary"
-                android:text="Play" />
-
-            <Button
-                android:id="@+id/exitButton"
-                style="@style/myButton"
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Exit"
-                app:backgroundTint="@color/colorPrimary" />
+                android:layout_height="match_parent"
+                android:layout_weight="13" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/singlePlayerButton"
+                    style="@style/myButton"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:text="Play"
+                    app:backgroundTint="@color/colorPrimary" />
+
+                <Button
+                    android:id="@+id/exitButton"
+                    style="@style/myButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Exit"
+                    app:backgroundTint="@color/colorPrimary" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="13" />
         </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="13" />
-    </LinearLayout>
-
 </LinearLayout>
+</AbsoluteLayout>

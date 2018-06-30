@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.lika85456.lika85456.blokusdeskgame.Activity.SingleplayerActivity;
+import com.lika85456.lika85456.blokusdeskgame.Game.Game;
 import com.lika85456.lika85456.blokusdeskgame.Game.Move;
 import com.lika85456.lika85456.blokusdeskgame.Game.Piece;
 import com.lika85456.lika85456.blokusdeskgame.Game.Player;
@@ -27,7 +29,6 @@ import com.lika85456.lika85456.blokusdeskgame.Views.SquareView;
 import com.lika85456.lika85456.blokusdeskgame.Views.ZoomView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -47,11 +48,12 @@ public class UI implements UIListener {
     private byte state = CONSOLE_STATE;
     private SquareGroupScrollView scrollView;
     private TextView consoleView;
+    private LinearLayout consoleLayout;
     private Button confirmButton;
     private Button flipButton;
     private Button rotateButton;
     private LinearLayout confirmContainer;
-
+    private Game game;
     private Piece selectedPiece;
 
     private boolean canConfirm = false;
@@ -59,8 +61,8 @@ public class UI implements UIListener {
     private TextView[] scores;
     private boolean[] playerC;
 
-    public UI(Activity activity, boolean[] player) {
-
+    public UI(final Activity activity, boolean[] player, Game game) {
+        consoleLayout = activity.findViewById(R.id.consoleLayout);
         gridView = activity.findViewById(R.id.grid);
         scrollView = activity.findViewById(R.id.scrollView);
         scrollView.color = colorTurn;
@@ -70,11 +72,11 @@ public class UI implements UIListener {
         confirmButton = consoleContainer.findViewById(R.id.turn_confirm_button);
         flipButton = activity.findViewById(R.id.flipButton);
         rotateButton = activity.findViewById(R.id.rotateButton);
-
+        this.game = game;
         this.activity = activity;
         playerC = player;
 
-        initializeScrollView();
+        initializeScrollView(game.getCurrentPlayer().getPieces());
         initializeScores();
         gridView.setMaxZoom(6.f);
 
@@ -101,7 +103,6 @@ public class UI implements UIListener {
                 }
             }
         });
-
 
 
         ZoomView.ZoomViewListener zoomViewListener = new ZoomView.ZoomViewListener() {
@@ -221,7 +222,20 @@ public class UI implements UIListener {
             }
         });
 
+        activity.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((SingleplayerActivity) activity).backState();
+            }
+        });
 
+    }
+
+    public void refresh(Game game) {
+        gridView.board = game.getBoard();
+        gridView.fromBoard(gridView.board);
+        this.game = game;
+        initializeScrollView(game.getCurrentPlayer().getPieces());
     }
 
     private void initializeScores() {
@@ -238,12 +252,15 @@ public class UI implements UIListener {
         }
     }
 
-    private void initializeScrollView() {
-        ArrayList<Piece> pieces = Piece.getAllPieces(colorTurn);
-        Collections.reverse(pieces);
-        for (int i = 0; i < pieces.size(); i++) {
-            scrollView.add(pieces.get(i));
+    private void initializeScrollView(ArrayList<Piece> pieces) {
+        scrollView.color = pieces.get(0).color;
+        scrollView.removeAllViews();
+        scrollView.list = new ArrayList<>();
+        for (Piece piece : pieces) {
+            scrollView.add(piece);
         }
+        scrollView.invalidate();
+
     }
 
 
@@ -262,14 +279,7 @@ public class UI implements UIListener {
         changeHrColor(SquareColor.getColorFromCode(player.color));
         if (!playerC[player.color]) /*USER*/ {
 
-            scrollView.color = colorTurn;
-            ArrayList<Piece> usablePieces = player.getPieces();
-            scrollView.removeAllViews();
-            scrollView.list = new ArrayList<>();
-            for (Piece piece : usablePieces) {
-                scrollView.add(piece);
-            }
-            scrollView.invalidate();
+            initializeScrollView(player.getPieces());
 
             if (!gameState) return;
             if (selectedPiece == null)
@@ -277,12 +287,10 @@ public class UI implements UIListener {
             else
                 setConfirmState();
 
-        }
-        else {
+        } else {
             if (selectedPiece == null)
                 gridView.zoomOnCenter();
             setConsoleText(player.getName() + "'s turn");
-
 
 
         }
@@ -292,7 +300,7 @@ public class UI implements UIListener {
     public void onMove(Player player, Move move) {
         //TODO add some animation method with fromBoard
         if (move != null) {
-            gridView.board.move(move);
+            //gridView.board.move(move);
             gridView.fromBoard(gridView.board);
             updateScores();
         }
@@ -310,7 +318,7 @@ public class UI implements UIListener {
     private void setConfirmState() {
         if (state == CONFIRM_STATE)
             return;
-        consoleView.setVisibility(GONE);
+        consoleLayout.setVisibility(GONE);
         confirmContainer.setVisibility(VISIBLE);
         state = CONFIRM_STATE;
     }
@@ -321,7 +329,7 @@ public class UI implements UIListener {
     private void setConsoleState() {
         if (state == CONSOLE_STATE)
             return;
-        consoleView.setVisibility(VISIBLE);
+        consoleLayout.setVisibility(VISIBLE);
         confirmContainer.setVisibility(GONE);
         state = CONSOLE_STATE;
     }

@@ -23,6 +23,8 @@ import com.lika85456.lika85456.blokusdeskgame.R;
 import com.lika85456.lika85456.blokusdeskgame.Views.EndGameDialog;
 import com.lika85456.lika85456.blokusdeskgame.Views.GridView;
 
+import java.util.ArrayList;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -33,6 +35,9 @@ public class SingleplayerActivity extends AppCompatActivity {
     private SinglePlayerGameHandler gameHandler;
     private InterstitialAd mInterstitialAd;
     private Game game;
+    private AI ai;
+    private ArrayList<Game> states;
+    private boolean saveStates = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,6 @@ public class SingleplayerActivity extends AppCompatActivity {
         initializeAds();
         initializeGame(intent);
 
-        final Board board = game.getBoard();
         gameHandler = new SinglePlayerGameHandler(game) {
             @Override
             public void onGameEnd(Game game) {
@@ -58,7 +62,7 @@ public class SingleplayerActivity extends AppCompatActivity {
                     }
                 });
 
-                showEndDialog(board);
+                showEndDialog(game.getBoard());
 
 
             }
@@ -69,60 +73,77 @@ public class SingleplayerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onMove(final Player player, final Move move) {
+            public void onMove(final Player currentPlayer, final Move move) {
+
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        ui.onMove(player, move);
+                        ui.onMove(currentPlayer, move);
                     }
                 });
                 if (move != null)
-                    Log.d("GameHandler", "onMove: " + player.color + " move value: " + move.score);
+                    Log.d("GameHandler", "onMove: " + currentPlayer.color + " move value: " + move.score);
 
+                if (player[Game.getNextPlayerId(currentPlayer.color + 2)] == false)
+                    if (saveStates)
+                        states.add(game.getState());
             }
 
             @Override
             public void onMoving(final Player currentPlayer) {
 
                 Log.d("GameHandler", "onMoving: " + currentPlayer.color);
+
+                if (player[currentPlayer.color] == true)/*AI*/ {
+                    //let AI make a move
+                    new Thread(new Runnable() {
+                        public void run() {
+                            gameHandler.move(currentPlayer, ai.think(gameHandler.game.getBoard(), currentPlayer, game.getBoard().isStartMove(currentPlayer.color)));
+                        }
+                    }).start();
+                } else {
+                    //No moves - skip
+                    if (!ai.hasPossibleMove(game.getBoard(), currentPlayer)) {
+                        currentPlayer.hasMoves = false;
+
+                        gameHandler.move(currentPlayer, null);
+                    } else if (player[currentPlayer.color] == false) {
+
+                        if (saveStates)
+                            Log.d("State", "Saving state, size: " + states.size());
+                    }
+
+                }
+
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        ui.onMoving(currentPlayer);
-                        if (player[currentPlayer.color] == true) /*AI*/ {
-                            AdView adView = findViewById(R.id.adView);
-                            adView.setVisibility(VISIBLE);
-                        } else {
-                            AdView adView = findViewById(R.id.adView);
-                            adView.setVisibility(GONE);
+                        if (currentPlayer.hasMoves) {
+
+
+                            ui.onMoving(currentPlayer);
+                            if (player[currentPlayer.color] == true) /*AI*/ {
+
+                                //turn on ads while user is waiting
+                                AdView adView = findViewById(R.id.adView);
+                                adView.setVisibility(VISIBLE);
+
+                            } else {
+                                //Turn off ads to not fuck user
+                                AdView adView = findViewById(R.id.adView);
+                                adView.setVisibility(GONE);
+
+
+                            }
                         }
                     }
                 });
-                if (player[currentPlayer.color] == true) /*AI*/ {
-
-                    final AI ai = new AI(1);
-
-                    new Thread(new Runnable() {
-                        public void run() {
-                            gameHandler.move(currentPlayer, ai.think(gameHandler.game.getBoard(), currentPlayer, board.isStartMove(currentPlayer.color)));
-                        }
-                    }).start();
-
-                } else {
-
-                    AI ai = new AI(1);
-                    if (!ai.hasPossibleMove(board, currentPlayer)) {
-                        currentPlayer.hasMoves = false;
-                        //no moves possible - skip
-                        gameHandler.move(currentPlayer, null);
-                    }
-                }
             }
 
         };
 
         GridView gridView = findViewById(R.id.grid);
-        gridView.board = board;
+        gridView.board = game.getBoard();
 
-        ui = new UI(this, player) {
+        ui = new UI(this, player, game) {
             @Override
             public void onPieceSelected(Piece piece) {
                 Log.d("UIListener", "Piece selected");
@@ -141,12 +162,28 @@ public class SingleplayerActivity extends AppCompatActivity {
 
             @Override
             public boolean isValid(Piece piece, int x, int y) {
+                Board board = game.getBoard();
                 return board.isValid(piece, x, y, board.isStartMove(piece.color));
             }
         };
 
 
         gameHandler.onMoving(gameHandler.game.getCurrentPlayer());
+        if (saveStates)
+            states.add(game.getState());
+    }
+
+    public void backState() {
+        Log.d("STEB BACK", "STEP BACK");
+
+        if (states.size() > 0) {
+            this.game = states.get(states.size() - 1);
+            if (states.size() > 1)
+                states.remove(states.size() - 1);
+            ui.refresh(game);
+            gameHandler.game = game;
+        }
+
     }
 
     private void initializeGame(Intent intent) {
@@ -162,6 +199,14 @@ public class SingleplayerActivity extends AppCompatActivity {
         player[1] = intent.getBooleanExtra("P2", true);
         player[2] = intent.getBooleanExtra("P3", true);
         player[3] = intent.getBooleanExtra("P4", true);
+
+        ai = new AI(intent.getIntExtra("TIME", 1000));
+        saveStates = intent.getBooleanExtra("BACK", false);
+        //if saveStates then init, otherwise hide back button
+        if (saveStates)
+            states = new ArrayList<>();
+        else
+            findViewById(R.id.backButton).setVisibility(GONE);
 
         game = new Game(players);
         game.setBoard(board);

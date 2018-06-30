@@ -1,12 +1,9 @@
 package com.lika85456.lika85456.blokusdeskgame.Game;
 
 public class Game {
-    private Board board;
     public Player[] players;
-
-
+    private Board board;
     private int currentPlayerIndex;
-
 
     public Game(Player[] players) {
         this.players = players;
@@ -17,6 +14,18 @@ public class Game {
         id++;
         if (id > 3) id = 0;
         return id;
+    }
+
+    public Game getState() {
+        Board savedBoard = board.clone();
+        Player[] savedPlayers = new Player[4];
+        for (int i = 0; i < 4; i++)
+            savedPlayers[i] = players[i].clone();
+
+        Game game = new Game(savedPlayers);
+        game.board = savedBoard;
+        game.currentPlayerIndex = currentPlayerIndex;
+        return game;
     }
 
     public void play(Player player, Move move) {

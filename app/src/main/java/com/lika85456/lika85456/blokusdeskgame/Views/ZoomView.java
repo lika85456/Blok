@@ -50,6 +50,7 @@ public class ZoomView extends LinearLayout {
     private float lastdx1, lastdy1;
     private float lastdx2, lastdy2;
     private Bitmap ch;
+    private boolean shouldRedraw = false;
 
     public ZoomView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -375,8 +376,6 @@ public class ZoomView extends LinearLayout {
     private float bias(final float a, final float b, final float k) {
         return Math.abs(b - a) >= k ? a + k * Math.signum(b - a) : b;
     }
-
-    private boolean shouldRedraw = false;
 
     @Override
     protected void dispatchDraw(final Canvas canvas) {

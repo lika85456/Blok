@@ -17,6 +17,7 @@ public class SquareGroupScrollView extends RelativeLayout {
     public OnClickListener onClickListener;
     public ArrayList<Piece> list;
     public byte color = 0;
+
     public SquareGroupScrollView(Context context) {
         super(context);
     }
@@ -30,8 +31,7 @@ public class SquareGroupScrollView extends RelativeLayout {
     }
 
 
-    public void onMeasure(int w,int h)
-    {
+    public void onMeasure(int w, int h) {
         int width = MeasureSpec.getSize(w);
         int height = MeasureSpec.getSize(h);
         int childs = getChildCount();
@@ -92,8 +92,7 @@ public class SquareGroupScrollView extends RelativeLayout {
 
     }
 
-    public void add(Piece piece)
-    {
+    public void add(Piece piece) {
         if (list == null)
             list = new ArrayList<>();
         list.add(piece);
