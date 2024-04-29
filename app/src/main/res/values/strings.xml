@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Blokus</string>
+    <string name="title_activity_singleplayer">SingleplayerActivity</string>
+    <string name="title_activity_single_player_chooser">SinglePlayerChooser</string>
+</resources>
